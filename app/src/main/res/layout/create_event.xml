@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="30dp">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:textSize="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tạo sự kiện" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="360dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="200dp"
+        android:background="@drawable/edit_text_border"
+        android:scaleType="centerCrop"
+        app:srcCompat="@android:drawable/ic_menu_mapmode" />
+
+    <EditText
+        android:id="@+id/textName"
+        android:layout_width="380dp"
+        android:hint="nhập tên sự kiện"
+        android:layout_height="55dp"
+        android:layout_marginTop="30dp"
+        android:padding="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/edtDate"
+            android:layout_width="202dp"
+            android:layout_height="54dp"
+            android:focusable="false"
+            android:hint="Chọn ngày"
+            android:icon="@android:drawable/ic_menu_today"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/edtTime"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Chọn giờ"
+            android:focusable="false"
+            android:clickable="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/edtAddress"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+
+            android:layout_height="50dp"
+            android:hint="Nhập địa chỉ"
+            android:padding="10dp"
+            />
+
+        <ImageView
+            android:id="@+id/btnPickLocation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:padding="10dp"
+            android:background="?android:attr/selectableItemBackground"/>
+    </LinearLayout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editSeat"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        android:hint="chỗ ngồi"
+        android:inputType="number" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Mô tả"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/quantum_grey"
+            android:textSize="20dp" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/edtDescription"
+        android:layout_width="330dp"
+        android:layout_height="250dp"
+        android:ems="10"
+        android:background="@drawable/edit_text_border"
+        android:inputType="text"
+         />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="tạo sự kiện" />
+
+
+</LinearLayout>
+</ScrollView>
