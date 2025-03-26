@@ -34,6 +34,7 @@ android {
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
