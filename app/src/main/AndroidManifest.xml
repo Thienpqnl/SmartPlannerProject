@@ -24,6 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".EventActivity"
+            android:exported="true"/>
+
         <activity android:name=".Controller.GMap"
             android:exported="true"/>
         <meta-data
