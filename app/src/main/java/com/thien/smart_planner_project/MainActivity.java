@@ -15,6 +15,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -22,23 +24,20 @@ import androidx.annotation.RequiresExtension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.model.Event;
 
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity{
 
-    private EditText edtDate;
+    private EditText edtDate,edtSeat,edtName,edtDes,edtTime;
     private ImageView imageView;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private AutoCompleteTextView edtAddress;
     private ImageView btnPickLocation;
     private PlacesClient placesClient;
-    private  EditText edtSeat;
-    private  EditText edtName;
-    private EditText edtDes;
     private Button creButton;
-    EditText edtTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +46,14 @@ public class MainActivity extends AppCompatActivity{
         imageView = findViewById(R.id.imageView);
         edtDate = findViewById(R.id.edtDate);
         edtSeat = findViewById(R.id.editSeat);
+        edtAddress=findViewById(R.id.edtAddress);
 
         edtDate.setOnClickListener(v -> showDatePicker());
         edtDes = findViewById(R.id.edtDescription);
         edtTime = findViewById(R.id.edtTime);
-
+        btnPickLocation=findViewById(R.id.btnPickLocation);
         edtTime.setOnClickListener(v -> showTimePicker());
+
         creButton = findViewById(R.id.button);
         // Khởi tạo Photo Picker API
         pickImageLauncher = registerForActivityResult(
@@ -86,12 +87,28 @@ public class MainActivity extends AppCompatActivity{
                         edtSeat.getText().toString(),
                          imageUri.toString(), edtDes.getText().toString());
 
-
                 intent.putExtra("event_data", event);
                 startActivity(intent);
 
             }
         });
+
+        btnPickLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GMap.class);
+                startActivity(intent);
+            }
+        });
+        //set address
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String fullAddress = bundle.getString("fullAddress");
+            if (fullAddress != null) {
+                Toast.makeText(this, "Địa chỉ: " + fullAddress, Toast.LENGTH_LONG).show();
+                edtAddress.setText(fullAddress);
+            }
+        }
     }
 
     @RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
