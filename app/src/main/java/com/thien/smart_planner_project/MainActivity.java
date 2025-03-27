@@ -15,6 +15,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -22,37 +24,40 @@ import androidx.annotation.RequiresExtension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.thien.smart_planner_project.Controller.FirestoreHelper;
+import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.model.Event;
 
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity{
-
-    private EditText edtDate;
+    private EditText edtDate,edtSeat,edtName,edtDes,edtTime;
     private ImageView imageView;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private AutoCompleteTextView edtAddress;
     private ImageView btnPickLocation;
     private PlacesClient placesClient;
-    private  EditText edtSeat;
-    private  EditText edtName;
-    private EditText edtDes;
     private Button creButton;
-    EditText edtTime;
+    private FirestoreHelper firestoreHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
+
+        firestoreHelper = new FirestoreHelper();
         edtName = findViewById(R.id.textName);
         imageView = findViewById(R.id.imageView);
         edtDate = findViewById(R.id.edtDate);
         edtSeat = findViewById(R.id.editSeat);
+        edtAddress=findViewById(R.id.edtAddress);
 
         edtDate.setOnClickListener(v -> showDatePicker());
         edtDes = findViewById(R.id.edtDescription);
         edtTime = findViewById(R.id.edtTime);
-
+        btnPickLocation=findViewById(R.id.btnPickLocation);
         edtTime.setOnClickListener(v -> showTimePicker());
+
         creButton = findViewById(R.id.button);
         // Khởi tạo Photo Picker API
         pickImageLauncher = registerForActivityResult(
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity{
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri selectedImageUri = result.getData().getData();
                         imageView.setImageURI(selectedImageUri);
+                        imageView.setTag(selectedImageUri.toString());
                     }
                 }
         );
@@ -69,27 +75,52 @@ public class MainActivity extends AppCompatActivity{
             imageView.setOnClickListener(v -> openImagePicker());
         }
 
-        creButton.setOnClickListener(new View.OnClickListener() {
+        creButton.setOnClickListener(v -> saveEvent());
+
+        btnPickLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, EventActivity.class);
-
-                // Lấy URI của hình ảnh từ ImageView
-                Uri imageUri = Uri.parse(imageView.getTag().toString());
-
-                // Gửi URI qua Intent
-
-                Event event = new Event(edtName.getText().toString(),
-                       edtDate.getText().toString(),
-                        edtTime.getText().toString(),
-                        "Hà Nội",
-                        edtSeat.getText().toString(),
-                         imageUri.toString(), edtDes.getText().toString());
-
-
-                intent.putExtra("event_data", event);
+                Intent intent = new Intent(MainActivity.this, GMap.class);
                 startActivity(intent);
+            }
+        });
+        //set address
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String fullAddress = bundle.getString("fullAddress");
+            if (fullAddress != null) {
+                Toast.makeText(this, "Địa chỉ: " + fullAddress, Toast.LENGTH_LONG).show();
+                edtAddress.setText(fullAddress);
+            }
+        }
+    }
 
+    private void saveEvent() {
+        String name = edtName.getText().toString();
+        String date = edtDate.getText().toString();
+        String time = edtTime.getText().toString();
+        String location = edtAddress.getText().toString();
+        String description = edtDes.getText().toString();
+        int seats = Integer.parseInt(edtSeat.getText().toString());
+        String imageURL = imageView.getTag().toString();
+
+        if (name.isEmpty() || date.isEmpty() || time.isEmpty() || location.isEmpty() || description.isEmpty() || imageURL.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        firestoreHelper.saveEvent(imageURL, name, date, time, location, seats, description, new FirestoreHelper.FirestoreCallback() {
+            @Override
+            public void onSuccess(String eventId) {
+                Toast.makeText(MainActivity.this, "Sự kiện đã được tạo!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, EventActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Toast.makeText(MainActivity.this, "Lỗi: " + error, Toast.LENGTH_SHORT).show();
             }
         });
     }

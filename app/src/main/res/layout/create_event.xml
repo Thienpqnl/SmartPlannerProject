@@ -77,8 +77,7 @@
             android:id="@+id/edtAddress"
             android:layout_width="0dp"
             android:layout_weight="1"
-
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:hint="Nhập địa chỉ"
             android:padding="10dp"
             />
@@ -103,10 +102,10 @@
     <EditText
         android:id="@+id/editSeat"
         android:layout_width="150dp"
+        android:textSize="20sp"
         android:layout_height="wrap_content"
         android:ems="10"
-
-        android:hint="chỗ ngồi"
+        android:hint="Chỗ ngồi"
         android:inputType="number" />
     </LinearLayout>
     <LinearLayout
@@ -129,7 +128,8 @@
     <EditText
         android:id="@+id/edtDescription"
         android:layout_width="330dp"
-        android:layout_height="250dp"
+        android:layout_height="wrap_content"
+        android:hint="Mô tả"
         android:ems="10"
         android:background="@drawable/edit_text_border"
         android:inputType="text"
@@ -139,7 +139,7 @@
         android:id="@+id/button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="tạo sự kiện" />
+        android:text="Tạo sự kiện" />
 
 
 </LinearLayout>
