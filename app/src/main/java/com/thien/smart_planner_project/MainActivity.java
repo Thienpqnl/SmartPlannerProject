@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -70,10 +71,8 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
         );
-        // Khi người dùng nhấn vào ảnh
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
-            imageView.setOnClickListener(v -> openImagePicker());
-        }
+
+        imageView.setOnClickListener(v -> openImagePicker());
 
         creButton.setOnClickListener(v -> saveEvent());
 
@@ -125,12 +124,16 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    @RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
     private void openImagePicker() {
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            return; // Thoát nếu chưa được cấp quyền
+        }
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickImageLauncher.launch(intent);
     }
-
 
 
     private void showDatePicker() {
