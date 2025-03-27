@@ -125,9 +125,15 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    @RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
     private void openImagePicker() {
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 trở lên
+            intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+        } else {
+            // Android 12 trở xuống
+            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        }
         pickImageLauncher.launch(intent);
     }
 

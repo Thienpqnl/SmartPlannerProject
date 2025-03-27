@@ -1,7 +1,6 @@
 package com.thien.smart_planner_project;
 
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 
