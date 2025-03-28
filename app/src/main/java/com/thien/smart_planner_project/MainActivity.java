@@ -76,20 +76,27 @@ public class MainActivity extends AppCompatActivity{
 
         creButton.setOnClickListener(v -> saveEvent());
 
-        btnPickLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, GMap.class);
-                startActivity(intent);
-            }
+        btnPickLocation.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, GMap.class);
+            intent.putExtra("name", edtName.getText().toString());
+            intent.putExtra("date", edtDate.getText().toString());
+            intent.putExtra("time", edtTime.getText().toString());
+            intent.putExtra("description", edtDes.getText().toString());
+            intent.putExtra("seats", edtSeat.getText().toString());  // Lưu ý: Truyền chuỗi thay vì số nguyên
+            intent.putExtra("imageURL", imageView.getTag() != null ? imageView.getTag().toString() : "");
+            startActivityForResult(intent, 100);
         });
-        //set address
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String fullAddress = bundle.getString("fullAddress");
-            if (fullAddress != null) {
-                Toast.makeText(this, "Địa chỉ: " + fullAddress, Toast.LENGTH_LONG).show();
-                edtAddress.setText(fullAddress);
+
+
+    }
+    //set address
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            if (data != null) {
+                String fullAddress = data.getStringExtra("fullAddress");
+                edtAddress.setText(fullAddress);  // Gán lại địa chỉ vào EditText
             }
         }
     }

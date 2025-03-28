@@ -148,19 +148,15 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
                 .setTitle("Xác nhận vị trí")
                 .setMessage("Bạn có muốn chọn địa chỉ này?\n" + fullAddress)
                 .setPositiveButton("Xác nhận", (dialog, which) -> {
-
-                    Intent intent=new Intent(this,MainActivity.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("fullAddress",fullAddress);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("fullAddress", fullAddress);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();  // Đóng GMap để quay về MainActivity
                 })
-                .setNegativeButton("Hủy", (dialog, which) -> {
-                    dialog.dismiss();
-                })
+                .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
                 .show();
     }
+
 
 
 
