@@ -8,8 +8,12 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +41,7 @@ import java.util.List;
 public class GMap extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap ggMap;
     private Marker currentMarker;
+    private EditText search_address;
     private Toolbar toolbar;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -47,6 +52,7 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.gg_map);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        search_address=findViewById(R.id.search_address);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,6 +75,41 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
         } else {
             Log.e("MapError", "Map Fragment is null");
         }
+        search_address.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String location = search_address.getText().toString();
+                    searchLocation(location);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+    private void searchLocation(String location) {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addressList;
+
+        try {
+            addressList = geocoder.getFromLocationName(location, 1);
+            if (!addressList.isEmpty()) {
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                ggMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            } else {
+                showAlert("Không tìm thấy địa chỉ. Vui lòng thử lại!");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void showAlert(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Thông báo")
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     @Override
