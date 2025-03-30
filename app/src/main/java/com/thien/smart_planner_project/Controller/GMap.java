@@ -1,7 +1,9 @@
 package com.thien.smart_planner_project.Controller;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -45,7 +47,13 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
     private Toolbar toolbar;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final String PREFS_NAME = "LocationPrefs";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
 
+    private double selectedLatitude = 0.0;
+    private double selectedLongitude = 0.0;
+    private String selectedAddress = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +146,10 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
 
     }
     private void getAddressFromLocation(LatLng latLng) {
+        selectedLatitude = latLng.latitude;
+        selectedLongitude = latLng.longitude;
         Geocoder geocoder = new Geocoder(this);
+
         try {
             // Lấy danh sách địa chỉ từ tọa độ
             List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
@@ -158,7 +169,7 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Lỗi khi lấy địa chỉ!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi khi lấy địa chỉ!,", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -191,6 +202,8 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
                 .setPositiveButton("Xác nhận", (dialog, which) -> {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("fullAddress", fullAddress);
+                    resultIntent.putExtra("latitude", selectedLatitude);
+                    resultIntent.putExtra("longitude", selectedLongitude);
                     setResult(RESULT_OK, resultIntent);
                     finish();  // Đóng GMap để quay về MainActivity
                 })
@@ -211,6 +224,20 @@ public class GMap extends AppCompatActivity implements OnMapReadyCallback {
                 Toast.makeText(this, "Quyền truy cập vị trí bị từ chối!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private void saveLocation(double latitude, double longitude) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_LATITUDE, String.valueOf(latitude));
+        editor.putString(KEY_LONGITUDE, String.valueOf(longitude));
+        editor.apply();
+    }
+
+    private LatLng getSavedLocation() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        double latitude = Double.parseDouble(sharedPreferences.getString(KEY_LATITUDE, "0.0"));
+        double longitude = Double.parseDouble(sharedPreferences.getString(KEY_LONGITUDE, "0.0"));
+        return new LatLng(latitude, longitude);
     }
 
     @Override

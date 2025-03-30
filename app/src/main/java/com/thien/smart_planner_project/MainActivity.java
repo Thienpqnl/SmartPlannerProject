@@ -25,15 +25,20 @@ import androidx.annotation.RequiresExtension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.thien.smart_planner_project.Controller.FirestoreHelper;
 import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.model.Event;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
     private EditText edtDate,edtSeat,edtName,edtDes,edtTime;
+    private com.google.firebase.Timestamp timestamp;
     private ImageView imageView;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private AutoCompleteTextView edtAddress;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity{
     private PlacesClient placesClient;
     private Button creButton;
     private FirestoreHelper firestoreHelper;
+    private double longitude;
+    private  double latitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity{
 
         creButton.setOnClickListener(v -> saveEvent());
 
+
+
         btnPickLocation.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GMap.class);
             intent.putExtra("name", edtName.getText().toString());
@@ -96,18 +105,48 @@ public class MainActivity extends AppCompatActivity{
         if (requestCode == 100 && resultCode == RESULT_OK) {
             if (data != null) {
                 String fullAddress = data.getStringExtra("fullAddress");
-                edtAddress.setText(fullAddress);  // Gán lại địa chỉ vào EditText
+                double latitude = data.getDoubleExtra("latitude", 0.0);
+                double longitude = data.getDoubleExtra("longitude", 0.0);
+
+                edtAddress.setText(fullAddress);
+
+                // Lưu tọa độ vào biến để dùng khi lưu sự kiện
+                this.latitude = latitude;
+                this.longitude = longitude;
             }
         }
     }
 
+
     private void saveEvent() {
+
+        String editSeat = edtSeat.getText().toString();
+        if (editSeat.isEmpty()) {
+            Toast.makeText(MainActivity.this, "Vui lòng nhập số ghế!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String name = edtName.getText().toString();
         String date = edtDate.getText().toString();
         String time = edtTime.getText().toString();
         String location = edtAddress.getText().toString();
         String description = edtDes.getText().toString();
-        int seats = Integer.parseInt(edtSeat.getText().toString());
+
+        int seats;
+        try {
+            seats = Integer.parseInt(editSeat);
+        } catch (NumberFormatException e) {
+            Toast.makeText(MainActivity.this, "Số ghế không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra giá trị số ghế
+        if (seats <= 1) {
+            Toast.makeText(MainActivity.this, "Số ghế không được dưới 2", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         String imageURL = imageView.getTag().toString();
 
         if (name.isEmpty() || date.isEmpty() || time.isEmpty() || location.isEmpty() || description.isEmpty() || imageURL.isEmpty()) {
@@ -115,7 +154,7 @@ public class MainActivity extends AppCompatActivity{
             return;
         }
 
-        firestoreHelper.saveEvent(imageURL, name, date, time, location, seats, description, new FirestoreHelper.FirestoreCallback() {
+        firestoreHelper.saveEvent(imageURL, name, date, time, timestamp , location,latitude,longitude ,seats, description, new FirestoreHelper.FirestoreCallback() {
             @Override
             public void onSuccess(String eventId) {
                 Toast.makeText(MainActivity.this, "Sự kiện đã được tạo!", Toast.LENGTH_SHORT).show();
@@ -142,18 +181,41 @@ public class MainActivity extends AppCompatActivity{
         pickImageLauncher.launch(intent);
     }
 
+    public Timestamp convertToTimestamp(int day, int month, int year) {
+        // Tạo đối tượng Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1); // Tháng trong Calendar bắt đầu từ 0
+        calendar.set(Calendar.DAY_OF_MONTH, day);
 
+        // Lấy đối tượng Date từ Calendar
+        Date date = calendar.getTime();
+
+        // Chuyển thành Timestamp
+        return new Timestamp(date);
+    }
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        LocalDate now = LocalDate.now();
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Định dạng ngày thành dd/MM/yyyy
-                    String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    edtDate.setText(selectedDate);
+                    LocalDate selectedDate = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
+
+                    if (!selectedDate.isAfter(now)) {
+                        Toast.makeText(MainActivity.this, "Su kien phai duoc tao truoc it nhat 1 ngay", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Định dạng ngày thành dd/MM/yyyy
+                        String formattedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        edtDate.setText(formattedDate);
+
+                        // Chuyển đổi thành timestamp (nếu cần)
+                        timestamp = convertToTimestamp(selectedDay, selectedMonth + 1, selectedYear);
+                    }
                 }, year, month, day);
 
         datePickerDialog.show();
