@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:layout_marginTop="30dp">
+    android:gravity="center">
 
     <TextView
         android:id="@+id/textView3"
-        android:textSize="25dp"
-        android:layout_marginLeft="10dp"
+        android:textSize="25sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tạo sự kiện" />
+        android:text="@string/createEvent"
+        android:textAlignment="center"/>
 
     <ImageView
         android:id="@+id/imageView"
@@ -28,15 +26,18 @@
         android:layout_marginTop="10dp"
         android:layout_height="200dp"
         android:background="@drawable/edit_text_border"
+        android:contentDescription="@string/Image"
         android:scaleType="centerCrop"
         app:srcCompat="@android:drawable/ic_menu_mapmode" />
 
     <EditText
         android:id="@+id/textName"
         android:layout_width="380dp"
-        android:hint="nhập tên sự kiện"
-        android:layout_height="55dp"
+        android:autofillHints="username"
+        android:hint="@string/InputEventName"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:inputType="text"
         android:padding="10dp"/>
 
     <LinearLayout
@@ -49,24 +50,27 @@
 
         <EditText
             android:id="@+id/edtDate"
-            android:layout_width="202dp"
-            android:layout_height="54dp"
+            android:layout_width="224dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
             android:focusable="false"
-            android:hint="Chọn ngày"
+            android:hint="@string/getDate"
             android:icon="@android:drawable/ic_menu_today"
+            android:inputType="date"
             android:padding="10dp" />
 
         <EditText
             android:id="@+id/edtTime"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Chọn giờ"
+            android:layout_height="wrap_content"
+            android:autofillHints="Time"
+            android:hint="@string/GetTime"
             android:focusable="false"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:inputType="time" />
     </LinearLayout>
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -78,7 +82,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="Nhập địa chỉ"
+            android:hint="@string/InputAddress"
             android:padding="10dp"
             />
 
@@ -86,12 +90,12 @@
             android:id="@+id/btnPickLocation"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:contentDescription="@string/GetAddress"
             android:src="@android:drawable/ic_menu_mylocation"
             android:padding="10dp"
             android:background="?android:attr/selectableItemBackground"/>
     </LinearLayout>
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -102,12 +106,17 @@
     <EditText
         android:id="@+id/editSeat"
         android:layout_width="150dp"
+        android:autofillHints="creditCardNumber"
         android:textSize="20sp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Chỗ ngồi"
+        android:hint="@string/Seat"
         android:inputType="number"
         />
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,8 +127,9 @@
         <EditText
             android:id="@+id/edtDescription"
             android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            android:hint="Mô tả"
+            android:layout_height="match_parent"
+            android:autofillHints="text"
+            android:hint="@string/Description"
             android:ems="10"
             android:background="@drawable/edit_text_border"
             android:inputType="text"
@@ -131,6 +141,6 @@
         android:id="@+id/button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Tạo sự kiện" />
+        android:text="@string/createEvent" />
 </LinearLayout>
 </ScrollView>

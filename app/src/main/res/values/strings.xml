@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Smart_Planner_project</string>
+    <string name="createEvent">Tạo sự kiện</string>
+    <string name="Image">hinh anh</string>
+    <string name="InputEventName">nhập tên sự kiện</string>
+    <string name="getDate">Chọn ngày</string>
+    <string name="GetTime">Chọn giờ</string>
+    <string name="InputAddress">Nhập địa chỉ</string>
+    <string name="GetAddress">Chọn Đia Chỉ</string>
+    <string name="Description">Mô tả</string>
+    <string name="Seat">Chỗ ngồi</string>
 </resources>

@@ -12,10 +12,13 @@ import android.os.Bundle;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -36,7 +39,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText edtDate,edtSeat,edtName,edtDes,edtTime;
     private com.google.firebase.Timestamp timestamp;
     private ImageView imageView;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity{
     private FirestoreHelper firestoreHelper;
     private double longitude;
     private  double latitude;
+
+    private  String[] categories = {" Sự kiện doanh nghiệp", " Sự kiện xã hội", "Sự kiện từ thiện",
+            "ự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,20 @@ public class MainActivity extends AppCompatActivity{
         edtDate = findViewById(R.id.edtDate);
         edtSeat = findViewById(R.id.editSeat);
         edtAddress=findViewById(R.id.edtAddress);
+
+        Spinner spin = findViewById(R.id.spinner);
+        spin.setOnItemSelectedListener(this);
+        ArrayAdapter<String> ad = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                categories
+        );
+
+        // Set simple layout resource file for each item of spinner
+        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Set the ArrayAdapter (ad) data on the Spinner which binds data to spinner
+        spin.setAdapter(ad);
 
         edtDate.setOnClickListener(v -> showDatePicker());
         edtDes = findViewById(R.id.edtDescription);
@@ -237,5 +257,15 @@ public class MainActivity extends AppCompatActivity{
                 hour, minute, false // `true` để hiển thị 24h, `false` nếu muốn 12h AM/PM
         );
         timePickerDialog.show();
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // Make toast of the name of the course which is selected in the spinner
+        Toast.makeText(getApplicationContext(), categories[position], Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // No action needed when no selection is made
     }
 }
