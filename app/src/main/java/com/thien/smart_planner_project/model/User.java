@@ -8,13 +8,17 @@ public class User {
     private String profilePicture; // Đường dẫn ảnh đại diện
     private String role; // Vai trò: "attendee" hoặc "organizer"
 
-    public User(String userId, String email, String phone, String name, String profilePicture, String role) {
+    private long longitude;
+    private long latitude;
+    public User(String userId, String email, String phone, String name, String profilePicture, String role, long longitude, long latitude) {
         this.userId = userId;
         this.email = email;
         this.phone = phone;
         this.name = name;
         this.profilePicture = profilePicture;
         this.role = role;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public String getUserId() {
@@ -63,5 +67,21 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public long getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(long longitude) {
+        this.longitude = longitude;
+    }
+
+    public long getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(long latitude) {
+        this.latitude = latitude;
     }
 }

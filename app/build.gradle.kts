@@ -27,8 +27,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    packaging {
+        resources {
+            excludes += ("META-INF/native-image/native-image.properties")
+            excludes += ("META-INF/native-image/reflect-config.json")
+        }
     }
 }
 
@@ -36,7 +42,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
-
+    implementation ("org.mongodb:mongodb-driver-sync:5.3.0")
+    implementation ("org.mongodb:mongodb-driver-core:4.9.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("org.mongodb:bson:4.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

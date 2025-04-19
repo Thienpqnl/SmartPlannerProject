@@ -1,4 +1,6 @@
 package com.thien.smart_planner_project.callback;
 
-public class UploadCallback {
+public interface UploadCallback {
+    void onUploadSuccess(String imageUrl);
+    void onUploadFailure(Throwable t);
 }

@@ -5,39 +5,121 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Event implements Serializable {
+
     private String name;
     private String date;
     private String time;
-    private String address;
-    private String seatCount;
-    private String imagePath;
-    private  String des;
-    public Event(String name, String date, String time, String address, String seatCount, String imagePath, String des) {
+
+    private String id;
+
+    private String location;
+    private String description;
+    private int seats;
+    private String imageUrl;
+    private double latitude;
+    private double longitude;
+
+    public Event(String name, String date, String location ,String time, String description, String imageUrl, int seats, double longitude, double latitude) {
         this.name = name;
         this.date = date;
+        this.location = location;
         this.time = time;
-       this.address = address;
-        this.seatCount = seatCount;
-        this.imagePath = imagePath;
-        this.des = des;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.seats = seats;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+    public Event(String id,String name, String date, String location ,String time, String description, String imageUrl, int seats, double longitude, double latitude) {
+        this.name = name;
+        this.id = id;
+        this.date = date;
+        this.location = location;
+        this.time = time;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.seats = seats;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
+    public String getName() {
+        return name;
+    }
 
-    public String getName() { return name; }
-    public String getDate() { return date; }
-    public String getTime() { return time; }
-    public String getAddress() { return address; }
-    public String getSeatCount() { return seatCount; }
-    public String getImagePath() { return imagePath; }
+    public String getId() {
+        return id;
+    }
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("name", name);
-        data.put("date", date);
-        data.put("time", time);
-        data.put("address", address);
-        data.put("seatCount", seatCount);
-        data.put("imagePath", imagePath);
-        return data;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setImageUrl(String imageURL) {
+        this.imageUrl = imageURL;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

@@ -3,14 +3,16 @@ package com.thien.smart_planner_project;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.ext.SdkExtensions;
+import android.os.FileUtils;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,21 +25,38 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresExtension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.thien.smart_planner_project.Controller.FirestoreHelper;
 import com.thien.smart_planner_project.Controller.GMap;
+import com.thien.smart_planner_project.callback.UploadCallback;
 import com.thien.smart_planner_project.model.Event;
+import com.thien.smart_planner_project.model.ImageUploadResponse;
+import com.thien.smart_planner_project.network.ApiService;
+import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.network.UploadAPI;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText edtDate,edtSeat,edtName,edtDes,edtTime;
@@ -51,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private FirestoreHelper firestoreHelper;
     private double longitude;
     private  double latitude;
-
+    String uploadedImageUrl;
     private  String[] categories = {" Sự kiện doanh nghiệp", " Sự kiện xã hội", "Sự kiện từ thiện",
             "ự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
     @Override
@@ -93,8 +112,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri selectedImageUri = result.getData().getData();
-                        imageView.setImageURI(selectedImageUri);
+                        imageView.setImageURI(selectedImageUri); // Hiển thị ảnh đã chọn
                         imageView.setTag(selectedImageUri.toString());
+
+                        // ✅ Gọi upload ngay sau khi chọn ảnh
+                        try {
+                            uploadImage(MainActivity.this,selectedImageUri, new UploadCallback() {
+                                @Override
+                                public void onUploadSuccess(String uploadedUrl) {
+                                    uploadedImageUrl = uploadedUrl; // Lưu lại để dùng khi tạo Event
+                                    Log.d("UPLOAD", "URL: " + uploadedImageUrl);
+                                }
+
+                                @Override
+                                public void onUploadFailure(Throwable t) {
+                                    Toast.makeText(MainActivity.this, "Lỗi upload: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
         );
@@ -136,7 +173,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
+    public File getFileFromUri(Context context, Uri uri) throws IOException {
+        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+        String fileName = "temp_image_" + System.currentTimeMillis() + ".jpg";
+        File tempFile = new File(context.getCacheDir(), fileName);
+        FileOutputStream outputStream = new FileOutputStream(tempFile);
 
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        outputStream.close();
+        inputStream.close();
+
+        return tempFile;
+    }
+    public void uploadImage(Context context,Uri imageUri, UploadCallback callback) throws IOException {
+        File file = getFileFromUri(context, imageUri);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:3000")
+                .client(client) // 👈 Thêm dòng này
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        UploadAPI service = retrofit.create(UploadAPI.class);
+
+        Call<ImageUploadResponse> call = service.uploadImage(body);
+        call.enqueue(new Callback<ImageUploadResponse>() {
+            @Override
+            public void onResponse(Call<ImageUploadResponse> call, Response<ImageUploadResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String imageUrl = response.body().getImageUrl(); // Cập nhật theo model của bạn
+                    callback.onUploadSuccess(imageUrl);
+                } else {
+                    callback.onUploadFailure(new Exception("Upload failed: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImageUploadResponse> call, Throwable t) {
+                Log.e("UPLOAD", "Upload failed: " + t.getMessage());
+                if (t.getCause() != null) {
+                    Log.e("UPLOAD", "Cause: " + t.getCause().toString());
+                }
+                t.printStackTrace();
+                callback.onUploadFailure(t);
+            }
+        });
+    }
 
     private void saveEvent() {
 
@@ -167,25 +262,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
-        String imageURL = imageView.getTag().toString();
-
-        if (name.isEmpty() || date.isEmpty() || time.isEmpty() || location.isEmpty() || description.isEmpty() || imageURL.isEmpty()) {
+        if (TextUtils.isEmpty(name) ||
+                TextUtils.isEmpty(date) ||
+                TextUtils.isEmpty(time) ||
+                TextUtils.isEmpty(location) ||
+                TextUtils.isEmpty(description) ||
+                uploadedImageUrl == null || uploadedImageUrl.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        firestoreHelper.saveEvent(imageURL, name, date, time, timestamp , location,latitude,longitude ,seats, description, new FirestoreHelper.FirestoreCallback() {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<Event> call = apiService.createEvent(new Event("Event: " + System.currentTimeMillis(),name, date, location,  time, description, uploadedImageUrl, seats, longitude, latitude));
+        call.enqueue(new Callback<Event>() {
             @Override
-            public void onSuccess(String eventId) {
-                Toast.makeText(MainActivity.this, "Sự kiện đã được tạo!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, EventActivity.class);
-                startActivity(intent);
-                finish();
+            public void onResponse(Call<Event> call, Response<Event> response) {
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(MainActivity.this, "Tạo sự kiện thành công!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, EventActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(MainActivity.this, "Lỗi từ server!", Toast.LENGTH_SHORT).show();
+                }
             }
-
             @Override
-            public void onFailure(String error) {
-                Toast.makeText(MainActivity.this, "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<Event> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

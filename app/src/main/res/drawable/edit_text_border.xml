@@ -7,7 +7,7 @@
 
     <!-- Viền -->
     <stroke
-        android:width="2dp"
+        android:width="5dp"
         android:color="#6F0681"/> <!-- Màu đỏ, có thể đổi -->
 
     <!-- Bo góc -->
