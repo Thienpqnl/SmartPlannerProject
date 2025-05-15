@@ -1,35 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/edit_text_border"
     android:padding="8dp">
 
     <ImageView
         android:id="@+id/imgEvent"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop" />
+        android:background="@drawable/edit_text_border"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+
+        android:scaleType="centerCrop"
+        />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="match_parent"
-        android:paddingStart="8dp">
-
+        android:paddingStart="8dp"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
         <TextView android:id="@+id/txtName" android:textStyle="bold"
-            android:text="Tên sự kiện" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="Tên sự kiện"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"/>
 
         <TextView android:id="@+id/txtTime"
             android:text="Thời gian"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="5dp"
+            />
 
         <TextView android:id="@+id/txtLocation"
             android:text="Địa điểm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="5sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+           >
+
+            <Button
+            android:id="@+id/likeBtn"
+            android:textStyle="bold"
+            android:text="Yeu thich"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+                android:backgroundTint="#F8DAAEE6"/>
+
+            <Button android:id="@+id/joinBtn"
+                android:text="Thamgia"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_marginLeft="90dp"
+                android:backgroundTint="#567EBA"
+                />
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

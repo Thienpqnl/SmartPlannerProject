@@ -1,6 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_linear"
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign in"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="You New Here?"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/signUp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Sign up"
+                android:textColor="#0F40D3"
+                android:textSize="20dp"
+                android:textStyle="italic"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Email: "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+
+        <EditText
+            android:id="@+id/loginEmail"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:textSize="20sp"
+            android:hint="email"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="10dp"
+            android:background="@drawable/edit_text_border"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password: "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            />
+        <EditText
+            android:id="@+id/loginPass"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:textSize="20dp"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:background="@drawable/edit_text_border"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_marginLeft="30dp"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:text="Nhap thong tin"
+        android:backgroundTint="@color/black"
+        android:textSize="20dp"/>
+
+</LinearLayout>

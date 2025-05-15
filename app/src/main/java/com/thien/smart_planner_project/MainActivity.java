@@ -70,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private FirestoreHelper firestoreHelper;
     private double longitude;
     private  double latitude;
+    String selectedItem;
     String uploadedImageUrl;
     private  String[] categories = {" Sự kiện doanh nghiệp", " Sự kiện xã hội", "Sự kiện từ thiện",
-            "ự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
+            "Sự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +87,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         edtAddress=findViewById(R.id.edtAddress);
 
         Spinner spin = findViewById(R.id.spinner);
-        spin.setOnItemSelectedListener(this);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                 selectedItem = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         ArrayAdapter<String> ad = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -272,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Event> call = apiService.createEvent(new Event("Event: " + System.currentTimeMillis(),name, date, location,  time, description, uploadedImageUrl, seats, longitude, latitude));
+        Call<Event> call = apiService.createEvent(new Event("Event: " + System.currentTimeMillis(),name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude));
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {

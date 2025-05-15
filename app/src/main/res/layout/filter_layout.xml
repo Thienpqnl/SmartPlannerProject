@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bộ lộc"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ngày:"
+            android:textStyle="bold"
+
+            android:textSize="20sp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/dateFromFilter"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_border"
+            android:text="tu ngay "
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:paddingTop="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đến:"
+
+            android:layout_marginLeft="50dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+
+            <TextView
+                android:id="@+id/dateToFilter"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edit_text_border"
+                android:text="den ngay "
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="50dp"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giờ:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/timeFrom"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edit_text_border"
+                android:text="tu gio "
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textStyle="bold"/>
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đến:"
+                android:layout_marginLeft="50dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/timeTo"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edit_text_border"
+                android:text="den gio "
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="50dp"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số ghế:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
+
+            <CheckBox
+                android:id="@+id/checkbox_1_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 den 10"
+                />
+
+            <CheckBox
+                android:id="@+id/checkbox_11_50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="11 den 50" />
+
+            <CheckBox
+                android:id="@+id/checkbox_51_100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="51 den 100" />
+
+            <CheckBox
+                android:id="@+id/checkbox_101_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tren 101" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loại Su kiện:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+       />
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="20sp">
+
+            <RadioButton android:id="@+id/radio1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện doanh nghiệp" />
+            <RadioButton android:id="@+id/radio2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện xã hội" />
+            <RadioButton android:id="@+id/radio3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện từ thiện" />
+            <RadioButton android:id="@+id/radio4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện thể thao va giải trí" />
+            <RadioButton android:id="@+id/radio5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện ăn uống đặc biệt" />
+        </RadioGroup>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Địa điểm:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/myLocate"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/edit_text_border"
+                android:text="  Dia diem cua toi  "
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/chooseLocate"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@drawable/edit_text_border"
+                android:text=" chon dia diem "
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:paddingTop="8dp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"/>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/locateView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_border"
+            android:text=" dia diem "
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:paddingTop="8dp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            />
+        <Button
+            android:id="@+id/getFilter"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="130dp"
+            android:text="Thuc hien"
+            android:textSize="20sp"
+            android:backgroundTint="@color/black"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"/>
+
+    </LinearLayout>
+</LinearLayout>
+</android.widget.ScrollView>

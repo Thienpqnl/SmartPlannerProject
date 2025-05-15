@@ -36,6 +36,9 @@ android {
             excludes += ("META-INF/native-image/reflect-config.json")
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -55,6 +58,9 @@ dependencies {
 
     implementation(libs.constraintlayout)
     implementation(libs.places)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -1,21 +1,34 @@
 package com.thien.smart_planner_project.model;
 
-public class User {
-    private String userId; // ID duy nhất của người dùng
-    private String email; // Email đăng nhập
-    private String name; // Tên hiển thị
-    private String phone; // Số điện thoại (tùy chọn)
-    private String profilePicture; // Đường dẫn ảnh đại diện
-    private String role; // Vai trò: "attendee" hoặc "organizer"
+import java.io.Serializable;
 
-    private long longitude;
-    private long latitude;
-    public User(String userId, String email, String phone, String name, String profilePicture, String role, long longitude, long latitude) {
+public class User {
+    private String userId;
+    private String email;
+    private String name;
+    private String location;
+    private String role;
+    private double longitude;
+    private double latitude;
+
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
+    public User(String userId, String email,  String name, String location ,String role, double longitude, double latitude) {
         this.userId = userId;
         this.email = email;
-        this.phone = phone;
         this.name = name;
-        this.profilePicture = profilePicture;
+        this.location = location;
+        this.role = role;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+    public User(String email,  String name, String location, String role, double longitude, double latitude) {
+
+        this.email = email;
+        this.name = name;
+        this.location = location;
         this.role = role;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -33,13 +46,7 @@ public class User {
         return name;
     }
 
-    public String getPhone() {
-        return phone;
-    }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
 
     public String getRole() {
         return role;
@@ -53,32 +60,37 @@ public class User {
         this.email = email;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setRole(String role) {
         this.role = role;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public void setLatitude(long latitude) {

@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
-const eventSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  name: { type: String, required: true },
-  phone: { type: String, default: '' },
-  profilePicture: { type: String, default: '' },
-  role: { type: String, enum: ['attendee', 'organizer'], default: 'attendee' }
-});
+const userSchema = new mongoose.Schema({
+    userId: { type: String, required: true, unique: true },
+    email: String,
+    name: String,
+    location: String,
+    role: { type: String, enum: ['attendee', 'organizer'] },
+    longitude: Number,
+    latitude: Number,
+}, { timestamps: true });
 
-module.exports = mongoose.model('User', eventSchema);
+module.exports = mongoose.model('User', userSchema);

@@ -1,5 +1,7 @@
 package com.thien.smart_planner_project.Adapter;
 
+import android.content.Intent;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.mongodb.lang.NonNull;
+import com.thien.smart_planner_project.EventDetailActivity;
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.model.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
-    private List<Event> eventList;
+    private static List<Event> eventList;
 
     public EventAdapter(List<Event> eventList) {
         this.eventList = eventList;
@@ -33,6 +37,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             txtTime = itemView.findViewById(R.id.txtTime);
             txtLocation = itemView.findViewById(R.id.txtLocation);
             imgEvent = itemView.findViewById(R.id.imgEvent);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAbsoluteAdapterPosition();
+                    Event selectedEvent = eventList.get(position);
+                    if (position != RecyclerView.NO_POSITION) {
+
+                        Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+                        intent.putExtra("name", selectedEvent.getName());
+                        intent.putExtra("time", selectedEvent.getTime());
+                        intent.putExtra("location", selectedEvent.getLocation());
+                        intent.putExtra("image",selectedEvent.getImageUrl());
+                        intent.putExtra("des", selectedEvent.getDescription());
+                        intent.putExtra("seat", selectedEvent.getSeats());
+                        intent.putExtra("date", selectedEvent.getDate());
+                        v.getContext().startActivity(intent);
+                    }
+                }
+            });
         }
     }
 
@@ -47,8 +71,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.txtName.setText(event.getName());
-        holder.txtTime.setText(event.getDate() + " " + event.getTime());
-        holder.txtLocation.setText(event.getLocation());
+        holder.txtTime.setText("Thoi gian: " + event.getDate() + " " + event.getTime());
+        holder.txtLocation.setText("Dia diem: " + event.getLocation());
         String imageUrl = event.getImageUrl();
         Log.d("EventAdapter", "Image URL: " + imageUrl); // In ra logcat
 

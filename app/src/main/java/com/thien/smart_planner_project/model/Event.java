@@ -18,24 +18,26 @@ public class Event implements Serializable {
     private String imageUrl;
     private double latitude;
     private double longitude;
-
-    public Event(String name, String date, String location ,String time, String description, String imageUrl, int seats, double longitude, double latitude) {
+    private  String type;
+    public Event(String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude) {
         this.name = name;
         this.date = date;
         this.location = location;
         this.time = time;
+        this.type = type;
         this.description = description;
         this.imageUrl = imageUrl;
         this.seats = seats;
         this.longitude = longitude;
         this.latitude = latitude;
     }
-    public Event(String id,String name, String date, String location ,String time, String description, String imageUrl, int seats, double longitude, double latitude) {
+    public Event(String id,String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude) {
         this.name = name;
         this.id = id;
         this.date = date;
         this.location = location;
         this.time = time;
+        this.type = type;
         this.description = description;
         this.imageUrl = imageUrl;
         this.seats = seats;
@@ -61,6 +63,14 @@ public class Event implements Serializable {
 
     public String getTime() {
         return time;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getLocation() {
