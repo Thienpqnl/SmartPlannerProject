@@ -34,6 +34,7 @@ import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.callback.UploadCallback;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.ImageUploadResponse;
+import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.network.UploadAPI;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private  double latitude;
     String selectedItem;
     String uploadedImageUrl;
+    User createUser;
+
     private  String[] categories = {" Sự kiện doanh nghiệp", " Sự kiện xã hội", "Sự kiện từ thiện",
             "Sự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
     @Override
@@ -163,6 +166,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra("imageURL", imageView.getTag() != null ? imageView.getTag().toString() : "");
             startActivityForResult(intent, 100);
         });
+
+        Intent intent = getIntent();
+        createUser = (User) getIntent().getSerializableExtra("user");
+
 
 
     }
@@ -272,18 +279,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-
         if (TextUtils.isEmpty(name) ||
                 TextUtils.isEmpty(date) ||
                 TextUtils.isEmpty(time) ||
                 TextUtils.isEmpty(location) ||
                 TextUtils.isEmpty(description) ||
-                uploadedImageUrl == null || uploadedImageUrl.isEmpty()) {
+                uploadedImageUrl == null ||
+                uploadedImageUrl.isEmpty() ||
+                selectedItem == null
+                || createUser == null) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Event> call = apiService.createEvent(new Event("Event: " + System.currentTimeMillis(),name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude));
+        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, createUser.getUserId()));
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {

@@ -71,11 +71,19 @@ public class LoginActivity extends AppCompatActivity {
                                         public void onResponse(Call<User> call, Response<User> response) {
                                             if (response.isSuccessful() && response.body() != null) {
                                                 String role = response.body().getRole();
-
+                                                User user = response.body();
                                                 if ("organizer".equalsIgnoreCase(role)) {
-                                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                    Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
+                                                    intent.putExtra("uid", user.getUserId());
+                                                    intent.putExtra("name", user.getName());
+                                                    intent.putExtra("local", user.getLocation());
+                                                    intent.putExtra("email", user.getEmail());
+                                                    intent.putExtra("role", user.getRole());
+                                                    startActivity(intent);
                                                 } else {
-                                                    startActivity(new Intent(LoginActivity.this, EventActivity.class));
+                                                    Intent intent2 = new Intent(LoginActivity.this, EventActivity.class);
+                                                    intent2.putExtra("user", user);
+                                                    startActivity(intent2);
                                                 }
                                                 finish();
                                             } else {
@@ -96,8 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Exception e = task.getException();
                                 Toast.makeText(LoginActivity.this, "Dang nhap that bai: " + (e != null ? e.getMessage() : ""), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                            }});
             }
         });
 

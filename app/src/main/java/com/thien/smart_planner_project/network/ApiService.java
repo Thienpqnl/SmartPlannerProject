@@ -7,8 +7,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -23,4 +25,12 @@ public interface ApiService {
 
     @GET("api/users/{uid}")
     Call<User> getUserById(@Path("uid") String userId);
+
+    @GET("events/users/{uid}")
+    Call<List<Event>> getOrganizerEventList(@Path("uid") String userId);
+
+    @PUT("events/{eventId}")
+    Call<Event> updateEvent(@Path("eventId") String eventId, @Body Event updatedEvent);
+
+
 }

@@ -2,7 +2,7 @@ package com.thien.smart_planner_project.model;
 
 import java.io.Serializable;
 
-public class User {
+public class User implements Serializable{
     private String userId;
     private String email;
     private String name;

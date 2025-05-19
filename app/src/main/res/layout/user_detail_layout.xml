@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        >
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/user_icon"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/organizerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nguoi to chuc"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewEmailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email:"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="..."/>
+
+            <!-- Dia chi -->
+            <TextView
+                android:id="@+id/textViewAddressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dia chi:"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="..."/>
+
+            <!-- Role -->
+            <TextView
+                android:id="@+id/textViewRoleLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vai tro:"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/textViewRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="..."/>
+        </LinearLayout>
+    <TextView
+        android:id="@+id/textViewEventListLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cac su kien da tao:"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"/>
+
+    <ListView
+        android:id="@+id/listViewEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:nestedScrollingEnabled="true" />
+</LinearLayout>
+</ScrollView>

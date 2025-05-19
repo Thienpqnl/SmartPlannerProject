@@ -1,5 +1,7 @@
 package com.thien.smart_planner_project.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ public class Event implements Serializable {
     private String time;
 
     private String id;
-
+    private  String creatorUid;
     private String location;
     private String description;
     private int seats;
@@ -19,7 +21,11 @@ public class Event implements Serializable {
     private double latitude;
     private double longitude;
     private  String type;
-    public Event(String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude) {
+
+    @SerializedName("_id") // dùng nếu bạn dùng Gson
+    private String _id;
+    //name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, createUser.getUserId())
+    public Event(String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude, String creatorUid) {
         this.name = name;
         this.date = date;
         this.location = location;
@@ -30,8 +36,9 @@ public class Event implements Serializable {
         this.seats = seats;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.creatorUid = creatorUid;
     }
-    public Event(String id,String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude) {
+    public Event(String id,String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude, String creatorUid) {
         this.name = name;
         this.id = id;
         this.date = date;
@@ -43,14 +50,31 @@ public class Event implements Serializable {
         this.seats = seats;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.creatorUid = creatorUid;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getCreatorUid() {
+        return creatorUid;
+    }
+
+    public void setCreatorUid(String creatorUid) {
+        this.creatorUid = creatorUid;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public void setId(String id) {

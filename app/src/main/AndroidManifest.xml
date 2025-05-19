@@ -39,7 +39,12 @@
             android:exported="true"/>
         <activity android:name=".EventActivity"
             android:exported="true"/>
-
+        <activity android:name=".UserDetailActivity"
+            android:exported="true"/>
+        <activity android:name=".OrganizerViewActivity"
+            android:exported="true"/>
+        <activity android:name=".EventUpdateActivity"
+            android:exported="true"/>
         <activity
             android:name=".Controller.GMap"
             android:exported="true" />

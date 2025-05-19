@@ -12,6 +12,7 @@ const eventSchema = new mongoose.Schema({
     seats: Number,
     longitude: Number,
     latitude: Number,
+    creatorUid: String,
     createdAt: {
         type: Number,
         default: Date.now,
