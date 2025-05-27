@@ -30,7 +30,8 @@ app.use((req, res, next) => {
 const uploadRoutes = require('./routes/upload');
 const eventRoutes = require('./routes/event');
 const userRoutes = require('./routes/user');
-
+const bookingRoutes = require('./routes/booking');
+app.use("/bookings", bookingRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/events", eventRoutes);
 app.use("/api/users", userRoutes);

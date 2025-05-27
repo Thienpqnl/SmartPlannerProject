@@ -1,5 +1,6 @@
 package com.thien.smart_planner_project.network;
 
+import com.thien.smart_planner_project.model.Booking;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
 
@@ -8,6 +9,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -31,6 +34,8 @@ public interface ApiService {
 
     @PUT("events/{eventId}")
     Call<Event> updateEvent(@Path("eventId") String eventId, @Body Event updatedEvent);
-
+    //booking
+    @POST("bookings/")
+    Call<Booking> createBooking(@Body Booking bookingRequest);
 
 }
