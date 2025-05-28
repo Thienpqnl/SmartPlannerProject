@@ -3,7 +3,6 @@ package com.thien.smart_planner_project;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -34,6 +33,7 @@ import com.thien.smart_planner_project.model.Booking;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.SharedPrefManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,13 +51,13 @@ import retrofit2.Response;
 
 public class EventDetailActivity extends AppCompatActivity {
 
-    private User user;
-
+    private User user, userLogin;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+        final SharedPrefManager instance = SharedPrefManager.getInstance(this);
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         Toolbar toolbar = findViewById(R.id.toolbarEventDetail);
@@ -85,16 +85,24 @@ public class EventDetailActivity extends AppCompatActivity {
         String date = intent.getStringExtra("date");
         String img = intent.getStringExtra("image");
         String uid = intent.getStringExtra("uid");
+        String eventId = intent.getStringExtra("eventId");
+        userLogin = instance.getUser();
+        if (userLogin == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
+        Toast.makeText(this,"uid"+ uid, Toast.LENGTH_SHORT).show();
 
         SessionManager sessionManager=new SessionManager(EventDetailActivity.this);
 //        Toast.makeText(this,"uid"+ sessionManager.getUserId(), Toast.LENGTH_SHORT).show();
+
         Intent intent1 = new Intent(EventDetailActivity.this, UserDetailActivity.class);
 
-        txtName.setText("Ten su kien: " + name);
-        txtTime.setText(time);
-        txtLocation.setText(location);
-        txtDate.setText(date);
-        txtSeat.setText(seat + "");
+        txtName.setText("Tên sự kiện: " + name);
+        txtTime.setText("Giờ: " +time);
+        txtLocation.setText("Vị trí: "+location);
+        txtDate.setText("Ngày: "+date);
+        txtSeat.setText("Số ghế: "+ seat );
         txtDes.setText(des);
 
         Glide.with(this)
@@ -103,7 +111,7 @@ public class EventDetailActivity extends AppCompatActivity {
 
         if (isPastDate(date)) {
             txtName.setTextColor(Color.GRAY);
-            txtName.setText(name + " (Đã diễn ra)");
+            txtName.setText("Tên sự kiện: " +name + " (Đã diễn ra)");
         }
         creator.setOnClickListener(v -> startActivity(intent1));
 
@@ -143,7 +151,6 @@ public class EventDetailActivity extends AppCompatActivity {
                     qrFragment.show(getSupportFragmentManager(), "QRFragment");
                 }
             });
-
         });
     }
 
@@ -213,4 +220,5 @@ public class EventDetailActivity extends AppCompatActivity {
             return false;
         }
     }
+
 }
