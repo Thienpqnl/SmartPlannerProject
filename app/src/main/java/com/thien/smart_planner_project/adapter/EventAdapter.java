@@ -1,7 +1,6 @@
-package com.thien.smart_planner_project.Adapter;
+package com.thien.smart_planner_project.adapter;
 
 import android.content.Intent;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.thien.smart_planner_project.EventDetailActivity;
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.model.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {

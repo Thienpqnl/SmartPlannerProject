@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".AttendeeListActivity"
+            android:exported="false" />
+        <activity
             android:name=".EventDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.Smart_Planner_project" />
@@ -35,27 +38,34 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <activity android:name=".RegisActivity"
-            android:exported="true"/>
-        <activity android:name=".EventActivity"
-            android:exported="true"/>
-        <activity android:name=".UserDetailActivity"
-            android:exported="true"/>
-        <activity android:name=".OrganizerViewActivity"
-            android:exported="true"/>
-        <activity android:name=".EventUpdateActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".RegisActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EventActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UserDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".OrganizerViewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EventUpdateActivity"
+            android:exported="true" />
         <activity
             android:name=".Controller.GMap"
             android:exported="true" />
-        <activity android:name=".UserSetProfileActivity"
-            android:exported="true"/>
-        <activity android:name=".RoleSelectorActivity"
-            android:exported="true"/>
-
+        <activity
+            android:name=".UserSetProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RoleSelectorActivity"
+            android:exported="true" />
         <activity
             android:name=".FilterActivity"
             android:exported="true" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyANWhS2czqaQi7nqQLLT9tYjw0X_FTk6aA" />

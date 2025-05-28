@@ -33,7 +33,7 @@ import com.thien.smart_planner_project.Controller.FirestoreHelper;
 import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.callback.UploadCallback;
 import com.thien.smart_planner_project.model.Event;
-import com.thien.smart_planner_project.model.ImageUploadResponse;
+import com.thien.smart_planner_project.network.ImageUploadResponse;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;

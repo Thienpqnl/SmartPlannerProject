@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thien.smart_planner_project.Adapter.EventAdapter;
+import com.thien.smart_planner_project.adapter.EventAdapter;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;

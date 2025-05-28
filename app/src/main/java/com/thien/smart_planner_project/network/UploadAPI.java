@@ -1,7 +1,7 @@
 package com.thien.smart_planner_project.network;
 
 import com.thien.smart_planner_project.model.Event;
-import com.thien.smart_planner_project.model.ImageUploadResponse;
+import com.thien.smart_planner_project.network.ImageUploadResponse;
 
 import java.util.List;
 

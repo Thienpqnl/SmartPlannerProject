@@ -1,4 +1,4 @@
-package com.thien.smart_planner_project.Adapter;
+package com.thien.smart_planner_project.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,6 @@ import com.thien.smart_planner_project.EventUpdateActivity;
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.model.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizerEventAdapter extends BaseAdapter {
