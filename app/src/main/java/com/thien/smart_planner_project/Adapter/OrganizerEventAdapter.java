@@ -1,4 +1,4 @@
-package com.thien.smart_planner_project.adapter;
+package com.thien.smart_planner_project.Adapter;
 
 import android.content.Context;
 import android.content.Intent;

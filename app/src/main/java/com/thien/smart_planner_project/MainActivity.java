@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
 import android.provider.MediaStore;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -150,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
         );
 
-        imageView.setOnClickListener(v -> openImagePicker());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            imageView.setOnClickListener(v -> openImagePicker());
+        }
 
         creButton.setOnClickListener(v -> saveEvent());
 
@@ -278,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Toast.makeText(MainActivity.this, "Số ghế không được dưới 2", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (TextUtils.isEmpty(name) ||
                 TextUtils.isEmpty(date) ||
                 TextUtils.isEmpty(time) ||
@@ -312,10 +315,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void openImagePicker() {
-        if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
             return; // Thoát nếu chưa được cấp quyền
         }
 

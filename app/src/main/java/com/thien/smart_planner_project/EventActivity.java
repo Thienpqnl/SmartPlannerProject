@@ -1,5 +1,6 @@
 package com.thien.smart_planner_project;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,8 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thien.smart_planner_project.adapter.EventAdapter;
+import com.thien.smart_planner_project.Adapter.EventAdapter;
 import com.thien.smart_planner_project.model.Event;
+import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
@@ -33,7 +35,7 @@ public class EventActivity extends AppCompatActivity {
     private Button filterBtn;
 
     private EditText searchEdt;
-
+    private User userLogin;
     private List<Event> eventList = new ArrayList<>();
 
     @Override
@@ -48,7 +50,7 @@ public class EventActivity extends AppCompatActivity {
         recyclerView.setAdapter(eventAdapter);
 
         loadEvents();
-
+        userLogin = (User) getIntent().getSerializableExtra("user");
 
         searchEdt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -62,13 +64,11 @@ public class EventActivity extends AppCompatActivity {
                   for (int i = 0; i < eventList.size(); i++) {
                       if (eventList.get(i).getName().toLowerCase().contains(searchEdt.getText().toString().toLowerCase())) {
                           newEvList.add(eventList.get(i));
-
                       }
 
                   }
                 eventAdapter = new EventAdapter(newEvList);
                 recyclerView.setAdapter(eventAdapter);
-
             }
 
             @Override
@@ -94,6 +94,7 @@ public class EventActivity extends AppCompatActivity {
         Call<List<Event>> call = apiService.getAllEvents();
 
         call.enqueue(new Callback<List<Event>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 if (response.isSuccessful() && response.body() != null) {

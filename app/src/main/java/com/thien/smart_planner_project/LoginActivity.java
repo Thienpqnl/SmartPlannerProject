@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.SharedPrefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(bundle);
         setContentView(R.layout.login_layout);
+        final SharedPrefManager instance = SharedPrefManager.getInstance(this);
         mAuth = FirebaseAuth.getInstance();
         loginPass = findViewById(R.id.loginPass);
         loginEmail = findViewById(R.id.loginEmail);
@@ -72,19 +74,17 @@ public class LoginActivity extends AppCompatActivity {
                                             if (response.isSuccessful() && response.body() != null) {
                                                 String role = response.body().getRole();
                                                 User user = response.body();
+                                                instance.saveUser(user);
                                                 if ("organizer".equalsIgnoreCase(role)) {
                                                     Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
-                                                    intent.putExtra("uid", user.getUserId());
-                                                    intent.putExtra("name", user.getName());
-                                                    intent.putExtra("local", user.getLocation());
-                                                    intent.putExtra("email", user.getEmail());
-                                                    intent.putExtra("role", user.getRole());
+                                                    intent.putExtra("user",user);
                                                     startActivity(intent);
                                                 } else {
                                                     Intent intent2 = new Intent(LoginActivity.this, EventActivity.class);
                                                     intent2.putExtra("user", user);
                                                     startActivity(intent2);
                                                 }
+
                                                 finish();
                                             } else {
                                                 Toast.makeText(LoginActivity.this, "Khong lay duoc thong tin nguoi dung tu server", Toast.LENGTH_SHORT).show();

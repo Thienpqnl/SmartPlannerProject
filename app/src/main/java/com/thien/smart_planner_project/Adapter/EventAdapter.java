@@ -1,4 +1,4 @@
-package com.thien.smart_planner_project.adapter;
+package com.thien.smart_planner_project.Adapter;
 
 import android.content.Intent;
 import android.util.Log;
@@ -52,6 +52,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                         intent.putExtra("seat", selectedEvent.getSeats());
                         intent.putExtra("date", selectedEvent.getDate());
                         intent.putExtra("uid", selectedEvent.getCreatorUid());
+                        intent.putExtra("eventId", selectedEvent.get_id());
+
                         v.getContext().startActivity(intent);
                     }
                 }

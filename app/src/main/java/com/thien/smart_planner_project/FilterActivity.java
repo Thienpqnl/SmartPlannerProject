@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Text;
-
 public class FilterActivity extends AppCompatActivity {
 
     CheckBox checkbox1_10, checkbox11_50, checkbox51_100, checkbox101_plus;

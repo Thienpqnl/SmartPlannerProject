@@ -38,4 +38,6 @@ public interface ApiService {
     @POST("bookings/")
     Call<Booking> createBooking(@Body Booking bookingRequest);
 
+    @GET("attendee/getListByEvent/{eventId}")
+    Call<List<User>> getListRegisEvent(@Path("eventId") String eventId);
 }

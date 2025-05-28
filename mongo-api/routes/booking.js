@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const { v4: uuidv4 } = require('uuid');
-
+var mongoose = require('mongoose');
 // Tạo Booking mới
 router.post('/', async (req, res) => {
     const { idEvent, userId, createdAt } = req.body;
