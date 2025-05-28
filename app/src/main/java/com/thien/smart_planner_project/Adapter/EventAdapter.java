@@ -46,6 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     if (position != RecyclerView.NO_POSITION) {
 
                         Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+                        intent.putExtra("id", selectedEvent.getId());
                         intent.putExtra("name", selectedEvent.getName());
                         intent.putExtra("time", selectedEvent.getTime());
                         intent.putExtra("location", selectedEvent.getLocation());

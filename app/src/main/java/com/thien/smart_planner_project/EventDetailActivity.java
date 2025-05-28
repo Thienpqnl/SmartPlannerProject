@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -42,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +59,12 @@ public class EventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        Toolbar toolbar = findViewById(R.id.toolbarEventDetail);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Chi tiết sự kiện");
+        toolbar.setNavigationOnClickListener(v -> finish());
+
         TextView txtName = findViewById(R.id.detailName);
         TextView txtTime = findViewById(R.id.detailTime);
         TextView txtLocation = findViewById(R.id.detailLocal);
@@ -68,7 +76,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Button detailJoin = findViewById(R.id.detailJoin);
 
         Intent intent = getIntent();
-
+        String id=intent.getStringExtra("id");
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
         String location = intent.getStringExtra("location");
@@ -78,7 +86,8 @@ public class EventDetailActivity extends AppCompatActivity {
         String img = intent.getStringExtra("image");
         String uid = intent.getStringExtra("uid");
 
-        Toast.makeText(this,"uid"+ uid, Toast.LENGTH_SHORT).show();
+        SessionManager sessionManager=new SessionManager(EventDetailActivity.this);
+//        Toast.makeText(this,"uid"+ sessionManager.getUserId(), Toast.LENGTH_SHORT).show();
         Intent intent1 = new Intent(EventDetailActivity.this, UserDetailActivity.class);
 
         txtName.setText("Ten su kien: " + name);
@@ -124,9 +133,8 @@ public class EventDetailActivity extends AppCompatActivity {
 
         // Đặt vé
         detailJoin.setOnClickListener(v -> {
-            long currentTime = System.currentTimeMillis();
             //giả sử lấy name sự kiện
-            Booking bookingRequest = new Booking(name, "ZLoue1wbHXeSTPb43x6bnvtBibo1",currentTime);
+            Booking bookingRequest = new Booking(id, uid,sessionManager.getUserId());
             apiService.createBooking(bookingRequest).enqueue(new ApiCallback<Booking>() {
                 @Override
                 public void onSuccess(Booking result) {

@@ -1,37 +1,32 @@
 package com.thien.smart_planner_project.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Organizer {
-    private String organizerId; // ID duy nhất của người tổ chức
     private String userId; // Liên kết với User
     private List<String> eventsCreated; // Danh sách ID sự kiện đã tạo
-
+    private List<String>listIdBooking;
     // Constructors, Getters, Setters
-
-
-    public Organizer(String organizerId, String userId, List<String> eventsCreated) {
-        this.organizerId = organizerId;
+    public Organizer( String userId, List<String> eventsCreated, List<String> listIdBooking) {
         this.userId = userId;
         this.eventsCreated = eventsCreated;
+        this.listIdBooking = listIdBooking;
     }
 
-    public String getOrganizerId() {
-        return organizerId;
+    public List<String> getListIdBooking() {
+        return listIdBooking;
     }
 
+    public void setListIdBooking(List<String> listIdBooking) {
+        this.listIdBooking = listIdBooking;
+    }
     public String getUserId() {
         return userId;
     }
-
     public List<String> getEventsCreated() {
         return eventsCreated;
     }
-
-    public void setOrganizerId(String organizerId) {
-        this.organizerId = organizerId;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
