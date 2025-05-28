@@ -60,6 +60,7 @@ public class EventUpdateActivity extends AppCompatActivity {
         cancelEvent = findViewById(R.id.cancelEvent);
         listRegisted = findViewById(R.id.listRegistedBtn);
 
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         detailLocal.setOnClickListener(v -> {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
             startActivityForResult(intent1, 100);
@@ -141,7 +142,7 @@ public class EventUpdateActivity extends AppCompatActivity {
                         local, detailTime.getText().toString(), evType.getText().toString(),
                         detailDes.getText().toString(), uploadedImageUrl, Integer.parseInt(detailSeat.getText().toString()),
                         longitude, latitude, uid);
-                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+
                 Call<Event> call = apiService.updateEvent( id, event1);
 
                 call.enqueue(new Callback<Event>() {
@@ -171,7 +172,45 @@ public class EventUpdateActivity extends AppCompatActivity {
                 });
             }
         });
+
+
+        cancelEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                assert event != null;
+                event.setStatus(true);
+                Call<Event> call = apiService.updateEvent(id, event);
+
+                call.enqueue(new Callback<Event>() {
+                    @Override
+                    public void onResponse(Call<Event> call, Response<Event> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(EventUpdateActivity.this, "Xoa thanh cong", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(EventUpdateActivity.this, OrganizerViewActivity.class);
+                            intent.putExtra("uid", response.body().getCreatorUid());
+                            intent.putExtra("role","organizer");
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            try {
+                                String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+                                Log.e("API_ERROR", "Code: " + response.code() + " - " + errorBody);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(EventUpdateActivity.this, "Lỗi từ server!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Event> call, Throwable t) {
+                        Toast.makeText(EventUpdateActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
     }
+
 
     private void setupEditableText(TextView textView, String hint) {
 

@@ -83,6 +83,12 @@ public class LoginActivity extends AppCompatActivity {
                                                     Intent intent2 = new Intent(LoginActivity.this, EventActivity.class);
                                                     intent2.putExtra("user", user);
                                                     startActivity(intent2);
+
+                                                    //dùng session
+                                                    SessionManager sessionManager=new SessionManager(LoginActivity.this);
+                                                    sessionManager.createLoginSession(user.getUserId(), user.getName());
+
+
                                                 }
 
                                                 finish();

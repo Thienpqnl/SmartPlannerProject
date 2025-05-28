@@ -39,6 +39,10 @@ public class OrganizerViewActivity extends AppCompatActivity {
             // Mo danh sach
         });
         User user = (User) getIntent().getSerializableExtra("user");
+        if(user == null || !"organizer".equals(user.getRole())) {
+            startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
         bottomAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.menu_profile) {
                 // Mo trang profile
@@ -46,12 +50,7 @@ public class OrganizerViewActivity extends AppCompatActivity {
             }
             return false;
         });
-
         fab.setOnClickListener(v -> {
-            if(user == null || !"organizer".equals(user.getRole())) {
-                startActivity(new Intent(this, LoginActivity.class));
-                return;
-            }
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("user",user);
             startActivity(intent);

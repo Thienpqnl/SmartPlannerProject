@@ -30,6 +30,16 @@ router.get('/users/:uid', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+router.get('/:idEvent', async (req, res) => {
+    const {idEvent} = req.params;
+    try {
+        const events = await Event.findOne({ id: idEvent });
+        res.status(200).json(events);
+    } catch (err) {
+        console.error("Loi khi lay su kien cua organizer:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 // PUT - cập nhật toàn bộ event
 router.put("/:id", async (req, res) => {
     const { id } = req.params;
