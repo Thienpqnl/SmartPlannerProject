@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     String selectedItem;
     String uploadedImageUrl;
     User createUser;
-
+    String uid;
     private  String[] categories = {" Sự kiện doanh nghiệp", " Sự kiện xã hội", "Sự kiện từ thiện",
             "Sự kiện thể thao & giải trí", "Sự kiện ăn uống đặc biệt"};
     @Override
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         imageView.setImageURI(selectedImageUri); // Hiển thị ảnh đã chọn
                         imageView.setTag(selectedImageUri.toString());
 
-                        // ✅ Gọi upload ngay sau khi chọn ảnh
+
                         try {
                             uploadImage(MainActivity.this,selectedImageUri, new UploadCallback() {
                                 @Override
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         Intent intent = getIntent();
-        createUser = (User) getIntent().getSerializableExtra("user");
+        uid = intent.getStringExtra("uid");
 
 
 
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:3000")
-                .client(client) // 👈 Thêm dòng này
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         UploadAPI service = retrofit.create(UploadAPI.class);
@@ -287,19 +287,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 uploadedImageUrl == null ||
                 uploadedImageUrl.isEmpty() ||
                 selectedItem == null
-                || createUser == null) {
+                || uid == null) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, createUser.getUserId()));
+        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, uid));
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
                 if (response.isSuccessful()) {
-
                     Toast.makeText(MainActivity.this, "Tạo sự kiện thành công!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(MainActivity.this, EventActivity.class));
+                    Intent intent = new Intent(MainActivity.this, OrganizerViewActivity.class);
+                    intent.putExtra("uid", uid);
+                    intent.putExtra("role","organizer");
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(MainActivity.this, "Lỗi từ server!", Toast.LENGTH_SHORT).show();
@@ -376,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     String time = String.format("%02d:%02d", hourOfDay, minute1);
                     edtTime.setText(time);
                 },
-                hour, minute, false // `true` để hiển thị 24h, `false` nếu muốn 12h AM/PM
+                hour, minute, false
         );
         timePickerDialog.show();
     }

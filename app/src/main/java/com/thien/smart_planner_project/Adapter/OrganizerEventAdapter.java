@@ -54,6 +54,8 @@ public class OrganizerEventAdapter extends BaseAdapter {
         TextView name = convertView.findViewById(R.id.name1);
         Event item = eventList.get(position);
 
+
+
         if (role.equals("organizer")) {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

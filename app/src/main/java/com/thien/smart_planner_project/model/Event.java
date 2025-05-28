@@ -11,7 +11,6 @@ public class Event implements Serializable {
     private String name;
     private String date;
     private String time;
-
     private String id;
     private  String creatorUid;
     private String location;
@@ -22,6 +21,7 @@ public class Event implements Serializable {
     private double longitude;
     private  String type;
 
+    private  boolean isPresent;
     @SerializedName("_id") // dùng nếu bạn dùng Gson
     private String _id;
     //name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, createUser.getUserId())
@@ -38,19 +38,13 @@ public class Event implements Serializable {
         this.latitude = latitude;
         this.creatorUid = creatorUid;
     }
-    public Event(String id,String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude, String creatorUid) {
-        this.name = name;
-        this.id = id;
-        this.date = date;
-        this.location = location;
-        this.time = time;
-        this.type = type;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.seats = seats;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.creatorUid = creatorUid;
+
+    public boolean isStatus() {
+        return isPresent;
+    }
+
+    public void setStatus(boolean status) {
+        this.isPresent = status;
     }
 
     public String getName() {

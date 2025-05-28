@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-    id: String,
     name: String,
     date: String,
     time: String,
@@ -13,6 +12,10 @@ const eventSchema = new mongoose.Schema({
     longitude: Number,
     latitude: Number,
     creatorUid: String,
+    isPresent: {
+        type: Boolean,
+        default: true,
+    },
     createdAt: {
         type: Number,
         default: Date.now,

@@ -34,9 +34,11 @@ public class OrganizerViewActivity extends AppCompatActivity {
         BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
         FloatingActionButton fab = findViewById(R.id.fab_add);
         ListView lsView = findViewById(R.id.listViewEvents);
-        bottomAppBar.setNavigationOnClickListener(v -> {
-            // Mo danh sach
-        });
+        Intent intent = getIntent();
+
+        String uid = intent.getStringExtra("uid");
+        String role = intent.getStringExtra("role");
+
 
         bottomAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.menu_profile) {
@@ -47,13 +49,13 @@ public class OrganizerViewActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(v -> {
-            // Them moi
+            Intent intent1 = new Intent(OrganizerViewActivity.this, MainActivity.class);
+            intent1.putExtra("uid", uid);
+            intent1.putExtra("role", role);
+            startActivity(intent1);
         });
 
-        Intent intent = getIntent();
 
-       String uid = intent.getStringExtra("uid");
-        String role = intent.getStringExtra("role");
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<Event>> call = apiService.getOrganizerEventList(uid);
 
@@ -61,7 +63,12 @@ public class OrganizerViewActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 assert response.body() != null;
-                List<Event> eventList = new ArrayList<>(response.body());
+                List<Event> eventList = new ArrayList<>();
+                for (Event ev : response.body()) {
+                    if (!ev.isStatus()) {
+                        eventList.add(ev);
+                    }
+                }
                 Log.e("log-loi", eventList.size() + "");
                 OrganizerEventAdapter adapter = new OrganizerEventAdapter(OrganizerViewActivity.this, eventList, role);
                 lsView.setAdapter(adapter);

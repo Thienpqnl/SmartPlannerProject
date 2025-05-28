@@ -98,7 +98,11 @@ public class EventActivity extends AppCompatActivity {
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     eventList.clear();
-                    eventList.addAll(response.body());
+                    for (Event ev : response.body()) {
+                        if (!ev.isStatus()) {
+                            eventList.add(ev);
+                        }
+                    }
                     eventAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(EventActivity.this, "Không lấy được sự kiện", Toast.LENGTH_SHORT).show();
