@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
         }
 
         // Tạo URL QR code
-        const qrData = `${idEvent}_${creatorId}_${userId}_${date}_${time}`;
+        const qrData = `${userId}_${idEvent}`;
         const urlQR = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(qrData)}`;
 
         // Tạo Booking mới
@@ -80,9 +80,37 @@ router.post('/', async (req, res) => {
             { new: true }
         );
 
+
         if (!updatedOrganizer) {
             return res.status(404).json({ error: "Không tìm thấy Organizer với idEvent này." });
         }
+
+        const Attendee = require('../models/Attendee');
+
+        // Kiểm tra xem đã có attendee nào chưa
+        let attendee = await Attendee.findOne({ userId });
+
+        if (!attendee) {
+            // Nếu chưa có, tạo mới
+            attendee = new Attendee({
+                userId,
+                eventsRegistered: [idEvent],
+                qrCodes: {
+                    qr: urlQR,
+                    checkedIn: false
+                }
+            });
+            await attendee.save();
+        } else {
+            // Nếu đã có, cập nhật thêm sự kiện mới và QR
+            attendee.eventsRegistered.addToSet?.(idEvent) || attendee.eventsRegistered.push(idEvent);
+            attendee.qrCodes = {
+                qr: urlQR,
+                checkedIn: false
+            };
+            await attendee.save();
+        }
+
 
         res.status(201).json(savedBooking);
     } catch (err) {
