@@ -39,7 +39,7 @@ app.use("/bookings", bookingRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/events", eventRoutes);
 app.use("/api/users", userRoutes);
-app.use("/attendee", attendeeRoutes)
+app.use("/attendees", attendeeRoutes)
 // Khởi động server
 app.listen(3000, '0.0.0.0', () => {
     console.log("🚀 Server running on port 3000");

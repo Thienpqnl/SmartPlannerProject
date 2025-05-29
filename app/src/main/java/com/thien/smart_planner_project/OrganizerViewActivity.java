@@ -18,6 +18,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.thien.smart_planner_project.Adapter.OrganizerEventAdapter;
+import com.thien.smart_planner_project.model.CheckinRequest;
+import com.thien.smart_planner_project.model.CheckinResponse;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
@@ -70,11 +72,11 @@ public class OrganizerViewActivity extends AppCompatActivity {
 
         fabCheckin.setOnClickListener(v -> {
             IntentIntegrator integrator = new IntentIntegrator(OrganizerViewActivity.this);
-            integrator.setPrompt("Quét mã QR vé tham dự");
-            integrator.setOrientationLocked(false);
-            integrator.setBeepEnabled(true);
             integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+            integrator.setPrompt("Scan QR code");
             integrator.setCameraId(0);
+            integrator.setBeepEnabled(true);
+            integrator.setBarcodeImageEnabled(true);
             integrator.initiateScan();
         });
 
@@ -103,29 +105,44 @@ public class OrganizerViewActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null && result.getContents() != null) {
-            String qrCode = result.getContents();
-            sendQRCodeToServer(qrCode);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Scan canceled", Toast.LENGTH_SHORT).show();
+            } else {
+                String qrData = result.getContents();
+                sendCheckInRequest(qrData);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
-    private void sendQRCodeToServer(String qrCode) {
-        String url = "http://<your-server-ip>:<port>/api/checkin";
-        RequestQueue queue = Volley.newRequestQueue(this);
 
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("qrCode", qrCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    private void sendCheckInRequest(String qrCode) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        CheckinRequest request = new CheckinRequest(qrCode);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-                response -> Toast.makeText(this, "Check-in thành công!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Check-in thất bại!", Toast.LENGTH_SHORT).show()
-        );
+        Call<CheckinResponse> call = apiService.checkIn(request);
+        call.enqueue(new Callback<CheckinResponse>() {
+            @Override
+            public void onResponse(Call<CheckinResponse> call, Response<CheckinResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(OrganizerViewActivity.this,
+                            "✅ " + response.body().getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(OrganizerViewActivity.this,
+                            "❌ Check-in thất bại",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        queue.add(request);
+            @Override
+            public void onFailure(Call<CheckinResponse> call, Throwable t) {
+                Toast.makeText(OrganizerViewActivity.this,
+                        "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
 }
