@@ -2,26 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const Attendee = require('../models/Attendee');
-// GET /attendee/getListByEvent?eventId=123
+
+// ✅ 1. Lấy danh sách người tham gia theo event
 router.get('/getListByEvent/:eventId', async (req, res) => {
   const { eventId } = req.params;
   try {
     const users = await Booking.aggregate([
-      {
-        $match: { idEvent: eventId }  // Lọc booking theo eventId
-      },
+      { $match: { idEvent: eventId } },
       {
         $lookup: {
-          from: "users",                   // collection user
-          localField: "userId",            // trường trong booking
-          foreignField: "userId",             // trường _id trong users
+          from: "users",
+          localField: "userId",
+          foreignField: "userId",
           as: "user"
         }
       },
-      { $unwind: "$user" },                // lấy user object ra khỏi mảng
-      {
-        $replaceRoot: { newRoot: "$user" } // chỉ trả về object user
-      },
+      { $unwind: "$user" },
+      { $replaceRoot: { newRoot: "$user" } },
     ]);
 
     res.json(users);
@@ -31,44 +28,44 @@ router.get('/getListByEvent/:eventId', async (req, res) => {
   }
 });
 
-// Check-in bằng QR code
+
+// ✅ 2. API check-in bằng QR code
+// POST /attendee/checking
 router.post('/checking', async (req, res) => {
   const { qrCode } = req.body;
-  if (!qrCode) return res.status(400).json({ message: 'QR code is required' });
+
+  if (!qrCode) {
+    return res.status(400).json({ message: 'QR code is required' });
+  }
 
   try {
+    // Tìm attendee theo mã QR
     const attendee = await Attendee.findOne({ 'qrCodes.qr': qrCode });
-    if (!attendee) return res.status(404).json({ message: 'Attendee not found' });
 
+    if (!attendee) {
+      return res.status(404).json({ message: 'Attendee not found with this QR code' });
+    }
+
+    // Nếu đã check-in rồi
+    if (attendee.qrCodes.checkedIn) {
+      return res.status(400).json({ message: 'Attendee has already checked in' });
+    }
+
+    // Cập nhật trạng thái check-in
     attendee.qrCodes.checkedIn = true;
     await attendee.save();
-    res.json({ message: 'Check-in successful', attendeeId: attendee.attendeeId });
+
+    res.status(200).json({
+      message: 'Check-in successful',
+      userId: attendee.userId,
+      eventsRegistered: attendee.eventsRegistered
+    });
   } catch (err) {
-    console.error('Check-in error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error during check-in:', err);
+    res.status(500).json({ message: 'Server error during check-in' });
   }
 });
 
-// POST /attendees - Thêm attendee mới
-router.post('/', async (req, res) => {
-    try {
-        const { attendeeId, userId, eventsRegistered, qr } = req.body;
-        console.log(req.body)
-        const newAttendee = new Attendee({
-            attendeeId,
-            userId,
-            eventsRegistered: eventsRegistered || [],
-            qrCodes: {
-                qr,
-                checkedIn: false
-            }
-        });
 
-        const saved = await newAttendee.save();
-        res.status(201).json(saved);
-    } catch (error) {
-        res.status(500).json({ error: 'Lỗi khi thêm attendee: ' + error.message });
-    }
-});
 
 module.exports = router;

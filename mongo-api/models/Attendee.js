@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
 const attendeeSchema = new mongoose.Schema({
-    attendeeId: String,
-    userId: String,
+    userId: {
+        type: String,
+        required: true,
+    },
     eventsRegistered: [String],
     qrCodes: {
         qr: String,
@@ -11,3 +13,5 @@ const attendeeSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Attendee', attendeeSchema);
+
+

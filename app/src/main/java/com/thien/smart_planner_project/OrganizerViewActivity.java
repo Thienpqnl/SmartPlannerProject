@@ -118,8 +118,9 @@ public class OrganizerViewActivity extends AppCompatActivity {
     }
 
     private void sendCheckInRequest(String qrCode) {
+        Event event = (Event) getIntent().getSerializableExtra("event");
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        CheckinRequest request = new CheckinRequest(qrCode);
+        CheckinRequest request = new CheckinRequest(qrCode, event.get_id());
 
         Call<CheckinResponse> call = apiService.checkIn(request);
         call.enqueue(new Callback<CheckinResponse>() {
