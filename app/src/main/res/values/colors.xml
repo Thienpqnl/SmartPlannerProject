@@ -11,5 +11,5 @@
 
     <color name="listBackground">#FAFAFA</color>
     <color name="item_attende">#F0F4C3</color>
-
+    <color name="orange">#FF5722</color>
 </resources>
