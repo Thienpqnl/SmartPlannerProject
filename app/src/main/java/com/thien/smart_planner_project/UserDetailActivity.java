@@ -3,13 +3,11 @@ package com.thien.smart_planner_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Adapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.thien.smart_planner_project.Adapter.EventAdapter;
 import com.thien.smart_planner_project.Adapter.OrganizerEventAdapter;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;

@@ -31,6 +31,7 @@ const uploadRoutes = require('./routes/upload');
 const eventRoutes = require('./routes/event');
 const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
+const attendeeRoutes = require('./routes/attendee');
 const organizerRoutes = require('./routes/organizer');  
 
 app.use("/organizers", organizerRoutes);
@@ -38,7 +39,7 @@ app.use("/bookings", bookingRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/events", eventRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/attendee", attendeeRoutes)
 // Khởi động server
 app.listen(3000, '0.0.0.0', () => {
     console.log("🚀 Server running on port 3000");

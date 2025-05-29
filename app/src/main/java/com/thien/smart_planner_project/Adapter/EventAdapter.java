@@ -1,7 +1,6 @@
 package com.thien.smart_planner_project.Adapter;
 
 import android.content.Intent;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.thien.smart_planner_project.EventDetailActivity;
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.model.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
@@ -55,6 +53,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                         intent.putExtra("seat", selectedEvent.getSeats());
                         intent.putExtra("date", selectedEvent.getDate());
                         intent.putExtra("uid", selectedEvent.getCreatorUid());
+                        intent.putExtra("eventId", selectedEvent.get_id());
+
                         v.getContext().startActivity(intent);
                     }
                 }
@@ -76,7 +76,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.txtTime.setText("Thoi gian: " + event.getDate() + " " + event.getTime());
         holder.txtLocation.setText("Dia diem: " + event.getLocation());
         String imageUrl = event.getImageUrl();
-        Log.d("EventAdapter", "Image URL: " + imageUrl); // In ra logcat
+
 
         Glide.with(holder.itemView.getContext())
 

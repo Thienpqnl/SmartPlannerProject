@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const Organizer = require('../models/Organizer');
-
+const { v4: uuidv4 } = require('uuid');
 // Thêm Organizer mới
 router.post('/', async (req, res) => {
-    const { userId, eventsCreated, idBookings } = req.body;
+    const { userId, idEvent, idBookings } = req.body;
 
     if (!userId) {
         return res.status(400).json({ error: "Thiếu thông tin cần thiết." });
     }
 
     try {
+        const id=uuidv4();
         const newOrganizer = new Organizer({
+            id:id,
             userId,
-            eventsCreated: eventsCreated || [],
+            idEvent: idEvent || [],
             listIdBooking: idBookings || [],
         });
 
@@ -26,11 +28,11 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:organizerId', async (req, res) => {
-    const { userId } = req.params;
+    const { id } = req.params;
     try {
-        const organizer = await Organizer.findOne({ userId });
+        const organizer = await Organizer.findOne({ id });
 
-        if (!userId) {
+        if (!id) {
             return res.status(404).json({ error: "Organizer không tồn tại." });
         }
 
@@ -43,7 +45,7 @@ router.get('/:organizerId', async (req, res) => {
 
 // Thêm ID Booking vào danh sách
 router.put('/:organizerId/bookings', async (req, res) => {
-    const { userId } = req.params;
+    const { id } = req.params;
     const { bookingId } = req.body;
 
     if (!bookingId) {
@@ -52,7 +54,7 @@ router.put('/:organizerId/bookings', async (req, res) => {
 
     try {
         const updatedOrganizer = await Organizer.findOneAndUpdate(
-            { userId },
+            { id },
             { $addToSet: { listIdBooking: bookingId } }, 
             { new: true }
         );

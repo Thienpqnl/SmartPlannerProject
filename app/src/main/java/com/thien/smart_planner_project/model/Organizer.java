@@ -4,18 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Organizer {
+    private String id;
     private String userId; // Liên kết với User
-    private List<String> eventsCreated; // Danh sách ID sự kiện đã tạo
+    private String idEvent; // Danh sách ID sự kiện đã tạo
     private List<String>listIdBooking;
     // Constructors, Getters, Setters
-    public Organizer( String userId, List<String> eventsCreated, List<String> listIdBooking) {
+    public Organizer(String id, String userId, String idEvent, List<String> listIdBooking) {
         this.userId = userId;
-        this.eventsCreated = eventsCreated;
+        this.id=id;
+        this.idEvent = idEvent;
         this.listIdBooking = listIdBooking;
     }
 
     public List<String> getListIdBooking() {
         return listIdBooking;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setListIdBooking(List<String> listIdBooking) {
@@ -24,14 +34,16 @@ public class Organizer {
     public String getUserId() {
         return userId;
     }
-    public List<String> getEventsCreated() {
-        return eventsCreated;
-    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setEventsCreated(List<String> eventsCreated) {
-        this.eventsCreated = eventsCreated;
+    public String getIdEvent() {
+        return idEvent;
+    }
+
+    public void setIdEvent(String idEvent) {
+        this.idEvent = idEvent;
     }
 }

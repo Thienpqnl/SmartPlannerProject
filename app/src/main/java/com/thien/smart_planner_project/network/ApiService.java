@@ -43,4 +43,6 @@ public interface ApiService {
     @DELETE("bookings/{idBooking}")
     Call<List<Booking>>deleteBooking(@Path("idBooking") String idBooking);
 
+    @GET("attendee/getListByEvent/{eventId}")
+    Call<List<User>> getListRegisEvent(@Path("eventId") String eventId);
 }

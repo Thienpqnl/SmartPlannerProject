@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.thien.smart_planner_project.Adapter.EventAdapter;
 import com.thien.smart_planner_project.model.Event;
+import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
@@ -38,6 +40,7 @@ public class EventActivity extends AppCompatActivity {
     private Button filterBtn;
 
     private EditText searchEdt;
+    private User userLogin;
     private Toolbar toolbar;
     private ImageView imageView;
 
@@ -73,7 +76,7 @@ public class EventActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         loadEvents();
-
+        userLogin = (User) getIntent().getSerializableExtra("user");
 
         searchEdt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -87,13 +90,11 @@ public class EventActivity extends AppCompatActivity {
                   for (int i = 0; i < eventList.size(); i++) {
                       if (eventList.get(i).getName().toLowerCase().contains(searchEdt.getText().toString().toLowerCase())) {
                           newEvList.add(eventList.get(i));
-
                       }
 
                   }
                 eventAdapter = new EventAdapter(newEvList);
                 recyclerView.setAdapter(eventAdapter);
-
             }
 
             @Override
@@ -119,12 +120,18 @@ public class EventActivity extends AppCompatActivity {
         Call<List<Event>> call = apiService.getAllEvents();
 
         call.enqueue(new Callback<List<Event>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     eventList.clear();
                     for (Event ev : response.body()) {
-                        if (!ev.isStatus()) {
+//                        Log.d("Events: ",response.body().size()+"");
+                        //Thiện_22130261 để isPresent là true nha
+//                        if (!ev.isStatus()) {
+//                            eventList.add(ev);
+//                        }
+                        if (ev.isStatus()) {
                             eventList.add(ev);
                         }
                     }

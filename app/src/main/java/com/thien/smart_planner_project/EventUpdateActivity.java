@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.callback.UploadCallback;
 import com.thien.smart_planner_project.model.Event;
-import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
@@ -34,9 +33,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventUpdateActivity extends AppCompatActivity {
-    TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes;
+    TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes,listRegisted;
     Button updateEvent, detailJoin, cancelEvent;
-    String name, date, local, time, uid, img, seat, des, type;
+    String name, date, local, time, uid, img, seat, des, type,eventId;
     ImageView detailImg;
     String uploadedImageUrl;
     String id;
@@ -59,6 +58,7 @@ public class EventUpdateActivity extends AppCompatActivity {
         updateEvent = findViewById(R.id.updateEvent);
         detailJoin = findViewById(R.id.detailJoin);
         cancelEvent = findViewById(R.id.cancelEvent);
+        listRegisted = findViewById(R.id.listRegistedBtn);
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         detailLocal.setOnClickListener(v -> {
@@ -129,6 +129,10 @@ public class EventUpdateActivity extends AppCompatActivity {
                     }
                 }
         );
+        listRegisted.setOnClickListener(v ->{
+            if(event != null)
+                goListRegisted(event.get_id());
+        });
 
         updateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,5 +254,11 @@ public class EventUpdateActivity extends AppCompatActivity {
                 detailLocal.setText(local);
             }
         }
+    }
+    private void goListRegisted(String eventId){
+        Intent intent = new Intent(this, AttendeeListActivity.class);
+        System.out.println(eventId);
+        intent.putExtra("eventId",eventId);
+        startActivity(intent);
     }
 }
