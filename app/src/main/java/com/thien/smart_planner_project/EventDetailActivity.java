@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -142,7 +143,7 @@ public class EventDetailActivity extends AppCompatActivity {
         // Đặt vé
         detailJoin.setOnClickListener(v -> {
             //giả sử lấy name sự kiện
-            Booking bookingRequest = new Booking(id, uid,sessionManager.getUserId());
+            Booking bookingRequest = new Booking(eventId, uid,sessionManager.getUserId());
             apiService.createBooking(bookingRequest).enqueue(new ApiCallback<Booking>() {
                 @Override
                 public void onSuccess(Booking result) {
@@ -150,6 +151,22 @@ public class EventDetailActivity extends AppCompatActivity {
                     QRFragment qrFragment = QRFragment.newInstance(qrUrl);
                     qrFragment.show(getSupportFragmentManager(), "QRFragment");
                 }
+                @Override
+                public void onError(String errorMessage) {
+                    // Kiểm tra thông báo lỗi
+                    if (errorMessage.contains("Số lượng booking đã đạt giới hạn seats")) {
+                        // Hiển thị AlertDialog nếu vượt quá seats
+                        new AlertDialog.Builder(EventDetailActivity.this)
+                                .setTitle("Thông báo")
+                                .setMessage("Số lượng booking đã đạt giới hạn. Vui lòng thử lại sau.")
+                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                .show();
+                    } else {
+                        // Các lỗi khác
+                        Toast.makeText(EventDetailActivity.this, "Lỗi: " + errorMessage, Toast.LENGTH_SHORT).show(); // Dùng EventDetailActivity.this thay vì context
+                    }
+                }
+
             });
         });
     }

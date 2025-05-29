@@ -76,7 +76,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.txtTime.setText("Thoi gian: " + event.getDate() + " " + event.getTime());
         holder.txtLocation.setText("Dia diem: " + event.getLocation());
         String imageUrl = event.getImageUrl();
-        Log.d("EventAdapter", "Image URL: " + imageUrl); // In ra logcat
+
 
         Glide.with(holder.itemView.getContext())
 

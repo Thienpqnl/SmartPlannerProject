@@ -31,15 +31,19 @@ router.get('/users/:uid', async (req, res) => {
     }
 });
 router.get('/:idEvent', async (req, res) => {
-    const {idEvent} = req.params;
+    const { idEvent } = req.params;
     try {
-        const events = await Event.findOne({ id: idEvent });
-        res.status(200).json(events);
+        const event = await Event.findById(idEvent); 
+        if (!event) {
+            return res.status(404).json({ error: "Không tìm thấy sự kiện." });
+        }
+        res.status(200).json(event);
     } catch (err) {
-        console.error("Loi khi lay su kien cua organizer:", err);
+        console.error("Lỗi khi lấy sự kiện:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 // PUT - cập nhật toàn bộ event
 router.put("/:id", async (req, res) => {
     const { id } = req.params;
