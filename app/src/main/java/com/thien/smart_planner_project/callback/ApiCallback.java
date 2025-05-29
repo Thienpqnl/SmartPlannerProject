@@ -36,7 +36,6 @@ public abstract class ApiCallback<T> implements Callback<T> {
     private String parseErrorDetails(ResponseBody errorBody) {
         try {
             if (errorBody != null) {
-                // Trả về nội dung lỗi chi tiết từ server
                 return errorBody.string();
             }
         } catch (IOException e) {

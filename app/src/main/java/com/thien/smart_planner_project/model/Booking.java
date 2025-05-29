@@ -1,6 +1,5 @@
 package com.thien.smart_planner_project.model;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,19 +10,19 @@ public class Booking {
     private String creatorId;
     private String userId;
     private String urlQR;
-    private String date;
+    private String date; // ISO-8601 format (e.g., "2025-05-29")
+    private String time; // ISO-8601 format (e.g., "12:34:56")
 
-    private String time;
-
-
-    public Booking(String idEvent,String creatorId, String userId) {
+    // Constructor
+    public Booking(String idEvent, String creatorId, String userId) {
         this.idEvent = idEvent;
-        this.creatorId=creatorId;
+        this.creatorId = creatorId;
         this.userId = userId;
         this.date = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
         this.time = LocalTime.now().format(DateTimeFormatter.ISO_TIME);
     }
 
+    // toString override
     @Override
     public String toString() {
         return "Booking{" +
@@ -37,22 +36,7 @@ public class Booking {
                 '}';
     }
 
-    public String getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(String creatorId) {
-        this.creatorId = creatorId;
-    }
-
-    public String getUrlQR() {
-        return urlQR;
-    }
-
-    public void setUrlQR(String urlQR) {
-        this.urlQR = urlQR;
-    }
-
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -69,12 +53,12 @@ public class Booking {
         this.idEvent = idEvent;
     }
 
-    public String getIdUser() {
-        return userId;
+    public String getCreatorId() {
+        return creatorId;
     }
 
-    public void setIdUser(String idUser) {
-        this.userId = idUser;
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getUserId() {
@@ -83,6 +67,14 @@ public class Booking {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUrlQR() {
+        return urlQR;
+    }
+
+    public void setUrlQR(String urlQR) {
+        this.urlQR = urlQR;
     }
 
     public String getDate() {

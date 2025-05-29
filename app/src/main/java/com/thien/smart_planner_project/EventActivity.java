@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -125,7 +126,12 @@ public class EventActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     eventList.clear();
                     for (Event ev : response.body()) {
-                        if (!ev.isStatus()) {
+//                        Log.d("Events: ",response.body().size()+"");
+                        //Thiện_22130261 để isPresent là true nha
+//                        if (!ev.isStatus()) {
+//                            eventList.add(ev);
+//                        }
+                        if (ev.isStatus()) {
                             eventList.add(ev);
                         }
                     }

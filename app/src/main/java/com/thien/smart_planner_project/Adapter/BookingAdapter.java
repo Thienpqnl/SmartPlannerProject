@@ -123,6 +123,7 @@ public class BookingAdapter extends BaseAdapter {
                     intent.putExtra("seat", selectedEvent.getSeats());
                     intent.putExtra("date", selectedEvent.getDate());
                     intent.putExtra("uid", selectedEvent.getCreatorUid());
+                    intent.putExtra("eventId", selectedEvent.get_id());
                     v.getContext().startActivity(intent);
 
                 }
