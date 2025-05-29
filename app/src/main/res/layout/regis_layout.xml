@@ -1,146 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/gradient_linear"
+
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp">
+        android:padding="24dp">
 
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign up"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp" />
+
+        <!-- Subtitle -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? "
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/signIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="#FF5722"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Form Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:cardElevation="6dp"
+            android:cardCornerRadius="16dp"
+            android:padding="20dp"
+            android:backgroundTint="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Name -->
+                <EditText
+                    android:id="@+id/regisName"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:drawableStart="@drawable/ic_person"
+                    android:hint="Enter your name"
+                    android:drawablePadding="12dp"
+                    android:padding="12dp"
+                    android:background="@drawable/edit_text_border"
+                    android:textSize="16sp" />
+
+                <!-- Email -->
+                <EditText
+                    android:id="@+id/regisEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:drawableStart="@drawable/ic_email"
+                    android:drawablePadding="12dp"
+                    android:padding="12dp"
+                    android:hint="Enter your email"
+
+                    android:layout_marginTop="16dp"
+                    android:inputType="textEmailAddress"
+
+                    android:background="@drawable/edit_text_border"
+                    android:textSize="16sp" />
+
+                <!-- Password -->
+                <EditText
+                    android:id="@+id/regisPasseword"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:hint="Enter password"
+                    android:padding="12dp"
+                    android:layout_marginTop="16dp"
+                    android:inputType="textPassword"
+                    android:drawablePadding="12dp"
+                    android:background="@drawable/edit_text_border"
+                    android:textSize="16sp" />
+
+                <!-- Confirm Password -->
+                <EditText
+                    android:id="@+id/regisRePass"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:hint="Confirm password"
+                    android:padding="12dp"
+                    android:layout_marginTop="16dp"
+                    android:inputType="textPassword"
+                    android:drawablePadding="12dp"
+                    android:background="@drawable/edit_text_border"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Button -->
+        <Button
+            android:id="@+id/regisBtn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:text="Dang ky"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF5722"
+            android:fontFamily="sans-serif-medium" />
+
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Toi da xac thuc"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/darker_gray"
+            android:visibility="gone" />
+        <!-- Divider -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign up"
-            android:textSize="40dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:text="Hoac dang nhap bang"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:layout_marginTop="24dp"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium" />
 
+        <!-- Social Icons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <TextView
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:text="Already have an account?"
-            android:textSize="20dp"
-            android:textColor="@color/black"/>
-           <TextView
-               android:id="@+id/signIn"
-               android:layout_width="wrap_content"
-               android:layout_height="match_parent"
-               android:text="Sign In"
-               android:textColor="#0F40D3"
-               android:textSize="20dp"
-               android:textStyle="italic"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
 
+            <!-- Google Icon -->
+            <ImageView
+                android:id="@+id/btnGoogle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_google"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/circle_white"
+                android:padding="10dp"
+                android:contentDescription="Google login" />
+
+            <!-- Facebook Icon -->
+            <ImageView
+                android:id="@+id/btnFacebook"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_facebook"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/circle_white"
+                android:padding="10dp"
+                android:contentDescription="Facebook login" />
+
+            <ImageView
+                android:id="@+id/btnX"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:src="@drawable/ic_X"
+                android:background="@drawable/circle_white"
+                android:padding="10dp"
+                android:contentDescription="Facebook login" />
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="Name: "
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
-
-    <EditText
-        android:id="@+id/regisName"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:textSize="20sp"
-        android:hint="Name"
-        android:paddingLeft="10dp"
-        android:background="@drawable/edit_text_border"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Email: "
-            android:textSize="20dp"
-            android:textStyle="bold"
-          />
-
-        <EditText
-            android:id="@+id/regisEmail"
-            android:layout_width="350dp"
-            android:layout_height="60dp"
-            android:textSize="20sp"
-            android:hint="email"
-            android:inputType="textEmailAddress"
-            android:paddingLeft="10dp"
-            android:background="@drawable/edit_text_border"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="Password: "
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_marginTop="5dp"
-          />
-        <EditText
-            android:id="@+id/regisPasseword"
-            android:layout_width="350dp"
-            android:layout_height="60dp"
-            android:textSize="20dp"
-            android:hint="password"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:background="@drawable/edit_text_border"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Comfirm Password: "
-
-            android:textSize="20dp"
-            android:textStyle="bold"
-       />
-        <EditText
-            android:id="@+id/regisRePass"
-            android:layout_width="350dp"
-            android:layout_height="60dp"
-            android:textSize="20dp"
-            android:hint="Confirm Pasdword"
-            android:paddingLeft="10dp"
-            android:inputType="textPassword"
-            android:background="@drawable/edit_text_border"
-            />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/regisBtn"
-        android:layout_marginLeft="30dp"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:text="Nhap thong tin"
-        android:backgroundTint="@color/black"
-        android:textSize="20dp"/>
-
-    <Button
-        android:id="@+id/btnDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toi da xac thuc"
-        android:layout_marginLeft="30dp"
-        android:visibility="invisible"
-        android:backgroundTint="@color/black"/>
-</LinearLayout>
+</ScrollView>

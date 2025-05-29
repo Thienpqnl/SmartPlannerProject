@@ -1,38 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/edit_text_border"
-    android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/imgEvent"
-        android:background="@drawable/edit_text_border"
+    android:layout_height="match_parent"
+    android:layout_marginTop="50dp"
+  >
+    <!-- Form Card -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-
-        android:scaleType="centerCrop"
-        />
-
+        android:layout_height="wrap_content"
+        app:cardElevation="30dp"
+        app:cardCornerRadius="16dp"
+        android:padding="20dp"
+        android:backgroundTint="@android:color/white">
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:paddingStart="8dp"
-        >
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp">
+        <ImageView
+            android:id="@+id/imgEvent"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:contentDescription="TODO"
+            android:scaleType="centerCrop"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/gradient_overlay"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/likeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_bookmark"
+                    app:fabSize="mini"
+                    app:backgroundTint="#FF5722"
+                    app:tint="#FFFFFF"
+                    />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/joinBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favorite_border"
+                    app:fabSize="mini"
+                    app:backgroundTint="#E69E77"
+                    app:tint="#000000"/>
+            </LinearLayout>
+        </RelativeLayout>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:padding="10dp"
             >
-        <TextView android:id="@+id/txtName" android:textStyle="bold"
+        <TextView
+            android:id="@+id/txtName"
+            android:textStyle="bold"
             android:text="Tên sự kiện"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"/>
+            android:textColor="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25sp"/>
 
         <TextView android:id="@+id/txtTime"
             android:text="Thời gian"
@@ -58,25 +105,9 @@
             android:layout_marginTop="20dp"
            >
 
-            <Button
-            android:id="@+id/likeBtn"
-            android:textStyle="bold"
-            android:text="Yeu thich"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-                android:backgroundTint="#F8DAAEE6"/>
 
-            <Button android:id="@+id/joinBtn"
-                android:text="Thamgia"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginLeft="90dp"
-                android:backgroundTint="#567EBA"
-                />
         </LinearLayout>
 
     </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>
