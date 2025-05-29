@@ -4,16 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.thien.smart_planner_project.Adapter.OrganizerEventAdapter;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +45,7 @@ public class OrganizerViewActivity extends AppCompatActivity {
 
         BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
         FloatingActionButton fab = findViewById(R.id.fab_add);
+        FloatingActionButton fabCheckin = findViewById(R.id.fab_checkin);
         ListView lsView = findViewById(R.id.listViewEvents);
         bottomAppBar.setNavigationOnClickListener(v -> {
             // Mo danh sach
@@ -54,6 +66,16 @@ public class OrganizerViewActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("user",user);
             startActivity(intent);
+        });
+
+        fabCheckin.setOnClickListener(v -> {
+            IntentIntegrator integrator = new IntentIntegrator(OrganizerViewActivity.this);
+            integrator.setPrompt("Quét mã QR vé tham dự");
+            integrator.setOrientationLocked(false);
+            integrator.setBeepEnabled(true);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+            integrator.setCameraId(0);
+            integrator.initiateScan();
         });
 
         Intent intent = getIntent();
@@ -77,4 +99,33 @@ public class OrganizerViewActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null && result.getContents() != null) {
+            String qrCode = result.getContents();
+            sendQRCodeToServer(qrCode);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    private void sendQRCodeToServer(String qrCode) {
+        String url = "http://<your-server-ip>:<port>/api/checkin";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("qrCode", qrCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                response -> Toast.makeText(this, "Check-in thành công!", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(this, "Check-in thất bại!", Toast.LENGTH_SHORT).show()
+        );
+
+        queue.add(request);
+    }
+
 }
