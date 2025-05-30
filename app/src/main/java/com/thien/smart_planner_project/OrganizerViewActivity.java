@@ -1,13 +1,18 @@
 package com.thien.smart_planner_project;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.Manifest;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +22,10 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.thien.smart_planner_project.Adapter.OrganizerEventAdapter;
+import com.thien.smart_planner_project.callback.ApiCallback;
 import com.thien.smart_planner_project.model.CheckinRequest;
 import com.thien.smart_planner_project.model.CheckinResponse;
 import com.thien.smart_planner_project.model.Event;
@@ -36,13 +44,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrganizerViewActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_QR_SCAN = 101;
 
     @Override
     protected void onCreate(Bundle bundle) {
-
-
         super.onCreate(bundle);
-
         setContentView(R.layout.organizer_layout);
 
         BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
@@ -53,7 +59,7 @@ public class OrganizerViewActivity extends AppCompatActivity {
             // Mo danh sach
         });
         User user = (User) getIntent().getSerializableExtra("user");
-        if(user == null || !"organizer".equals(user.getRole())) {
+        if (user == null || !"organizer".equals(user.getRole())) {
             startActivity(new Intent(this, LoginActivity.class));
             return;
         }
@@ -66,18 +72,16 @@ public class OrganizerViewActivity extends AppCompatActivity {
         });
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("user",user);
+            intent.putExtra("user", user);
             startActivity(intent);
         });
 
         fabCheckin.setOnClickListener(v -> {
-            IntentIntegrator integrator = new IntentIntegrator(OrganizerViewActivity.this);
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-            integrator.setPrompt("Scan QR code");
-            integrator.setCameraId(0);
-            integrator.setBeepEnabled(true);
-            integrator.setBarcodeImageEnabled(true);
-            integrator.initiateScan();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+            } else {
+                launchQRScanner();
+            }
         });
 
         Intent intent = getIntent();
@@ -97,50 +101,45 @@ public class OrganizerViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Event>> call, Throwable t) {
-                Log.e ("err","loi khi goi api: "  + t);
+                Log.e("err", "loi khi goi api: " + t);
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                Toast.makeText(this, "Scan canceled", Toast.LENGTH_SHORT).show();
-            } else {
-                String qrData = result.getContents();
-                sendCheckInRequest(qrData);
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void sendCheckInRequest(String qrCode) {
-        Event event = (Event) getIntent().getSerializableExtra("event");
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        CheckinRequest request = new CheckinRequest(qrCode, event.get_id());
-
-        Call<CheckinResponse> call = apiService.checkIn(request);
-        call.enqueue(new Callback<CheckinResponse>() {
-            @Override
-            public void onResponse(Call<CheckinResponse> call, Response<CheckinResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(OrganizerViewActivity.this,
-                            "✅ " + response.body().getMessage(),
-                            Toast.LENGTH_SHORT).show();
+    private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+                if (result.getContents() != null) {
+                    String qrContent = result.getContents();
+                    if (qrContent.contains("_")) {
+                        String[] parts = qrContent.split("_");
+                        String userId = parts[0];
+                        String eventId = parts[1];
+                        checkInAttendee(userId, eventId);
+                    } else {
+                        Toast.makeText(this, "QR không hợp lệ", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(OrganizerViewActivity.this,
-                            "❌ Check-in thất bại",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Quét bị hủy", Toast.LENGTH_SHORT).show();
                 }
             }
-
+    );
+    private void launchQRScanner() {
+        ScanOptions options = new ScanOptions();
+        options.setPrompt("Đưa mã QR vào khung hình");
+        options.setBeepEnabled(true);
+        options.setOrientationLocked(false);
+        qrScanner.launch(options);
+    }
+    private void checkInAttendee(String userId, String eventId) {
+        CheckinRequest request = new CheckinRequest(userId, eventId);
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.checkIn(request).enqueue(new ApiCallback<CheckinResponse>() {
             @Override
-            public void onFailure(Call<CheckinResponse> call, Throwable t) {
-                Toast.makeText(OrganizerViewActivity.this,
-                        "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+            public void onSuccess(CheckinResponse result) {
+                String message = result.getMessage();
+                boolean success = result.isSuccess();
+                Toast.makeText(OrganizerViewActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }

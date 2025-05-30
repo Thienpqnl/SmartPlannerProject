@@ -29,43 +29,35 @@ router.get('/getListByEvent/:eventId', async (req, res) => {
 });
 
 
-// ✅ 2. API check-in bằng QR code
 // POST /attendee/checking
 router.post('/checking', async (req, res) => {
-  const { qrCode } = req.body;
+    const { userId, eventId } = req.body;
 
-  if (!qrCode) {
-    return res.status(400).json({ message: 'QR code is required' });
-  }
-
-  try {
-    // Tìm attendee theo mã QR
-    const attendee = await Attendee.findOne({ 'qrCodes.qr': qrCode });
-
-    if (!attendee) {
-      return res.status(404).json({ message: 'Attendee not found with this QR code' });
+    if (!userId || !eventId) {
+        return res.status(400).json({ success: false, message: "Thiếu thông tin userId hoặc eventId" });
     }
 
-    // Nếu đã check-in rồi
-    if (attendee.qrCodes.checkedIn) {
-      return res.status(400).json({ message: 'Attendee has already checked in' });
+    try {
+        const attendee = await Attendee.findOne({ userId });
+
+        if (!attendee) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy người tham dự." });
+        }
+
+        // Kiểm tra sự kiện có được đăng ký không
+        if (!attendee.eventsRegistered.includes(eventId)) {
+            return res.status(400).json({ success: false, message: "Người dùng chưa đăng ký sự kiện này." });
+        }
+
+        // Cập nhật trạng thái check-in
+        attendee.qrCodes.checkedIn = true;
+        await attendee.save();
+
+        return res.status(200).json({ success: true, message: "Check-in thành công." });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Lỗi server." });
     }
-
-    // Cập nhật trạng thái check-in
-    attendee.qrCodes.checkedIn = true;
-    await attendee.save();
-
-    res.status(200).json({
-      message: 'Check-in successful',
-      userId: attendee.userId,
-      eventsRegistered: attendee.eventsRegistered
-    });
-  } catch (err) {
-    console.error('Error during check-in:', err);
-    res.status(500).json({ message: 'Server error during check-in' });
-  }
 });
-
-
 
 module.exports = router;
