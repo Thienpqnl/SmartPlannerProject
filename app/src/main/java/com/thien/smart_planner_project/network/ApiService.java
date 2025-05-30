@@ -48,6 +48,6 @@ public interface ApiService {
     @GET("attendee/getListByEvent/{eventId}")
     Call<List<User>> getListRegisEvent(@Path("eventId") String eventId);
 
-    @POST("/attendee/checking")
+    @POST("/attendees/checking")
     Call<CheckinResponse> checkIn(@Body CheckinRequest request);
 }
