@@ -97,7 +97,7 @@
         android:id="@+id/buttonEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chinh sua"
+        android:text="Xac nhan"
         android:layout_marginLeft="120dp"
         android:enabled="true" />
 </LinearLayout>

@@ -41,7 +41,7 @@ public class RoleSelectorActivity extends AppCompatActivity {
                 role = "organizer";
             }
 
-            // TODO: Goi API de cap nhat role va chuyen sang MainActivity
+
             Toast.makeText(this, "Role da chon: " + role, Toast.LENGTH_SHORT).show();
 
             Intent intent1 = new Intent(RoleSelectorActivity.this, UserSetProfileActivity.class);
