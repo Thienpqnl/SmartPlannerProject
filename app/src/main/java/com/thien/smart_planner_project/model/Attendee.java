@@ -11,7 +11,6 @@ public class Attendee {
 
     // Constructors, Getters, Setters
 
-
     public Attendee(String attendeeId, String userId, List<String> eventsRegistered, Map<String, String> qrCodes) {
         this.attendeeId = attendeeId;
         this.userId = userId;

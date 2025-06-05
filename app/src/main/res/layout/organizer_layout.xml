@@ -33,6 +33,19 @@
         app:hideOnScroll="false"
         app:navigationIcon="@drawable/ic_menu"
         app:menu="@menu/bottom_menu" />
+
+    <!-- Nút Check-in -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_checkin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Quét mã QR"
+        android:src="@drawable/scan"
+        app:backgroundTint="@color/white" />
+
+
     <!-- Nút dấu cộng (ADD) lớn ở giữa -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"

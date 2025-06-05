@@ -1,6 +1,8 @@
 package com.thien.smart_planner_project.network;
 
 import com.thien.smart_planner_project.model.Booking;
+import com.thien.smart_planner_project.model.CheckinRequest;
+import com.thien.smart_planner_project.model.CheckinResponse;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
 
@@ -45,4 +47,7 @@ public interface ApiService {
 
     @GET("attendee/getListByEvent/{eventId}")
     Call<List<User>> getListRegisEvent(@Path("eventId") String eventId);
+
+    @POST("/attendees/checking")
+    Call<CheckinResponse> checkIn(@Body CheckinRequest request);
 }
