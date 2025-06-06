@@ -37,18 +37,26 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
-            <SearchView
+            <android.widget.SearchView
+                android:id="@+id/search_attendee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:queryHint="Tìm theo tên"
                 android:iconifiedByDefault="false"/>
+            <TextView
+                android:id="@+id/amount_attendee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="số lượng: "
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"/>
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            />
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

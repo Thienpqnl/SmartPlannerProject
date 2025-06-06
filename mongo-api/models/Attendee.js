@@ -6,7 +6,8 @@ const attendeeSchema = new mongoose.Schema({
     qrCodes: [{
         qr: { type: String, required: true },
         checkedIn: { type: Boolean, default: false },
-        eventId: { type: String, required: true }
+        eventId: { type: String, required: true },
+        checkInTime: {type: Date, default: null}
     }]
 });
 

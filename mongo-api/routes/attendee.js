@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const Attendee = require('../models/Attendee');
+const User = require('../models/User');
+const nodemailer = require('nodemailer');
 
-// 1. Lấy danh sách người đặt vé tham gia theo event
+// GET /attendee/getListByEvent/:eventId
 router.get('/getListByEvent/:eventId', async (req, res) => {
   const { eventId } = req.params;
   try {
@@ -18,7 +20,12 @@ router.get('/getListByEvent/:eventId', async (req, res) => {
         }
       },
       { $unwind: "$user" },
-      { $replaceRoot: { newRoot: "$user" } },
+      {
+        $project: {
+          user: "$user",
+          bookingDate: "$date"
+        }
+      }
     ]);
 
     res.json(users);
@@ -55,7 +62,11 @@ router.post('/checking', async (req, res) => {
         if (!qrCode) {
            return res.status(400).json({ success: false, message: "Người dùng chưa đăng ký sự kiện này." });
         }
+        if(qrCode.checkedIn) {
+           return res.status(400).json({ success: false, message: "Người dùng đã check-in trước đó." });
+        }
          qrCode.checkedIn = true;
+         qrCode.checkInTime = new Date();
          await attendee.save();
         return res.status(200).json({ success: true, message: "Check-in thành công." });
     } catch (err) {
@@ -65,21 +76,40 @@ router.post('/checking', async (req, res) => {
 });
 router.get('/getListAttendeeHasCheckInEvent/:eventId', async (req, res) => {
   const { eventId } = req.params;
-  if(!eventId){
+  if (!eventId) {
     return res.status(400).json({ success: false, message: "Thiếu thông tin eventId" });
   }
   try {
-    // Tìm các attendee có qrCodes chứa eventId và checkedIn = true
+    // Lấy attendee có check-in event này
     const attendees = await Attendee.find({
       qrCodes: { $elemMatch: { eventId, checkedIn: true } }
     });
-    if(!attendees){
-       return res.status(400).json({ success: false, message: "Sự kiện chưa có ai tham gia" });
+
+    if (!attendees || attendees.length === 0) {
+      return res.status(400).json({ success: false, message: "Sự kiện chưa có ai tham gia" });
     }
-    // Trả về danh sách userId
-    const userIds = attendees.map(att => att.userId);
-    const users = await User.find({ _id: { $in: userIds } });
-    res.json(users);
+
+    // Lấy thông tin user kèm checkInTime
+    const results = [];
+
+    for (const attendee of attendees) {
+      // Lấy qrCode đã check-in cho event này
+      const qr = attendee.qrCodes.find(qr =>
+        qr.eventId === eventId && qr.checkedIn === true
+      );
+      if (!qr) continue;
+
+      // Lấy thông tin user
+      const user = await User.findOne({ userId: attendee.userId });
+      if (!user) continue;
+      results.push({
+        user,
+        bookingDate: qr.checkInTime,
+      });
+    }
+
+    res.json(results);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Lỗi server" });
@@ -100,5 +130,48 @@ router.get('/getListEventUserHasCheckIn/:userId', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Lỗi server" });
   }
+});
+router.delete('/deleteAttendee/:eventId/:userId', async (req, res) => {
+  const {eventId,userId} = req.params;
+  try {
+    // Xoá tất cả qrCodes có eventId trùng
+    const result = await Attendee.updateOne(
+      { userId: userId },
+      { $pull: { qrCodes: { eventId: eventId } } }
+    );
+    res.json({ message: "Đã xoá qrCodes thành công", result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+});
+// gửi email -> cấu hình
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'vtthanh32004@gmail.com',
+        pass: 'qvwr ktll cftj cnqs'
+    }
+});
+router.post('/sendEmailAboutDeteleBookTicket', async (req, res) => {
+    const { from, to, subject, content } = req.body;
+
+    if (!from || !to || !subject || !content) {
+        return res.status(400).json({ message: 'Thiếu thông tin email.' });
+    }
+
+    const mailOptions = {
+        from,
+        to,
+        subject,
+        text: content
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ message: 'Gửi email thành công.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Lỗi gửi email.' });
+    }
 });
 module.exports = router;
