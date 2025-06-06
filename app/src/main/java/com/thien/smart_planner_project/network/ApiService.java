@@ -3,8 +3,10 @@ package com.thien.smart_planner_project.network;
 import com.thien.smart_planner_project.model.Booking;
 import com.thien.smart_planner_project.model.CheckinRequest;
 import com.thien.smart_planner_project.model.CheckinResponse;
+import com.thien.smart_planner_project.model.EmailRequest;
 import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
+import com.thien.smart_planner_project.model.UserBookingDTO;
 
 import java.util.List;
 
@@ -43,15 +45,21 @@ public interface ApiService {
     @DELETE("bookings/{idBooking}")
     Call<List<Booking>>deleteBooking(@Path("idBooking") String idBooking);
 
-    @GET("attendee/getListByEvent/{eventId}")
-    Call<List<User>> getListRegisEvent(@Path("eventId") String eventId);
+    @GET("attendees/getListByEvent/{eventId}")
+    Call<List<UserBookingDTO>> getListRegisEvent(@Path("eventId") String eventId);
 
     @POST("/attendees/checking")
     Call<CheckinResponse> checkIn(@Body CheckinRequest request);
 
-    @GET("/getListEventUserHasCheckIn/{userId}")
+    @GET("attendees/getListEventUserHasCheckIn/{userId}")
     Call<List<Event>> getListEventUserHasCheckIn(@Path("userId") String userID);
 
-    @GET("/getListAttendeeHasCheckInEvent/{eventId}")
-    Call<List<User>> getListAttendeeHasCheckInEvent(@Path("eventId") String eventId);
+    @GET("attendees/getListAttendeeHasCheckInEvent/{eventId}")
+    Call<List<UserBookingDTO>> getListAttendeeHasCheckInEvent(@Path("eventId") String eventId);
+
+    @DELETE("attendees/getListAttendeeHasCheckInEvent/{eventId}/{userId}")
+    Call<Void> deleteAttendee(@Path("userId") String userId, @Path("eventId") String eventId);
+
+    @POST("attendees/sendEmailAboutDeteleBookTicket")
+    Call<Void> sendEmailAboutDeteleBookTicket(@Body EmailRequest emailRequest);
 }

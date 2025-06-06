@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thien.smart_planner_project.Adapter.AttendeeAdapter;
 import com.thien.smart_planner_project.model.User;
+import com.thien.smart_planner_project.model.UserBookingDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
@@ -28,7 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AttendeeListCheckInActivity extends AppCompatActivity {
-    private List<User> users = new ArrayList<>();
+    private List<UserBookingDTO> userBookingDTOS = new ArrayList<>();
     private AttendeeAdapter adapter;
 
     @Override
@@ -43,31 +44,36 @@ public class AttendeeListCheckInActivity extends AppCompatActivity {
         });
         TextView title = findViewById(R.id.title_attendee_list);
         title.setText(getIntent().getStringExtra("title"));
+        TextView amount = findViewById(R.id.amount_attendee);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new AttendeeAdapter(users);
+        adapter = new AttendeeAdapter(userBookingDTOS);
         recyclerView.setAdapter(adapter);
         Intent intent = getIntent();
         String eventId = intent.getStringExtra("eventId");
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         try {
-            Call<List<User>> call = apiService.getListAttendeeHasCheckInEvent(eventId);
-            call.enqueue(new Callback<List<User>>() {
-                @SuppressLint("NotifyDataSetChanged")
+            Call<List<UserBookingDTO>> call = apiService.getListAttendeeHasCheckInEvent(eventId);
+            call.enqueue(new Callback<List<UserBookingDTO>>() {
+                @SuppressLint({"NotifyDataSetChanged", "DefaultLocale"})
                 @Override
-                public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                public void onResponse(@NonNull Call<List<UserBookingDTO>> call, @NonNull Response<List<UserBookingDTO>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        System.out.println(response.body().size());
-                        System.out.println(123);
-                        users.clear();
-                        users.addAll(response.body());
-                        adapter.notifyDataSetChanged();
+                        if(response.body().isEmpty()){
+                            Toast.makeText(AttendeeListCheckInActivity.this, "Chưa có ai tham gia sự kiện này", Toast.LENGTH_SHORT).show();
+                        }else{
+                            userBookingDTOS.clear();
+                            userBookingDTOS.addAll(response.body());
+                            amount.setText(String.format("Số lượng %d:",userBookingDTOS.size()));
+                            adapter.notifyDataSetChanged();
+                        }
                     } else {
                         Toast.makeText(AttendeeListCheckInActivity.this, "Không lấy được danh sách người tham gia", Toast.LENGTH_SHORT).show();
+
                     }
                 }
                 @Override
-                public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<List<UserBookingDTO>> call, @NonNull Throwable t) {
                     Toast.makeText(AttendeeListCheckInActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
 
                 }
@@ -75,7 +81,5 @@ public class AttendeeListCheckInActivity extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
 }
