@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Created Events"
+        android:gravity="center_horizontal"
         android:textColor="@color/black"
         android:textSize="30sp"/>
 
@@ -17,9 +18,10 @@
         android:id="@+id/listViewEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
+        android:layout_marginHorizontal="10dp"
         android:nestedScrollingEnabled="true" />
 
     <!-- Bottom App Bar -->

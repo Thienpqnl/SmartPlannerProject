@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
                 android:gravity="center">
@@ -52,7 +52,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="30dp"
                     android:orientation="vertical">
 
                 <!-- Name -->
@@ -105,15 +105,21 @@
                 </LinearLayout>
             </LinearLayout>
 
+
+        </RelativeLayout>
+
+        <!-- Content Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
             <!-- Floating Stats Cards -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="-30dp"
                 android:layout_marginHorizontal="24dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
@@ -121,14 +127,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="8dp"
-                    app:cardBackgroundColor="@android:color/white">
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
+                        android:background="@color/orange"
 
                         android:padding="20dp">
 
@@ -136,7 +142,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_ticket"
-                            app:tint="@color/primary_color" />
+                            app:tint="@color/white" />
 
                         <TextView
                             android:id="@+id/eventCount"
@@ -145,7 +151,7 @@
                             android:text="12"
                             android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/white"
                             android:layout_marginTop="8dp" />
 
                         <TextView
@@ -153,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:text="Sự kiện"
                             android:textSize="14sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="@color/white" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -163,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="8dp"
+                    app:strokeWidth="2dp"
                     app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
@@ -171,13 +177,14 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
+
                         android:padding="20dp">
 
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:src="@drawable/ic_person"
-                           />
+                            />
 
                         <TextView
                             android:id="@+id/participantCount"
@@ -194,25 +201,16 @@
                             android:layout_height="wrap_content"
                             android:text="Người tham gia"
                             android:textSize="14sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="@color/black" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-        </RelativeLayout>
-
-        <!-- Content Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
             <!-- Personal Info Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="@android:color/white">
 
@@ -221,6 +219,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@drawable/email_corner"
+
                     android:padding="20dp">
 
                     <TextView

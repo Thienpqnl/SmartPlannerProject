@@ -14,16 +14,15 @@
         android:paddingVertical="16dp">
 
         <!-- Header Section -->
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="32dp">
-
-
-
-        </LinearLayout>
+            android:text="Tạo sự kiện"
+            android:textSize="25sp"
+            android:textColor="@color/orange"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            />
 
         <!-- Event Image Card -->
         <com.google.android.material.card.MaterialCardView

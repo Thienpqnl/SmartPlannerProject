@@ -9,13 +9,13 @@
         android:id="@+id/toolbarEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:titleTextColor="@android:color/white"
+        android:background="@color/orange"
+        app:title="event list"
+        app:titleTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/baseline_arrow_back_24" />
+        app:navigationIcon="@drawable/ic_arrow" />
 
     <LinearLayout
         android:layout_width="match_parent"

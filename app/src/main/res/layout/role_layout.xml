@@ -1,49 +1,115 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/roleLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="24dp"
-    android:background="#FFFFFF">
+    android:background="#FFFFEB">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="100dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chào mừng"
+        android:textSize="36sp"
+        android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/userNameRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="..."
+            android:textSize="36sp"
+            android:textColor="@color/orange"
+            android:textStyle="bold"/>
+    </LinearLayout>
     <TextView
         android:id="@+id/roleTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chon vai tro"
+        android:text="Bạn Là..."
         android:textSize="24sp"
+        android:textColor="@color/orange"
+        android:layout_gravity="center_horizontal"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginTop="32dp" />
 
-    <RadioGroup
-        android:id="@+id/roleGroup"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/radioOrganizer"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="16dp"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
 
-        <RadioButton
+                android:src="@drawable/ic_add_event"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:text="TỔ CHỨC"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/radioAttendee"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="16dp"
             android:layout_height="wrap_content"
-            android:text="Attendee"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
-
-        <RadioButton
-            android:id="@+id/radioOrganizer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Organizer"
-            android:textSize="18sp" />
-    </RadioGroup>
-
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_ticket"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:text="THAM GIA"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
     <Button
         android:id="@+id/confirmRoleButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Xac nhan"
         android:textAllCaps="false"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
         android:enabled="false" />
 </LinearLayout>
