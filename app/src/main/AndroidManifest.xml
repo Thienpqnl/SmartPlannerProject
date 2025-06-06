@@ -5,13 +5,17 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <!-- Dùng cho API < 33 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Dùng cho API >= 33 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Các quyền khác nếu cần -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -54,6 +58,10 @@
             android:name=".Controller.GMap"
             android:exported="true" />
         <activity android:name=".UserSetProfileActivity"
+            android:exported="true"/>
+        <activity android:name=".AttendeeListBookTicketActivity"
+            android:exported="true"/>
+        <activity android:name=".AttendeeListCheckInActivity"
             android:exported="true"/>
         <activity android:name=".RoleSelectorActivity"
             android:exported="true"/>

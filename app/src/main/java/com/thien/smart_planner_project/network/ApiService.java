@@ -11,8 +11,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -50,4 +48,10 @@ public interface ApiService {
 
     @POST("/attendees/checking")
     Call<CheckinResponse> checkIn(@Body CheckinRequest request);
+
+    @GET("/getListEventUserHasCheckIn/{userId}")
+    Call<List<Event>> getListEventUserHasCheckIn(@Path("userId") String userID);
+
+    @GET("/getListAttendeeHasCheckInEvent/{eventId}")
+    Call<List<User>> getListAttendeeHasCheckInEvent(@Path("eventId") String eventId);
 }

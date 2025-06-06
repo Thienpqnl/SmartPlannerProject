@@ -32,6 +32,7 @@ import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.SharedPrefManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +59,7 @@ public class OrganizerViewActivity extends AppCompatActivity {
         bottomAppBar.setNavigationOnClickListener(v -> {
             // Mo danh sach
         });
-        User user = (User) getIntent().getSerializableExtra("user");
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
         if (user == null || !"organizer".equals(user.getRole())) {
             startActivity(new Intent(this, LoginActivity.class));
             return;
