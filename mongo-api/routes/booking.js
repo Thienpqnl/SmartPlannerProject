@@ -95,23 +95,23 @@ router.post('/', async (req, res) => {
             attendee = new Attendee({
                 userId,
                 eventsRegistered: [idEvent],
-                qrCodes: {
+                qrCodes: [{
                     qr: urlQR,
-                    checkedIn: false
-                }
+                    checkedIn: false,
+                    eventId:idEvent
+                }]
             });
             await attendee.save();
         } else {
             // Nếu đã có, cập nhật thêm sự kiện mới và QR
             attendee.eventsRegistered.addToSet?.(idEvent) || attendee.eventsRegistered.push(idEvent);
-            attendee.qrCodes = {
-                qr: urlQR,
-                checkedIn: false
-            };
+            attendee.qrCodes.push({
+                        qr: urlQR,
+                        checkedIn: false,
+                        eventId: idEvent,
+                    });
             await attendee.save();
         }
-
-
         res.status(201).json(savedBooking);
     } catch (err) {
         console.error("Lỗi khi tạo Booking:", err);

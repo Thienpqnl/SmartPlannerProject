@@ -33,8 +33,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventUpdateActivity extends AppCompatActivity {
-    TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes,listRegisted;
-    Button updateEvent, detailJoin, cancelEvent;
+    TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes;
+    Button updateEvent, detailJoin, cancelEvent, listBooked, listCheckIn;
     String name, date, local, time, uid, img, seat, des, type,eventId;
     ImageView detailImg;
     String uploadedImageUrl;
@@ -56,10 +56,9 @@ public class EventUpdateActivity extends AppCompatActivity {
         detailDes = findViewById(R.id.detailDes);
         detailImg = findViewById(R.id.detailImg);
         updateEvent = findViewById(R.id.updateEvent);
-        detailJoin = findViewById(R.id.detailJoin);
         cancelEvent = findViewById(R.id.cancelEvent);
-        listRegisted = findViewById(R.id.listRegistedBtn);
-
+        listBooked = findViewById(R.id.listBookedBtn);
+        listCheckIn = findViewById(R.id.listCheckInBtn);
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         detailLocal.setOnClickListener(v -> {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
@@ -129,11 +128,14 @@ public class EventUpdateActivity extends AppCompatActivity {
                     }
                 }
         );
-        listRegisted.setOnClickListener(v ->{
+        listBooked.setOnClickListener(v ->{
             if(event != null)
-                goListRegisted(event.get_id());
+                golistBooked(event.get_id());
         });
-
+        listCheckIn.setOnClickListener(v ->{
+            if(event != null)
+                golistCheckIn(event.get_id());
+        });
         updateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,10 +257,16 @@ public class EventUpdateActivity extends AppCompatActivity {
             }
         }
     }
-    private void goListRegisted(String eventId){
-        Intent intent = new Intent(this, AttendeeListActivity.class);
-        System.out.println(eventId);
+    private void golistBooked(String eventId){
+        Intent intent = new Intent(this, AttendeeListBookTicketActivity.class);
         intent.putExtra("eventId",eventId);
+        intent.putExtra("title","Danh sách người đặt vé");
+        startActivity(intent);
+    }
+    private void golistCheckIn(String eventId){
+        Intent intent = new Intent(this, AttendeeListCheckInActivity.class);
+        intent.putExtra("eventId",eventId);
+        intent.putExtra("title","Danh sách người tham gia");
         startActivity(intent);
     }
 }
