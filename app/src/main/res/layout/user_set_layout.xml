@@ -1,55 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/orange">
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Thong tin nguoi dung"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
     <TextView
         android:id="@+id/textNameLabel"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ten:"
         android:textSize="16sp"
         android:textStyle="bold" />
-
     <TextView
         android:id="@+id/textNameValue"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--"
         android:textSize="16sp"
         android:layout_marginBottom="10dp" />
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <TextView
         android:id="@+id/textEmailLabel"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email:"
         android:textSize="16sp"
         android:textStyle="bold" />
-
     <TextView
         android:id="@+id/textEmailValue"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--"
         android:textSize="16sp"
         android:layout_marginBottom="10dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
 
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <TextView
         android:id="@+id/textRoleLabel"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Vai tro:"
         android:textSize="16sp"
@@ -57,17 +85,35 @@
 
     <TextView
         android:id="@+id/textRoleValue"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--"
         android:textSize="16sp"
         android:layout_marginBottom="20dp" />
-    <TextView
+        </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dia chi:"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        app:cardElevation="4dp"
+        android:layout_marginTop="30dp"
+        app:cardBackgroundColor="@color/white">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dia chi:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,18 +132,23 @@
 
         <ImageView
             android:id="@+id/btnPickLocation"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:contentDescription="@string/GetAddress"
             android:src="@android:drawable/ic_menu_mylocation"
             android:padding="10dp"
             android:background="?android:attr/selectableItemBackground"/>
     </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
     <Button
         android:id="@+id/buttonEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Xac nhan"
-        android:layout_marginLeft="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/orange"
         android:enabled="true" />
 </LinearLayout>

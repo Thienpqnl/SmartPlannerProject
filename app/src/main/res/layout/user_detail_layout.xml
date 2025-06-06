@@ -16,11 +16,18 @@
             android:layout_height="280dp"
             android:background="@drawable/profile_header_gradient">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_return"
+                app:tint="@color/white"
+                android:padding="20dp"/>
+
             <!-- Profile Section -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="60dp"
                 android:gravity="center">
@@ -42,6 +49,11 @@
                         app:tint="@color/primary_color"
                         app:shapeAppearanceOverlay="@style/CircleImageView" />
                 </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="vertical">
 
                 <!-- Name -->
                 <TextView
@@ -52,7 +64,7 @@
                     android:textSize="28sp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/Roboto-Medium"
                     android:elevation="2dp" />
 
@@ -90,6 +102,7 @@
                             android:fontFamily="@font/Roboto-Medium" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Floating Stats Cards -->
@@ -107,7 +120,6 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-
                     app:cardCornerRadius="16dp"
                     app:cardElevation="8dp"
                     app:cardBackgroundColor="@android:color/white">
@@ -117,6 +129,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
+
                         android:padding="20dp">
 
                         <ImageView
@@ -192,15 +205,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:layout_marginTop="40dp">
+            android:padding="24dp">
 
             <!-- Personal Info Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp"
+
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="@android:color/white">
 
