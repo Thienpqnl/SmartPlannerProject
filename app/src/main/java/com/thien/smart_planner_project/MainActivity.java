@@ -40,6 +40,7 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.network.UploadAPI;
+import com.thien.smart_planner_project.service.SharedPrefManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -131,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         imageView.setImageURI(selectedImageUri); // Hiển thị ảnh đã chọn
                         imageView.setTag(selectedImageUri.toString());
 
-
                         try {
                             uploadImage(MainActivity.this,selectedImageUri, new UploadCallback() {
                                 @Override
@@ -170,12 +170,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra("imageURL", imageView.getTag() != null ? imageView.getTag().toString() : "");
             startActivityForResult(intent, 100);
         });
-
-        Intent intent = getIntent();
-        uid = intent.getStringExtra("uid");
-
-
-
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        if (user != null) {
+            uid = user.getUserId();
+        } else {
+           startActivity(new Intent(this,LoginActivity.class));
+        }
     }
     //set address
     @Override
@@ -291,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 uploadedImageUrl.isEmpty() ||
                 selectedItem == null
                 || uid == null) {
+            System.out.println(name + date + time + location + description + uploadedImageUrl + selectedItem + uid);
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }

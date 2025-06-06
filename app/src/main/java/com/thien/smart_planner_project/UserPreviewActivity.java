@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserPreviewActivity extends AppCompatActivity {
-    private TextView name;
+    private TextView name, email;
     private List<Event> eventJoinInPass;
 
     @Override
@@ -38,6 +38,7 @@ public class UserPreviewActivity extends AppCompatActivity {
             return insets;
         });
         name = findViewById(R.id.name);
+        email = findViewById(R.id.email);
         Intent intent = getIntent();
         String uid = intent.getStringExtra("uid");
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
@@ -49,7 +50,9 @@ public class UserPreviewActivity extends AppCompatActivity {
                    Log.e("err","không tìm thấy thông tin của người dùng này");
                    return;
                }
-                name.setText(response.body().getName());
+               User user = response.body();
+               name.setText(user.getName());
+               email.setText(user.getEmail());
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {

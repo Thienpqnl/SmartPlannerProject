@@ -3,6 +3,7 @@ package com.thien.smart_planner_project;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,10 +27,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AttendeeListActivity extends AppCompatActivity {
+public class AttendeeListCheckInActivity extends AppCompatActivity {
     private List<User> users = new ArrayList<>();
-    private RecyclerView recyclerView;
     private AttendeeAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,9 @@ public class AttendeeListActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        recyclerView = findViewById(R.id.recyclerView);
+        TextView title = findViewById(R.id.title_attendee_list);
+        title.setText(getIntent().getStringExtra("title"));
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AttendeeAdapter(users);
         recyclerView.setAdapter(adapter);
@@ -48,7 +51,7 @@ public class AttendeeListActivity extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         try {
-            Call<List<User>> call = apiService.getListRegisEvent(eventId);
+            Call<List<User>> call = apiService.getListAttendeeHasCheckInEvent(eventId);
             call.enqueue(new Callback<List<User>>() {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
@@ -60,12 +63,12 @@ public class AttendeeListActivity extends AppCompatActivity {
                         users.addAll(response.body());
                         adapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(AttendeeListActivity.this, "Không lấy được danh sách người đặt vé", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AttendeeListCheckInActivity.this, "Không lấy được danh sách người tham gia", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
                 public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                    Toast.makeText(AttendeeListActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AttendeeListCheckInActivity.this, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
 
                 }
             });
