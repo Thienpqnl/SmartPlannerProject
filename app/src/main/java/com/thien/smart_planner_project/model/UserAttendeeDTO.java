@@ -1,11 +1,11 @@
 package com.thien.smart_planner_project.model;
 
 
-public class UserBookingDTO {
+public class UserAttendeeDTO {
     private User user;
     private String bookingDate;
 
-    public UserBookingDTO() {
+    public UserAttendeeDTO() {
     }
 
     public User getUser() {

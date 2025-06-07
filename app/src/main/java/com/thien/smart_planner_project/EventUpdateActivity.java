@@ -1,5 +1,6 @@
 package com.thien.smart_planner_project;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,16 +19,20 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.callback.UploadCallback;
+import com.thien.smart_planner_project.model.EmailRequest;
 import com.thien.smart_planner_project.model.Event;
+import com.thien.smart_planner_project.model.UserAttendeeDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,18 +40,21 @@ import retrofit2.Response;
 
 public class EventUpdateActivity extends AppCompatActivity {
     TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes;
-    Button updateEvent, detailJoin, cancelEvent, listBooked, listCheckIn;
-    String name, date, local, time, uid, img, seat, des, type,eventId;
+    Button updateEvent, detailJoin, cancelEvent, listAttendeeBtn, inviteBtn;
+    String name, date, local, time, uid, img, seat, des, type, eventId;
     ImageView detailImg;
     String uploadedImageUrl;
     String id;
     double longitude;
     double latitude;
     private ActivityResultLauncher<Intent> pickImageLauncher;
+    private final String content = """
+            Xin chào %s, Bạn được mời tham dự sự kiện %s. Bạn hãy vào app nhập id của sự kiện để tìm kiếm (Id: %s). Rất mong bạn sắp xếp thời gian tham gia cùng chúng tôi.Trân trọng!
+            """;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
         setContentView(R.layout.organizer_event_details);
         detailName = findViewById(R.id.detailName);
         detailDate = findViewById(R.id.detailDate);
@@ -57,8 +66,8 @@ public class EventUpdateActivity extends AppCompatActivity {
         detailImg = findViewById(R.id.detailImg);
         updateEvent = findViewById(R.id.updateEvent);
         cancelEvent = findViewById(R.id.cancelEvent);
-        listBooked = findViewById(R.id.listBookedBtn);
-        listCheckIn = findViewById(R.id.listCheckInBtn);
+        listAttendeeBtn = findViewById(R.id.listAttendeeBtn);
+        inviteBtn = findViewById(R.id.inviteAttendee);
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         detailLocal.setOnClickListener(v -> {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
@@ -97,7 +106,7 @@ public class EventUpdateActivity extends AppCompatActivity {
         setupEditableText(detailTime, "Nhap gio moi");
         setupEditableText(detailSeat, "Nhap cho ngoi moi");
         setupEditableText(evType, "Nhap loai su kien");
-         setupEditableText(detailDes, "Nhap mo ta moi");
+        setupEditableText(detailDes, "Nhap mo ta moi");
 
         detailImg.setOnClickListener(v -> openImagePicker());
         pickImageLauncher = registerForActivityResult(
@@ -128,13 +137,36 @@ public class EventUpdateActivity extends AppCompatActivity {
                     }
                 }
         );
-        listBooked.setOnClickListener(v ->{
+        listAttendeeBtn.setOnClickListener(v ->{
             if(event != null)
-                golistBooked(event.get_id());
+                golistAttendee(event.get_id());
         });
-        listCheckIn.setOnClickListener(v ->{
-            if(event != null)
-                golistCheckIn(event.get_id());
+        inviteBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventUpdateActivity.this);
+            builder.setTitle("Mời người tham dự");
+
+            // Tạo EditText để nhập email
+            final EditText input = new EditText(EventUpdateActivity.this);
+            input.setHint("Nhập email người nhận...");
+            input.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            builder.setView(input);
+
+            builder.setPositiveButton("Gửi lời mời", (dialog, which) -> {
+                String email = input.getText().toString().trim();
+
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(EventUpdateActivity.this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Call<Void> call = apiService.sendEmailInvite(new EmailRequest("vtthanh32004@gmail.com"
+                                                            , email,"Lời mời tham dự",String.format(content,email,name,id)));
+                sendEmailInvite(call);
+                Toast.makeText(EventUpdateActivity.this, "Đã gửi lời mời tới: " + email, Toast.LENGTH_SHORT).show();
+            });
+
+            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+
+            builder.show();
         });
         updateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,16 +289,23 @@ public class EventUpdateActivity extends AppCompatActivity {
             }
         }
     }
-    private void golistBooked(String eventId){
-        Intent intent = new Intent(this, AttendeeListBookTicketActivity.class);
+    private void golistAttendee(String eventId){
+        Intent intent = new Intent(this, AttendeeListActivity.class);
         intent.putExtra("eventId",eventId);
         intent.putExtra("title","Danh sách người đặt vé");
         startActivity(intent);
     }
-    private void golistCheckIn(String eventId){
-        Intent intent = new Intent(this, AttendeeListCheckInActivity.class);
-        intent.putExtra("eventId",eventId);
-        intent.putExtra("title","Danh sách người tham gia");
-        startActivity(intent);
+    private void sendEmailInvite(Call<Void> call){
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
     }
 }

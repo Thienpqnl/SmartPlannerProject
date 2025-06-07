@@ -1,69 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
+    app:strokeWidth="0dp"
+    app:strokeColor="@android:color/transparent"
+    app:cardBackgroundColor="@android:color/white"
+    app:shapeAppearanceOverlay="@style/Widget.MaterialComponents.CardView">
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="10dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardElevation="10dp"
-        android:orientation="horizontal"
-        android:background="@drawable/gradient_linear">
+        android:padding="10dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView6"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/icon_avatar"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:scaleType="centerCrop"
-                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
-            <TextView
-                android:id="@+id/attendee_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="110dp"
-                android:layout_marginTop="20dp"
-                android:text="name"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
-                app:layout_constraintTop_toTopOf="parent" />
-            <TextView
-                android:id="@+id/time_attend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="110dp"
-                android:layout_marginTop="60dp"
-                android:text="Time"
-                android:textSize="12sp"
-                android:textColor="#888888"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageView6"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_avatar"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
 
-            <ImageView
-                android:id="@+id/popup_menu_attendee"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="192dp"
-                android:layout_toEndOf="@+id/attendee_name"
-                android:src="@drawable/more" />
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/attendee_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/imageView6"
+            app:layout_constraintTop_toTopOf="@id/imageView6"
+            app:layout_constraintEnd_toStartOf="@id/popup_menu_attendee"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp" />
 
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/time_attend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textSize="12sp"
+            android:textColor="#888888"
+            app:layout_constraintStart_toStartOf="@id/attendee_name"
+            app:layout_constraintTop_toBottomOf="@id/attendee_name"
+            app:layout_constraintEnd_toEndOf="@id/attendee_name"
+            android:layout_marginTop="8dp"/>
+
+        <ImageView
+            android:id="@+id/popup_menu_attendee"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/more"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

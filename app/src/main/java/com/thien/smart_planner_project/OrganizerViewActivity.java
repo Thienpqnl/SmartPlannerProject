@@ -144,6 +144,4 @@ public class OrganizerViewActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }
