@@ -111,31 +111,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Cap nhat"
+                android:text="Cập nhật"
                 android:textSize="20sp"
                 android:backgroundTint="#32003A"/>
             <Button
-                android:id="@+id/listCheckInBtn"
+                android:id="@+id/listAttendeeBtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Nguoi tham gia"
+                android:text="Người tham dự &amp; đặt vé"
                 android:textSize="20sp"
                 android:backgroundTint="#E243A02D"/>
+<!--            <Button-->
+<!--                android:id="@+id/listRestricedBtn"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="Danh sách hạn chế"-->
+<!--                android:textSize="20sp"-->
+<!--                android:backgroundTint="#E243A02D"/>-->
             <Button
-                android:id="@+id/listBookedBtn"
+                android:id="@+id/inviteAttendee"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Nguoi dat ve"
+                android:text="Mời"
                 android:textSize="20sp"
-                android:backgroundTint="#E243A02D"/>
+                android:backgroundTint="#0047ab"/>
             <Button
                 android:id="@+id/cancelEvent"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="huy su kien"
+                android:text="Huỷ sự kiện"
                 android:textSize="20sp"
                 android:backgroundTint="#F20A0A"/>
         </LinearLayout>
