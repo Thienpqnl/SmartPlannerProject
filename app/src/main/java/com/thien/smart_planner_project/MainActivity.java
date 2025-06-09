@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000")
+                .baseUrl("http://172.17.114.181:3000")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

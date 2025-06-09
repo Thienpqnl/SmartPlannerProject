@@ -56,6 +56,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.android.material:material:1.13.0-alpha01")
+    implementation ("androidx.cardview:cardview:1.0.0-alpha1")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

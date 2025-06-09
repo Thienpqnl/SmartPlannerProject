@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.thien.smart_planner_project.EventDetailActivity;
 import com.thien.smart_planner_project.EventUpdateActivity;
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.model.Event;
@@ -61,6 +62,26 @@ public class OrganizerEventAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, EventUpdateActivity.class);
                     intent.putExtra("event", item);
+                    context.startActivity(intent);
+                }
+            });
+        }
+        else if (role.equals("attendee")) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EventDetailActivity.class);
+                    intent.putExtra("id", item.getId());
+                    intent.putExtra("name", item.getName());
+                    intent.putExtra("time", item.getTime());
+                    intent.putExtra("location", item.getLocation());
+                    intent.putExtra("image",item.getImageUrl());
+                    intent.putExtra("des", item.getDescription());
+                    intent.putExtra("seat", item.getSeats());
+                    intent.putExtra("date", item.getDate());
+                    intent.putExtra("uid", item.getCreatorUid());
+                    intent.putExtra("eventId", item.get_id());
+
                     context.startActivity(intent);
                 }
             });

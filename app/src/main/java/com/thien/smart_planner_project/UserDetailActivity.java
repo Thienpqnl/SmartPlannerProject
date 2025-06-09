@@ -51,14 +51,9 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
                 assert response.body() != null;
-                List<Event> eventList = new ArrayList<>();
-                for (Event ev : response.body()) {
-                    if (!ev.isStatus()) {
-                        eventList.add(ev);
-                    }
-                }
+                List<Event> eventList = new ArrayList<>(response.body());
                 Log.e("log-loi", eventList.size() + "");
-                OrganizerEventAdapter adapter = new OrganizerEventAdapter(UserDetailActivity.this, eventList, intent.getStringExtra("role"));
+                OrganizerEventAdapter adapter = new OrganizerEventAdapter(UserDetailActivity.this, eventList, "attendee");
                 lsView.setAdapter(adapter);
             }
 

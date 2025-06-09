@@ -87,6 +87,9 @@ public class EventDetailActivity extends AppCompatActivity {
         String img = intent.getStringExtra("image");
         String uid = intent.getStringExtra("uid");
         String eventId = intent.getStringExtra("eventId");
+
+
+
         userLogin = instance.getUser();
         if (userLogin == null) {
             startActivity(new Intent(this, LoginActivity.class));
@@ -129,7 +132,7 @@ public class EventDetailActivity extends AppCompatActivity {
                     intent1.putExtra("email", user.getEmail());
                     intent1.putExtra("local", user.getLocation());
                     intent1.putExtra("role", user.getRole());
-                    intent1.putExtra("uid", user.getUserId());
+                    intent1.putExtra("uid", uid);
                     creator.setText(user.getName());
                 }
             }
