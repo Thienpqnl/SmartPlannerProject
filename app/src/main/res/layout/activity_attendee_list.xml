@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AttendeeListBookTicketActivity"
+    tools:context=".AttendeeListActivity"
     android:background="@color/listBackground">
 
     <LinearLayout
@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Danh sách Người Tham Gia"
+                android:text="Người tham dự &amp; đặt vé"
                 android:textSize="20sp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="center"
@@ -37,17 +37,35 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
-            <SearchView
+            <android.widget.SearchView
+                android:id="@+id/search_attendee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:queryHint="Tìm theo tên"
                 android:iconifiedByDefault="false"/>
+            <TextView
+                android:id="@+id/amount_attendee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="số lượng: "
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"/>
         </LinearLayout>
+        <Spinner
+            android:id="@+id/list_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/spinner_background"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
             />
     </LinearLayout>
 

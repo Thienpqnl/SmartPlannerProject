@@ -59,9 +59,11 @@
             android:exported="true" />
         <activity android:name=".UserSetProfileActivity"
             android:exported="true"/>
-        <activity android:name=".AttendeeListBookTicketActivity"
+        <activity android:name=".AttendeeListActivity"
             android:exported="true"/>
         <activity android:name=".AttendeeListCheckInActivity"
+            android:exported="true"/>
+        <activity android:name=".UserPreviewActivity"
             android:exported="true"/>
         <activity android:name=".RoleSelectorActivity"
             android:exported="true"/>
