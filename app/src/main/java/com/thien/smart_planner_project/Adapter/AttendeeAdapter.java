@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -26,6 +28,7 @@ import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,7 +38,7 @@ import retrofit2.Response;
 public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.AttendeeViewHolder> {
     private List<UserAttendeeDTO> userAttendeeDTOS;
     private String eventId;
-    private boolean isBooking;
+    private String type;
     private final String content = """
         Xin chào %s,
 
@@ -47,12 +50,18 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.Attend
         Ban tổ chức sự kiện
         """;
 
-    public AttendeeAdapter(List<UserAttendeeDTO> userAttendeeDTOS, String eventId, boolean isBooking) {
+    public AttendeeAdapter(List<UserAttendeeDTO> userAttendeeDTOS, String eventId, String type) {
         this.userAttendeeDTOS = userAttendeeDTOS;
         this.eventId = eventId;
-        this.isBooking = isBooking;
+        this.type = type;
     }
-
+    public interface OnCountChangeListener {
+        void onCountChanged(int count);
+    }
+    private OnCountChangeListener countChangeListener;
+    public void setOnCountChangeListener(OnCountChangeListener listener) {
+        this.countChangeListener = listener;
+    }
     public static class AttendeeViewHolder extends RecyclerView.ViewHolder {
         TextView attendeeName, attendeeTime;
         ImageView popup_menu_img;
@@ -76,33 +85,10 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.Attend
         UserAttendeeDTO userAttendeeDTO = userAttendeeDTOS.get(position);
         holder.attendeeName.setText(userAttendeeDTO.getUser().getName());
         holder.attendeeTime.setText(userAttendeeDTO.getBookingDate());
-        holder.popup_menu_img.setVisibility(isBooking ? View.VISIBLE : View.GONE);
+        holder.popup_menu_img.setVisibility(this.type.equals("Danh sách người tham gia") ? View.GONE : View.VISIBLE);
         // Trong onBindViewHolder
         holder.popup_menu_img.setOnClickListener(v -> {
-            if (!isBooking) return;
-            PopupMenu popup = new PopupMenu(v.getContext(), v);
-            popup.getMenuInflater().inflate(R.menu.popup_menu_attendee, popup.getMenu());
-            popup.setOnMenuItemClickListener(item -> {
-                if(item.getItemId() == R.id.delete_attendee) {
-                    Context context = v.getContext();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Nhập lý do xoá người này");
-                    final EditText input = new EditText(context);
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                    input.setHint("Nhập lý do...");
-                    builder.setView(input);
-                    builder.setPositiveButton("Xoá", (dialog, which) -> {
-                        String reason = input.getText().toString().trim();
-                        int deletePosition = holder.getAdapterPosition();
-                        deleteAttendee(userAttendeeDTO.getUser(), eventId, context, reason, deletePosition);
-                    });
-                    builder.setNegativeButton("Huỷ", (dialog, which) -> dialog.cancel());
-                    builder.show();
-                    return true;
-                }
-                return false;
-            });
-            popup.show();
+            showPopupMenu(v,position,userAttendeeDTO,type);
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -121,50 +107,171 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.Attend
         return userAttendeeDTOS.size();
     }
 
-    private void deleteAttendee(User user, String eventId, Context context, String reason,int deletePosition){
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Void> call = apiService.deleteAttendee(eventId,user.getUserId());
+    @SuppressLint("NotifyDataSetChanged")
+    public void setType(String type) {
+        this.type = type;
+        notifyDataSetChanged();
+    }
 
+    public String getType() {
+        return type;
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void showPopupMenu(View v, int position, UserAttendeeDTO userAttendeeDTO, String type){
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        if (type.equals("Danh sách người đặt vé")){
+            popup.getMenuInflater().inflate(R.menu.popup_menu_attendee, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                if(item.getItemId() == R.id.delete_attendee) {
+                    Context context = v.getContext();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Nhập lý do xoá người này");
+
+                    // Sử dụng view custom
+                    View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_detete_attendee, null);
+                    final EditText input = dialogView.findViewById(R.id.edit_reason);
+                    final CheckBox checkBoxRestrict = dialogView.findViewById(R.id.checkbox_restrict);
+
+                    builder.setView(dialogView);
+
+                    builder.setPositiveButton("Xoá", null); // Để null để tự xử lý sau
+                    builder.setNegativeButton("Huỷ", (dialog, which) -> dialog.cancel());
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    // Xử lý nút Xoá
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                        String reason = input.getText().toString().trim();
+                        if (reason.isEmpty()) {
+                            Toast.makeText(context, "Hãy nhập lý do cho việc xoá người này ra khỏi sự kiện", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        boolean isRestricted = checkBoxRestrict.isChecked();
+                        // Truyền thêm biến isRestricted để xử lý hạn chế người này
+                        deleteAttendee(userAttendeeDTO.getUser(), eventId, context, reason, position, isRestricted);
+                        dialog.dismiss();
+                    });
+                    return true;
+                }
+                return false;
+            });
+        }else{
+            popup.getMenuInflater().inflate(R.menu.popup_menu_restricted, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                if(item.getItemId() == R.id.delete_attendee_out_restricted_list) {
+                    deleteUserOutRestrictedList(v.getContext(),userAttendeeDTO);
+                }
+                return false;
+            });
+        }
+        popup.show();
+    }
+    public void deleteUserOutRestrictedList(Context context,UserAttendeeDTO userAttendeeDTO){
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<Void> call = apiService.removeUserFromRestrictedList(eventId,userAttendeeDTO.getUser().getUserId());
         call.enqueue(new Callback<Void>() {
-            @SuppressLint({"NotifyDataSetChanged", "DefaultLocale"})
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                EmailRequest emailRequest = new EmailRequest(
-                        SharedPrefManager.getInstance(context).getUser().getEmail(),
-                        user.getEmail(),
-                        "Thông báo",
-                        String.format(content, user.getEmail(), reason)
-                );
-
-                Call<Void> callApi = apiService.sendEmailAboutDeteleBookTicket(emailRequest);
-                callApi.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                        Toast.makeText(context, "Xoá thành công và đã thông báo cho user", Toast.LENGTH_SHORT).show();
-                        userAttendeeDTOS.remove(deletePosition);
-                        notifyItemRemoved(deletePosition);
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if(!response.isSuccessful()){
+                    Toast.makeText(context, "Xoá không thành công", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(context, "Đã xoá người dùng này ra khỏi danh sách hạn chế", Toast.LENGTH_SHORT).show();
+                userAttendeeDTOS.remove(userAttendeeDTO);
+                notifyDataSetChanged();
+                if(countChangeListener != null){
+                    countChangeListener.onCountChanged(userAttendeeDTOS.size());
+                }
             }
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Toast.makeText(context, "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void deleteAttendee(User user, String eventId, Context context, String reason, int deletePosition, boolean isRestricted) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+
+        // 1. Xoá attendee
+        Call<Void> deleteCall = apiService.deleteAttendee(eventId, user.getUserId());
+        deleteCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // 2. Gửi email thông báo
+                    sendEmailAfterDelete(user, eventId, context, reason, deletePosition, isRestricted);
+                } else {
+                    Toast.makeText(context, "Xoá không thành công", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Lỗi kết nối server khi xoá attendee", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setBooking(boolean booking) {
-        isBooking = booking;
-        notifyDataSetChanged();
+    private void sendEmailAfterDelete(User user, String eventId, Context context, String reason, int deletePosition, boolean isRestricted) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        EmailRequest emailRequest = new EmailRequest(
+                SharedPrefManager.getInstance(context).getUser().getEmail(),
+                user.getEmail(),
+                "Thông báo",
+                String.format(content, user.getEmail(), reason)
+        );
+
+        Call<Void> emailCall = apiService.sendEmailAboutDeteleBookTicket(emailRequest);
+        emailCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Đã thông báo cho người dùng này", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Không gửi được email thông báo", Toast.LENGTH_SHORT).show();
+                }
+
+                userAttendeeDTOS.remove(deletePosition);
+                notifyItemRemoved(deletePosition);
+                if (countChangeListener != null) {
+                    countChangeListener.onCountChanged(userAttendeeDTOS.size());
+                }
+                if (isRestricted) {
+                    putUserToRestrictedList(user, eventId, context);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Lỗi kết nối server khi gửi email", Toast.LENGTH_SHORT).show();
+
+                // Vẫn thực hiện restricted nếu cần
+                if (isRestricted) {
+                    putUserToRestrictedList(user, eventId, context);
+                }
+            }
+        });
     }
 
-    public boolean isBooking() {
-        return isBooking;
+    private void putUserToRestrictedList(User user, String eventId, Context context) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<Void> restrictCall = apiService.putUserInRestrictedList(eventId, user.getUserId());
+        restrictCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Đã thêm người dùng này vào danh sách hạn chế", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Thêm người dùng này vào danh sách hạn chế thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(context, "Lỗi kết nối server khi hạn chế", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 }
