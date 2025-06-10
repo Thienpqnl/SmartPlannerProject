@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Event implements Serializable {
@@ -22,10 +23,11 @@ public class Event implements Serializable {
     private  String type;
 
     private  boolean isPresent;
+    private List<String> restrictedUserIds;
     @SerializedName("_id") // dùng nếu bạn dùng Gson
     private String _id;
     //name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, createUser.getUserId())
-    public Event(String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude, String creatorUid) {
+    public Event(String name, String date, String location ,String time, String type,String description, String imageUrl, int seats, double longitude, double latitude, String creatorUid,List<String> restrictedUserIds) {
         this.name = name;
         this.date = date;
         this.location = location;
@@ -37,6 +39,7 @@ public class Event implements Serializable {
         this.longitude = longitude;
         this.latitude = latitude;
         this.creatorUid = creatorUid;
+        this.restrictedUserIds = restrictedUserIds;
     }
 
     public boolean isStatus() {
@@ -149,5 +152,42 @@ public class Event implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public List<String> getRestrictedUserIds() {
+        return restrictedUserIds;
+    }
+
+    public void setRestrictedUserIds(List<String> restrictedUserIds) {
+        this.restrictedUserIds = restrictedUserIds;
+    }
+
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(boolean present) {
+        isPresent = present;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "name='" + name + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", id='" + id + '\'' +
+                ", creatorUid='" + creatorUid + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", seats=" + seats +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", type='" + type + '\'' +
+                ", isPresent=" + isPresent +
+                ", restrictedUserIds=" + restrictedUserIds +
+                ", _id='" + _id + '\'' +
+                '}';
     }
 }

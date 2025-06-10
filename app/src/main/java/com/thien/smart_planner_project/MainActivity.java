@@ -47,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -296,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, uid));
+        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, uid, new ArrayList<>()));
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
