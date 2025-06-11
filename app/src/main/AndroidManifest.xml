@@ -4,14 +4,9 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
-    <!-- Dùng cho API < 33 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!-- Dùng cho API >= 33 -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
-    <!-- Các quyền khác nếu cần -->
+        android:required="false" /> <!-- Dùng cho API < 33 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Dùng cho API >= 33 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Các quyền khác nếu cần -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -29,6 +24,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ChatBoxDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".EventDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.Smart_Planner_project" />
@@ -44,34 +45,42 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <activity android:name=".RegisActivity"
-            android:exported="true"/>
-        <activity android:name=".EventActivity"
-            android:exported="true"/>
-        <activity android:name=".UserDetailActivity"
-            android:exported="true"/>
-        <activity android:name=".OrganizerViewActivity"
-            android:exported="true"/>
-        <activity android:name=".EventUpdateActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".RegisActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EventActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UserDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".OrganizerViewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EventUpdateActivity"
+            android:exported="true" />
         <activity
             android:name=".Controller.GMap"
             android:exported="true" />
-        <activity android:name=".UserSetProfileActivity"
-            android:exported="true"/>
-        <activity android:name=".AttendeeListActivity"
-            android:exported="true"/>
-
-        <activity android:name=".UserPreviewActivity"
-            android:exported="true"/>
-        <activity android:name=".RoleSelectorActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".UserSetProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AttendeeListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UserPreviewActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RoleSelectorActivity"
+            android:exported="true" />
         <activity
             android:name=".FilterActivity"
             android:exported="true" />
-        <activity android:name=".BookingsActivity"
-            android:exported="true"
-            />
+        <activity
+            android:name=".BookingsActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
