@@ -40,7 +40,7 @@ import retrofit2.Response;
 
 public class EventUpdateActivity extends AppCompatActivity {
     TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes;
-    Button updateEvent, detailJoin, cancelEvent, listAttendeeBtn, inviteBtn;
+    Button updateEvent, detailJoin, cancelEvent, listAttendeeBtn, inviteBtn, friendBtn;
     String name, date, local, time, uid, img, seat, des, type, eventId;
     ImageView detailImg;
     String uploadedImageUrl;
@@ -74,7 +74,14 @@ public class EventUpdateActivity extends AppCompatActivity {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
             startActivityForResult(intent1, 100);
         });
-
+        friendBtn = findViewById(R.id.friends);
+        friendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(EventUpdateActivity.this, MainChatActivity.class);
+                startActivity(intent1);
+            }
+        });
         Event event = (Event) getIntent().getSerializableExtra("event");
 
         if (event != null) {
