@@ -33,6 +33,7 @@ const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
 const attendeeRoutes = require('./routes/attendee');
 const organizerRoutes = require('./routes/organizer');  
+const conservationRoutes = require('./routes/conservation');
 
 app.use("/organizers", organizerRoutes);
 app.use("/bookings", bookingRoutes);
@@ -40,6 +41,8 @@ app.use("/upload", uploadRoutes);
 app.use("/events", eventRoutes);
 app.use("/api/users", userRoutes);
 app.use("/attendees", attendeeRoutes)
+app.use("/conservation", conservationRoutes)
+
 // Khởi động server
 app.listen(3000, '0.0.0.0', () => {
     console.log("🚀 Server running on port 3000");
