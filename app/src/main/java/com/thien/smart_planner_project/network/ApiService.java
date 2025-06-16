@@ -1,14 +1,24 @@
 package com.thien.smart_planner_project.network;
 
 import com.squareup.okhttp.ResponseBody;
+
+import com.thien.smart_planner_project.model.dto.ApiResponse;
+
 import com.thien.smart_planner_project.model.Booking;
+import com.thien.smart_planner_project.model.dto.ChatBoxDTO;
 import com.thien.smart_planner_project.model.CheckinRequest;
 import com.thien.smart_planner_project.model.CheckinResponse;
-import com.thien.smart_planner_project.model.EmailRequest;
+import com.thien.smart_planner_project.model.dto.EmailRequest;
 import com.thien.smart_planner_project.model.Event;
-import com.thien.smart_planner_project.model.SendMailInviteDTO;
+import com.thien.smart_planner_project.model.dto.FriendDTO;
+import com.thien.smart_planner_project.model.InviteAddFriend;
+import com.thien.smart_planner_project.model.Message;
+import com.thien.smart_planner_project.model.dto.MarkReadRequest;
+import com.thien.smart_planner_project.model.dto.SendMailInviteDTO;
 import com.thien.smart_planner_project.model.User;
-import com.thien.smart_planner_project.model.UserAttendeeDTO;
+import com.thien.smart_planner_project.model.dto.StatusFriend;
+import com.thien.smart_planner_project.model.dto.StatusResponse;
+import com.thien.smart_planner_project.model.dto.UserAttendeeDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -84,6 +94,44 @@ public interface ApiService {
     @GET("attendees/removeUserFromRestrictedList/{eventId}/{userId}/")
     Call<Void> removeUserFromRestrictedList(@Path("eventId") String eventId ,@Path("userId") String userId);
 
+
     @POST("api/save-token")
     Call<ResponseBody> saveToken(@Body Map<String, String> payload);
+
+    @POST("conservation/addFriend")
+    Call<ApiResponse> addFriend(@Body InviteAddFriend invite);
+
+    @POST("conservation/acceptFriend")
+    Call<ApiResponse> acceptFriend(@Body InviteAddFriend invite);
+
+    @POST("conservation/rejectFriend")
+    Call<ApiResponse> rejectFriend(@Body InviteAddFriend invite);
+
+    @POST("conservation/deleteFriend")
+    Call<String> deleteFriend(@Body InviteAddFriend invite);
+
+    @POST("conservation/blockFriend")
+    Call<String> blockFriend(@Body InviteAddFriend invite);
+
+    @POST("conservation/sendMessage")
+    Call<ApiResponse> sendMessage(@Body Message message);
+
+    @GET("conservation/listMessage/{friendId}/{page}/{size}")
+    Call<List<Message>> listMessage(@Path("friendId") String friendId, @Path("page") int page, @Path("size") int size);
+
+    @GET("conservation/listReceivedFriend/{userId}")
+    Call<List<User>> listReceivedFriend(@Path("userId") String userId);
+
+    @GET("conservation/listFriend/{userId}")
+    Call<List<FriendDTO>> listFriend(@Path("userId") String userId);
+
+    @GET("conservation/listChatBox/{userId}")
+    Call<List<ChatBoxDTO>> listChatBox(@Path("userId") String userId);
+
+    @POST("conservation/status/{userId}")
+    Call<StatusResponse> getStatus(@Body StatusFriend statusFriend);
+
+    @POST("conservation/setIsRead")
+    Call<Void> setIsRead(@Body MarkReadRequest markReadRequest);
+
 }

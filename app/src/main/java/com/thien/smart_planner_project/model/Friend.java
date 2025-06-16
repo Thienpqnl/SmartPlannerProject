@@ -8,16 +8,18 @@ import java.util.Map;
 public class Friend implements Serializable {
     private String userA;
     private String userB;
-    private Map<String, String> status;
+    private String statusA;
+    private String statusB;
     private LocalDateTime createAt;
 
     public Friend() {
     }
 
-    public Friend(String userA, String userB, Map<String, String> status, LocalDateTime createAt) {
+    public Friend(String userA, String userB, String statusA, String statusB, LocalDateTime createAt) {
         this.userA = userA;
         this.userB = userB;
-        this.status = status;
+        this.statusA = statusB;
+        this.statusA = statusB;
         this.createAt = createAt;
     }
 
@@ -37,12 +39,20 @@ public class Friend implements Serializable {
         this.userB = userB;
     }
 
-    public Map<String, String> getStatus() {
-        return status;
+    public String getStatusA() {
+        return statusA;
     }
 
-    public void setStatus(Map<String, String> status) {
-        this.status = status;
+    public void setStatusA(String statusA) {
+        this.statusA = statusA;
+    }
+
+    public String getStatusB() {
+        return statusB;
+    }
+
+    public void setStatusB(String statusB) {
+        this.statusB = statusB;
     }
 
     public LocalDateTime getCreateAt() {

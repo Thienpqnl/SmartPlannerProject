@@ -5,12 +5,14 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" /> <!-- Dùng cho API < 33 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Dùng cho API >= 33 -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Các quyền khác nếu cần -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +26,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <service
+            android:name=".service.SocketService"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="connectedDevice|dataSync" />
+        <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
@@ -32,7 +39,8 @@
         </service>
         <activity
             android:name=".ChatBoxDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".MainChatActivity"
             android:exported="false" />
