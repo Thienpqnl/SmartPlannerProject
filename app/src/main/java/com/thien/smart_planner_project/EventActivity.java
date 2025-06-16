@@ -106,8 +106,8 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EventActivity.this, FilterActivity.class);
-
-                startActivity(intent);
+                startActivityForResult(intent, 1001);
+              //  startActivity(intent);
             }
         });
     }
@@ -147,5 +147,76 @@ public class EventActivity extends AppCompatActivity {
             }
         });
     }
+
+
+//
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null) {
+            String fromDate = data.getStringExtra("fromDate");
+            String toDate = data.getStringExtra("toDate");
+            String fromTime = data.getStringExtra("fromTime");
+            String toTime = data.getStringExtra("toTime");
+            String eventType = data.getStringExtra("eventType");
+            String location = data.getStringExtra("location");
+            ArrayList<String> seatRanges = data.getStringArrayListExtra("seatRanges");
+
+            // Gọi hàm lọc ở đây, ví dụ:
+            handleFilter(fromDate, toDate, fromTime, toTime, eventType, location, seatRanges);
+        }
+    }
+
+    //
+    private void handleFilter(String fromDate, String toDate, String fromTime, String toTime,
+                              String eventType, String location, List<String> seatRanges) {
+        List<Event> filteredList = new ArrayList<>();
+
+        for (Event event : eventList) {
+            boolean match = true;
+
+            // 1. Lọc theo ngày
+            if (!fromDate.isEmpty() && event.getDate().compareTo(fromDate) < 0) match = false;
+            if (!toDate.isEmpty() && event.getDate().compareTo(toDate) > 0) match = false;
+
+            // 2. Lọc theo thời gian
+            if (!fromTime.isEmpty() && event.getTime().compareTo(fromTime) < 0) match = false;
+            if (!toTime.isEmpty() && event.getTime().compareTo(toTime) > 0) match = false;
+
+            // 3. Lọc theo loại sự kiện
+            if (!eventType.isEmpty() && !event.getType().equalsIgnoreCase(eventType)) match = false;
+
+            // 4. Lọc theo địa điểm
+            if (!location.isEmpty() && !event.getLocation().toLowerCase().contains(location.toLowerCase())) match = false;
+
+            // 5. Lọc theo số ghế
+            if (!seatRanges.isEmpty()) {
+                boolean seatMatch = false;
+                int seat = event.getSeats();
+
+                for (String range : seatRanges) {
+                    if (range.equals("1-10") && seat >= 1 && seat <= 10) seatMatch = true;
+                    if (range.equals("11-50") && seat >= 11 && seat <= 50) seatMatch = true;
+                    if (range.equals("51-100") && seat >= 51 && seat <= 100) seatMatch = true;
+                    if (range.equals("101+") && seat > 100) seatMatch = true;
+                }
+
+                if (!seatMatch) match = false;
+            }
+
+            if (match) {
+                filteredList.add(event);
+            }
+        }
+
+        // Cập nhật RecyclerView
+        eventAdapter = new EventAdapter(filteredList);
+        recyclerView.setAdapter(eventAdapter);
+
+        Toast.makeText(this, "Tìm thấy " + filteredList.size() + " sự kiện", Toast.LENGTH_SHORT).show();
+    }
+
+
 
 }

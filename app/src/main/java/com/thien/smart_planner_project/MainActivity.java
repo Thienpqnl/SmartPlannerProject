@@ -370,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         datePickerDialog.show();
     }
+
     private void showTimePicker() {
         // Lấy thời gian hiện tại
         final Calendar calendar = Calendar.getInstance();

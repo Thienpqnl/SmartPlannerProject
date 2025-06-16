@@ -28,7 +28,11 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_marginLeft="10dp"
+            android:hint="Tìm kiếm sự kiện..."
+            android:paddingLeft="10dp"
+            android:layout_weight="2"
             android:background="@drawable/edit_text_border" />
+
 
         <Button
             android:id="@+id/btnFilter"
@@ -37,6 +41,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/button_drawable"
+            android:layout_weight="1"
             android:text="☰"
             android:textSize="30sp"
 
@@ -46,11 +51,16 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
+            android:layout_weight="1"
             />
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEvent"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
+
 </LinearLayout>
