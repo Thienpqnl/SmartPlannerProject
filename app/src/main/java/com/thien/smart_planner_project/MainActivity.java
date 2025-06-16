@@ -152,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
         );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            imageView.setOnClickListener(v -> openImagePicker());
-        }
+
+        imageView.setOnClickListener(v -> openImagePicker());
+
 
         creButton.setOnClickListener(v -> saveEvent());
 
@@ -318,12 +318,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void openImagePicker() {
-        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
-            return; // Thoát nếu chưa được cấp quyền
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ yêu cầu quyền mới
+            if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
+                return;
+            }
+        } else {
+            // Android <= 12 dùng quyền cũ
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return;
+            }
         }
 
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
