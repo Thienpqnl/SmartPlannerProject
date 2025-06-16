@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 
 const friendSchema = new mongoose.Schema({
-  userA: { type: String, required: true },
-  userB: { type: String, required: true },
-  status: {
-    userA: { type: String, enum: ['pending', 'accepted', 'blocked', 'deleted','sent'], default: 'sent' },
-    userB: { type: String, enum: ['pending', 'accepted', 'blocked', 'deleted', 'sent'], default: 'sent' }
-  },
+  userA: { type: String, required: true }, // userId người gửi
+  userB: { type: String, required: true }, // userId người nhận
+  statusA: { type: String, enum: ['pending', 'accepted', 'blocked', 'deleted', 'sent'], default: 'sent' },
+  statusB: { type: String, enum: ['pending', 'accepted', 'blocked', 'deleted', 'sent'], default: 'pending' },
   createdAt: { type: Date, default: Date.now }
 });
 

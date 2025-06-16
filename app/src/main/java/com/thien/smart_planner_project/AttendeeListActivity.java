@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thien.smart_planner_project.Adapter.AttendeeAdapter;
-import com.thien.smart_planner_project.model.UserAttendeeDTO;
+import com.thien.smart_planner_project.model.dto.UserAttendeeDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 

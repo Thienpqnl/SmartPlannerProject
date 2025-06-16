@@ -16,7 +16,9 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
 
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         loginEmail = findViewById(R.id.loginEmail);
         loginButton = findViewById(R.id.loginButton);
         signUpView = findViewById(R.id.signUp);
+        SocketManager.getInstance().init("ws://10.0.2.2:3000",LoginActivity.this);
         signUpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                                             if (response.isSuccessful() && response.body() != null) {
                                                 String role = response.body().getRole();
                                                 User user = response.body();
+                                                SocketManager.getInstance().registerUser(user.getUserId());
                                                 instance.saveUser(user);
                                                 if ("organizer".equalsIgnoreCase(role)) {
                                                     Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
@@ -83,12 +87,9 @@ public class LoginActivity extends AppCompatActivity {
                                                     Intent intent2 = new Intent(LoginActivity.this, EventActivity.class);
                                                     intent2.putExtra("user", user);
                                                     startActivity(intent2);
-
                                                     //dùng session
                                                     SessionManager sessionManager=new SessionManager(LoginActivity.this);
                                                     sessionManager.createLoginSession(user.getUserId(), user.getName());
-
-
                                                 }
 
                                                 finish();

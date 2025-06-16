@@ -1,54 +1,58 @@
 package com.thien.smart_planner_project;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.thien.smart_planner_project.Fragment.ChatBoxFragment;
 import com.thien.smart_planner_project.Fragment.InviteFriendFragment;
-import com.thien.smart_planner_project.Fragment.ListFriendsFragment;
+import com.thien.smart_planner_project.Fragment.ListFriendFragment;
 
 public class MainChatActivity extends AppCompatActivity {
     private TextView tabChat, tabFriends, tabInviteFriends;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_chat);
 
-
+        back = findViewById(R.id.back_main_chat);
+        back.setOnClickListener(v ->{
+            finish();
+        });
         tabChat = findViewById(R.id.chat_box);
         tabFriends = findViewById(R.id.list_friend);
         tabInviteFriends = findViewById(R.id.invite_friend);
 
-        showFragment(new ChatBoxFragment());
+
         int activeColor = ContextCompat.getColor(this, R.color.blue_bold);
         int activeTextColor = ContextCompat.getColor(this, R.color.background_light);
 
+        tabChat.setTextColor(activeTextColor);
+        tabChat.setBackgroundColor(activeColor);
+        showFragment(new ChatBoxFragment());
+
         tabChat.setOnClickListener(v -> {
+            resetTabColors();
             tabChat.setTextColor(activeTextColor);
             tabChat.setBackgroundColor(activeColor);
-            resetTabColors();
             showFragment(new ChatBoxFragment());
         });
         tabFriends.setOnClickListener(v -> {
+            resetTabColors();
             tabFriends.setTextColor(activeTextColor);
             tabFriends.setBackgroundColor(activeColor);
-            resetTabColors();
-            showFragment(new ListFriendsFragment());
+            showFragment(new ListFriendFragment());
         });
         tabInviteFriends.setOnClickListener(v -> {
+            resetTabColors();
             tabInviteFriends.setTextColor(activeTextColor);
             tabInviteFriends.setBackgroundColor(activeColor);
-            resetTabColors();
             showFragment(new InviteFriendFragment());
         });
     }
@@ -63,8 +67,9 @@ public class MainChatActivity extends AppCompatActivity {
         tabChat.setBackgroundColor(inactiveColor);
         tabFriends.setBackgroundColor(inactiveColor);
         tabInviteFriends.setBackgroundColor(inactiveColor);
+
         tabChat.setTextColor(Color.BLACK);
-        tabFriends.setBackgroundColor(Color.BLACK);
-        tabInviteFriends.setBackgroundColor(Color.BLACK);
+        tabFriends.setTextColor(Color.BLACK);
+        tabInviteFriends.setTextColor(Color.BLACK);
     }
 }

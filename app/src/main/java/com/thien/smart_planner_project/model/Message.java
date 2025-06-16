@@ -1,7 +1,10 @@
 package com.thien.smart_planner_project.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
     private String friendId;
@@ -9,18 +12,19 @@ public class Message implements Serializable {
     private String content;
     private String status;
     private boolean isRead;
-    private LocalDateTime createAt;
+    @SerializedName("createdAt")
+    private String createdAt;
 
     public Message() {
     }
 
-    public Message(String content, String status, boolean isRead, String friendId, String sender, LocalDateTime createAt) {
+    public Message(String content, String status, boolean isRead, String friendId, String sender, String createdAt) {
         this.content = content;
         this.status = status;
         this.isRead = isRead;
         this.friendId = friendId;
         this.sender = sender;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
     }
 
     public String getFriendId() {
@@ -63,11 +67,28 @@ public class Message implements Serializable {
         isRead = read;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public String getcreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+    public void setcreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCreatedAtDateTime() {
+        if (createdAt == null) return null;
+        return LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "friendId='" + friendId + '\'' +
+                ", sender='" + sender + '\'' +
+                ", content='" + content + '\'' +
+                ", status='" + status + '\'' +
+                ", isRead=" + isRead +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
