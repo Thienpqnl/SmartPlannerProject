@@ -5,6 +5,7 @@ import com.thien.smart_planner_project.model.CheckinRequest;
 import com.thien.smart_planner_project.model.CheckinResponse;
 import com.thien.smart_planner_project.model.EmailRequest;
 import com.thien.smart_planner_project.model.Event;
+import com.thien.smart_planner_project.model.SendMailInviteDTO;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.model.UserAttendeeDTO;
 
@@ -65,4 +66,19 @@ public interface ApiService {
 
     @POST("attendees/sendEmailInvite")
     Call<Void> sendEmailInvite(@Body EmailRequest emailRequest);
+
+    @GET("attendees/eventInviteEligible/{creatorId}/{userId}")
+    Call<List<Event>> eventInviteEligible(@Path("creatorId") String creatorId, @Path("userId") String userId);
+
+    @POST("attendees/sendEmailInvite")
+    Call<Void> sendEmailInvites(@Body SendMailInviteDTO sendMailInviteDTO);
+
+    @GET("attendees/getListRestricedUserInEvent/{eventId}")
+    Call<List<UserAttendeeDTO>> getListRestricedUserInEvent(@Path("eventId") String eventId);
+
+    @GET("attendees/putUserInRestrictedList/{eventId}/{userId}/")
+    Call<Void> putUserInRestrictedList(@Path("eventId") String eventId ,@Path("userId") String userId);
+
+    @GET("attendees/removeUserFromRestrictedList/{eventId}/{userId}/")
+    Call<Void> removeUserFromRestrictedList(@Path("eventId") String eventId ,@Path("userId") String userId);
 }

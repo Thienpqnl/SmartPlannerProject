@@ -104,12 +104,17 @@ router.post('/', async (req, res) => {
             await attendee.save();
         } else {
             // Nếu đã có, cập nhật thêm sự kiện mới và QR
-            attendee.eventsRegistered.addToSet?.(idEvent) || attendee.eventsRegistered.push(idEvent);
+            if (!Array.isArray(attendee.eventsRegistered)) {
+                attendee.eventsRegistered = [];
+            }
+            if (!attendee.eventsRegistered.includes(idEvent)) {
+                attendee.eventsRegistered.push(idEvent);
+            }
             attendee.qrCodes.push({
-                        qr: urlQR,
-                        checkedIn: false,
-                        eventId: idEvent,
-                    });
+                qr: urlQR,
+                checkedIn: false,
+                eventId: idEvent,
+            });
             await attendee.save();
         }
         res.status(201).json(savedBooking);

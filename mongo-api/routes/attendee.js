@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
 const Attendee = require('../models/Attendee');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
-
+const Event = require('../models/Event');
 // GET /attendee/getListByEvent/:eventId
 router.get('/getListByEvent/:eventId', async (req, res) => {
   const { eventId } = req.params;
@@ -122,7 +122,10 @@ router.get('/getListEventUserHasCheckIn/:userId', async (req, res) => {
     const checkedInEvents = attendee.qrCodes
       .filter(qr => qr.checkedIn && qr.status === "doing")
       .map(qr => qr.eventId);
-    res.json(checkedInEvents);
+    if (checkedInEvents.length === 0) return res.json([]);
+      //Lấy danh sách Event theo eventId
+      const events = await Event.find({ _id: { $in: checkedInEvents } });
+      res.json(events);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Lỗi server" });
@@ -198,31 +201,146 @@ router.post('/sendEmailAboutDeteleBookTicket', async (req, res) => {
         res.status(500).json({ message: 'Lỗi gửi email.' });
     }
 });
-router.post('/sendEmailInvite', async (req, res) => {
-    const { from, to, subject, content } = req.body;
+function buildMailContent(from, to, event) {
+    return `Sinh chào bạn ${to}, bạn nhận được thư từ ${from} cho lời mời tham gia sự kiện ${event.name}.\nId đăng ký tham gia sự kiện: ${event._id || event.id}`;
+}
 
-    if (!from || !to || !subject || !content) {
-        return res.status(400).json({ message: 'Thiếu thông tin email.' });
+router.post('/sendEmailInvite', async (req, res) => {
+    const { from, to, subject, events } = req.body;
+
+    if (!from || !to || !subject || !events || !Array.isArray(events) || events.length === 0) {
+        return res.status(400).json({ message: 'Thiếu thông tin email hoặc danh sách sự kiện.' });
     }
 
-    const mailOptions = {
-        from,
-        to,
-        subject,
-        text: content
-    };
+    let sendResults = [];
+    for (const event of events) {
+        const content = buildMailContent(from, to, event);
+        const mailOptions = {
+            from,
+            to,
+            subject,
+            text: content
+        };
+        try {
+            await transporter.sendMail(mailOptions);
+            sendResults.push({ event: event.name, status: 'sent' });
+        } catch (error) {
+            sendResults.push({ event: event.name, status: 'error', error: error.toString() });
+        }
+    }
+
+    // Nếu tất cả thành công
+    const allSuccess = sendResults.every(r => r.status === 'sent');
+    if (allSuccess) {
+        res.json({ message: 'Gửi email thành công.', details: sendResults });
+    } else {
+        res.status(207).json({ message: 'Một số email gửi không thành công.', details: sendResults });
+    }
+});
+// danh sách event user đã tạo, trước thời gian diễn ra, và userId không nằm trong danh sách hạn chế
+router.get('/eventInviteEligible/:creatorId/:userId', async (req, res) => {
+    const { creatorId, userId } = req.params;
+
     try {
-        await transporter.sendMail(mailOptions);
-        res.json({ message: 'Gửi email thành công.' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Lỗi gửi email.' });
+        const now = Date.now();
+
+        const events = await Event.find({
+            creatorUid: creatorId,
+            restrictedUserIds: { $ne: userId }
+        });
+
+        const eventsBeforeNow = events.filter(event => {
+            const [day, month, year] = event.date.split('/');
+            const hourMinute = event.time ? event.time.split(':') : ['0', '0'];
+            const eventDateObj = new Date(
+                parseInt(year),
+                parseInt(month) - 1,
+                parseInt(day),
+                parseInt(hourMinute[0]),
+                parseInt(hourMinute[1])
+            );
+            const eventTimestamp = eventDateObj.getTime();
+            return eventTimestamp > now;
+        });
+        res.status(200).json(eventsBeforeNow);
+    } catch (err) {
+        console.error("Lỗi khi lấy sự kiện của organizer:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+router.get('/getListRestricedUserInEvent/:eventId', async (req, res) => {
+    const {eventId} = req.params;
+
+    try {
+        const now = Date.now();
+
+        const event = await Event.findOne({
+            _id: eventId,
+        });
+        const userIds = event.restrictedUserIds || [];
+        const users = await User.find({ _id: { $in: userIds }});
+        const usersWithBookingDate = users.map(user => ({
+                    ...user.toObject(),
+                    bookingDate: null,
+                }));
+        res.status(200).json(usersWithBookingDate);
+    } catch (err) {
+        console.error("Lỗi khi lấy sự kiện của organizer:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get('/putUserInRestrictedList/:eventId/:userId', async (req, res) => {
+    const { eventId, userId } = req.params;
+    try {
+        const event = await Event.findOne({ _id: eventId });
+        if (!event) {
+            return res.status(404).json({ error: "Không tìm thấy sự kiện." });
+        }
+        // Kiểm tra trùng lặp để tránh push nhiều lần
+        if (!event.restrictedUserIds.includes(userId)) {
+            event.restrictedUserIds.push(userId);
+            await event.save();
+        }
+        res.status(200).json({ message: "Đã thêm user vào danh sách hạn chế.", restrictedUserIds: event.restrictedUserIds });
+    } catch (err) {
+        console.error("Lỗi khi thêm user vào restricted list:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+router.get('/removeUserFromRestrictedList/:eventId/:userId', async (req, res) => {
+    const { eventId, userId } = req.params;
+    try {
+        const event = await Event.findOne({ _id: eventId });
+        if (!event) {
+            return res.status(404).json({ error: "Không tìm thấy sự kiện." });
+        }
+
+        // Lọc ra khỏi danh sách hạn chế nếu tồn tại
+        const before = event.restrictedUserIds.length;
+        event.restrictedUserIds = event.restrictedUserIds.filter(id => id !== userId);
+
+        if (event.restrictedUserIds.length < before) {
+            await event.save();
+            res.status(200).json({ message: "Đã xoá user khỏi danh sách hạn chế.", restrictedUserIds: event.restrictedUserIds });
+        } else {
+            res.status(200).json({ message: "User không nằm trong danh sách hạn chế.", restrictedUserIds: event.restrictedUserIds });
+        }
+    } catch (err) {
+        console.error("Lỗi khi xoá user khỏi restricted list:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 //router.get('/backup', async (req,res) =>{
-//    await Booking.updateMany(
-//      { status: { $exists: false } },
-//      { $set: { status: "doing" } }
-//    )
+//    try {
+//        // Cập nhật tất cả event chưa có trường restrictedUserIds
+//        const result = await Event.updateMany(
+//          { restrictedUserIds: { $exists: false } },
+//          { $set: { restrictedUserIds: [] } }
+//        );
+//        console.log(`Đã cập nhật ${result.nModified} event.`);
+//      } catch (err) {
+//        console.error('Lỗi khi cập nhật:', err);
+//      }
 //})
 module.exports = router;

@@ -46,13 +46,13 @@
 
                     <ImageView
                         android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_marginTop="32dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/profile" />
+                        app:srcCompat="@drawable/user" />
 
                     <TextView
                         android:id="@+id/name"
@@ -93,7 +93,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="400dp"
+                        android:layout_height="420dp"
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="60dp"
                         android:layout_marginEnd="24dp"
@@ -128,7 +128,7 @@
                                         app:layout_constraintTop_toTopOf="parent" />
 
                                     <ImageView
-                                        android:id="@+id/imageView5"
+                                        android:id="@+id/invite_image"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="4dp"
@@ -150,10 +150,12 @@
                             android:layout_height="wrap_content"
                             android:textSize="18sp"
                             android:textStyle="bold"
+                            android:layout_marginTop="5dp"
                             android:layout_gravity="center_horizontal"
                             android:text="Danh sách event đã tham gia" />
 
                         <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
                     </LinearLayout>

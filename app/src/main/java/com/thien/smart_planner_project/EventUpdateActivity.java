@@ -40,13 +40,14 @@ import retrofit2.Response;
 
 public class EventUpdateActivity extends AppCompatActivity {
     TextView detailName, detailDate, detailLocal, detailTime, detailSeat, evType, detailDes;
-    Button updateEvent, detailJoin, cancelEvent, listAttendeeBtn, inviteBtn;
+    Button updateEvent, detailJoin, cancelEvent, listAttendeeBtn, inviteBtn, friendBtn;
     String name, date, local, time, uid, img, seat, des, type, eventId;
     ImageView detailImg;
     String uploadedImageUrl;
     String id;
     double longitude;
     double latitude;
+    private List<String> restricedUser;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private final String content = """
             Xin chào %s, Bạn được mời tham dự sự kiện %s. Bạn hãy vào app nhập id của sự kiện để tìm kiếm (Id: %s). Rất mong bạn sắp xếp thời gian tham gia cùng chúng tôi.Trân trọng!
@@ -73,7 +74,14 @@ public class EventUpdateActivity extends AppCompatActivity {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
             startActivityForResult(intent1, 100);
         });
-
+        friendBtn = findViewById(R.id.friends);
+        friendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(EventUpdateActivity.this, MainChatActivity.class);
+                startActivity(intent1);
+            }
+        });
         Event event = (Event) getIntent().getSerializableExtra("event");
 
         if (event != null) {
@@ -89,7 +97,7 @@ public class EventUpdateActivity extends AppCompatActivity {
             type = event.getType();
             longitude = event.getLongitude();
             latitude = event.getLatitude();
-
+            restricedUser = event.getRestrictedUserIds();
         }
         detailName.setText(name);
         detailDate.setText(date);
@@ -116,7 +124,6 @@ public class EventUpdateActivity extends AppCompatActivity {
                         Uri selectedImageUri = result.getData().getData();
                         detailImg.setImageURI(selectedImageUri); // Hiển thị ảnh đã chọn
                         detailImg.setTag(selectedImageUri.toString());
-
                         try {
                             MainActivity main = new MainActivity();
                             main.uploadImage(EventUpdateActivity.this,selectedImageUri, new UploadCallback() {
@@ -125,7 +132,6 @@ public class EventUpdateActivity extends AppCompatActivity {
                                     uploadedImageUrl = uploadedUrl; // Lưu lại để dùng khi tạo Event
                                     Log.d("UPLOAD", "URL: " + uploadedImageUrl);
                                 }
-
                                 @Override
                                 public void onUploadFailure(Throwable t) {
                                     Toast.makeText(EventUpdateActivity.this, "Lỗi upload: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -165,7 +171,6 @@ public class EventUpdateActivity extends AppCompatActivity {
             });
 
             builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
-
             builder.show();
         });
         updateEvent.setOnClickListener(new View.OnClickListener() {
@@ -175,8 +180,7 @@ public class EventUpdateActivity extends AppCompatActivity {
                 Event event1 = new Event(detailName.getText().toString(), detailDate.getText().toString(),
                         local, detailTime.getText().toString(), evType.getText().toString(),
                         detailDes.getText().toString(), uploadedImageUrl, Integer.parseInt(detailSeat.getText().toString()),
-                        longitude, latitude, uid);
-
+                        longitude, latitude, uid,restricedUser);
                 Call<Event> call = apiService.updateEvent( id, event1);
 
                 call.enqueue(new Callback<Event>() {
@@ -247,7 +251,6 @@ public class EventUpdateActivity extends AppCompatActivity {
 
 
     private void setupEditableText(TextView textView, String hint) {
-
         textView.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Cap nhat");
@@ -292,7 +295,7 @@ public class EventUpdateActivity extends AppCompatActivity {
     private void golistAttendee(String eventId){
         Intent intent = new Intent(this, AttendeeListActivity.class);
         intent.putExtra("eventId",eventId);
-        intent.putExtra("title","Danh sách người đặt vé");
+        intent.putExtra("title","Danh sách người tham gia & đặt vé");
         startActivity(intent);
     }
     private void sendEmailInvite(Call<Void> call){
