@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_marginTop="15dp">
 
     <!-- Header -->
     <LinearLayout
@@ -82,17 +82,19 @@
             android:hint="Nhập tin nhắn..."
             android:padding="12dp"
             android:textColor="@android:color/black"
-            android:textColorHint="#888888" />
+            android:textColorHint="#888888"
+            android:imeOptions="actionSend"
+            android:inputType="textMultiLine"
+            android:maxLines="4" />
 
         <ImageView
             android:id="@+id/send_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:background="@drawable/border_background_blue"
             android:padding="10dp"
             app:srcCompat="@android:drawable/ic_menu_send" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

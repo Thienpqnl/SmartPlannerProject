@@ -17,15 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
-import com.thien.smart_planner_project.Adapter.EventAdapter1;
 import com.thien.smart_planner_project.Adapter.InviteEventAdapter;
 import com.thien.smart_planner_project.R;
-import com.thien.smart_planner_project.UserPreviewActivity;
-import com.thien.smart_planner_project.model.EmailRequest;
 import com.thien.smart_planner_project.model.Event;
-import com.thien.smart_planner_project.model.SendMailInviteDTO;
+import com.thien.smart_planner_project.model.dto.SendMailInviteDTO;
 import com.thien.smart_planner_project.model.User;
-import com.thien.smart_planner_project.model.UserAttendeeDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
