@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     intent.putExtra("user",user);
                                                     startActivity(intent);
                                                 } else {
-                                                    Intent intent2 = new Intent(LoginActivity.this, EventActivity.class);
+                                                    Intent intent2 = new Intent(LoginActivity.this, AttendeeProfile.class);
                                                     intent2.putExtra("user", user);
                                                     startActivity(intent2);
                                                     //dùng session
