@@ -2,6 +2,7 @@ package com.thien.smart_planner_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,12 +11,23 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.squareup.okhttp.ResponseBody;
+import com.thien.smart_planner_project.model.MySingleton;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +87,16 @@ public class LoginActivity extends AppCompatActivity {
                                                 String role = response.body().getRole();
                                                 User user = response.body();
                                                 instance.saveUser(user);
+                                                FirebaseMessaging.getInstance().getToken()
+                                                        .addOnCompleteListener(task -> {
+                                                            if (task.isSuccessful() && task.getResult() != null) {
+                                                                String newToken = task.getResult();
+
+                                                                // Gửi lên server: userId + token
+                                                                sendTokenToServer(user.getUserId(), newToken);
+                                                            }
+                                                        });
+
                                                 if ("organizer".equalsIgnoreCase(role)) {
                                                     Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
                                                     intent.putExtra("user",user);
@@ -95,6 +117,30 @@ public class LoginActivity extends AppCompatActivity {
                                             } else {
                                                 Toast.makeText(LoginActivity.this, "Khong lay duoc thong tin nguoi dung tu server", Toast.LENGTH_SHORT).show();
                                             }
+                                        }
+
+                                        private void sendTokenToServer(String userId, String newToken) {
+                                            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                                            Map<String, String> payload = new HashMap<>();
+                                            payload.put("userId", userId);
+                                            payload.put("fcmToken", newToken);
+
+                                            Call<ResponseBody> call = apiService.saveToken(payload);
+                                            call.enqueue(new Callback<ResponseBody>() {
+                                                @Override
+                                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                    if (response.isSuccessful()) {
+                                                        Log.d("FCM", "Token đã được cập nhật");
+                                                    } else {
+                                                        Log.e("FCM", "Lỗi khi cập nhật token: " + response.message());
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                    Log.e("FCM", "Lỗi mạng khi gửi token", t);
+                                                }
+                                            });
                                         }
 
                                         @Override

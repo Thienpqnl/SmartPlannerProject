@@ -30,6 +30,7 @@ import com.thien.smart_planner_project.model.Event;
 import com.thien.smart_planner_project.model.UserAttendeeDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.NotificationSender;
 
 import java.io.IOException;
 import java.util.List;
@@ -191,6 +192,13 @@ public class EventUpdateActivity extends AppCompatActivity {
                             Intent intent = new Intent(EventUpdateActivity.this, OrganizerViewActivity.class);
                             intent.putExtra("uid", response.body().getCreatorUid());
                             intent.putExtra("role","organizer");
+                            NotificationSender.sendNotification(
+                                    EventUpdateActivity.this,
+                                    uid,
+                                    "Đã thay đổi thông tin sự kiện",
+                                    "Xem thông tin sự kiện: " + event1.getName(),
+                                    "update"
+                            );
                             startActivity(intent);
                             finish();
                         } else {

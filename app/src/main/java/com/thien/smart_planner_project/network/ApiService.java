@@ -1,5 +1,6 @@
 package com.thien.smart_planner_project.network;
 
+import com.squareup.okhttp.ResponseBody;
 import com.thien.smart_planner_project.model.Booking;
 import com.thien.smart_planner_project.model.CheckinRequest;
 import com.thien.smart_planner_project.model.CheckinResponse;
@@ -10,6 +11,7 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.model.UserAttendeeDTO;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -81,4 +83,7 @@ public interface ApiService {
 
     @GET("attendees/removeUserFromRestrictedList/{eventId}/{userId}/")
     Call<Void> removeUserFromRestrictedList(@Path("eventId") String eventId ,@Path("userId") String userId);
+
+    @POST("api/save-token")
+    Call<ResponseBody> saveToken(@Body Map<String, String> payload);
 }

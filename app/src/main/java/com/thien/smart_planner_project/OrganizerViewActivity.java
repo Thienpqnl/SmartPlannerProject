@@ -85,7 +85,6 @@ public class OrganizerViewActivity extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
 
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<Event>> call = apiService.getOrganizerEventList(user.getUserId());

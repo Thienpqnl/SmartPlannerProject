@@ -34,7 +34,9 @@ const bookingRoutes = require('./routes/booking');
 const attendeeRoutes = require('./routes/attendee');
 const organizerRoutes = require('./routes/organizer');  
 const conservationRoutes = require('./routes/conservation');
+const notificationRoute = require('./routes/notificationRoute');
 
+app.use('/', notificationRoute);
 app.use("/organizers", organizerRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/upload", uploadRoutes);
