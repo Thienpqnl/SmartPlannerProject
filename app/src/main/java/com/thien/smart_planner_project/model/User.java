@@ -11,6 +11,9 @@ public class User implements Serializable{
     private double longitude;
     private double latitude;
 
+    public User() {
+    }
+
     public User(String email, String name) {
         this.email = email;
         this.name = name;

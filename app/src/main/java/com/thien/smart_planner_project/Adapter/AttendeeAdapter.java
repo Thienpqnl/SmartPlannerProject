@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thien.smart_planner_project.R;
 import com.thien.smart_planner_project.UserPreviewActivity;
-import com.thien.smart_planner_project.model.EmailRequest;
+import com.thien.smart_planner_project.model.dto.EmailRequest;
 import com.thien.smart_planner_project.model.User;
-import com.thien.smart_planner_project.model.UserAttendeeDTO;
+import com.thien.smart_planner_project.model.dto.UserAttendeeDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
