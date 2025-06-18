@@ -11,19 +11,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.okhttp.ResponseBody;
 import com.thien.smart_planner_project.Controller.GMap;
-import com.thien.smart_planner_project.model.MySingleton;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.NotificationSender;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;

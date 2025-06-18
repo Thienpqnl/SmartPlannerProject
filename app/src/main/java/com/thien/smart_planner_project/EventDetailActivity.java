@@ -34,6 +34,7 @@ import com.thien.smart_planner_project.model.Booking;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.NotificationSender;
 import com.thien.smart_planner_project.service.SharedPrefManager;
 
 import java.io.File;
@@ -150,6 +151,13 @@ public class EventDetailActivity extends AppCompatActivity {
             apiService.createBooking(bookingRequest).enqueue(new ApiCallback<Booking>() {
                 @Override
                 public void onSuccess(Booking result) {
+                    NotificationSender.sendNotification(
+                            EventDetailActivity.this,
+                            user.getUserId(),
+                            "SmartPlannerProject",
+                            "Dat ve thanh cong.",
+                            "welcome"
+                    );
                     String qrUrl = result.getUrlQR();
                     QRFragment qrFragment = QRFragment.newInstance(qrUrl);
                     qrFragment.show(getSupportFragmentManager(), "QRFragment");

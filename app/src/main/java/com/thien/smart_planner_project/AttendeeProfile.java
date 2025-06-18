@@ -18,19 +18,19 @@ public class AttendeeProfile extends AppCompatActivity {
     protected void onCreate(Bundle bundle) {
 
         super.onCreate(bundle);
-
+        setContentView(R.layout.attendee_main_layout);
         TextView name = findViewById(R.id.attendee_username);
         TextView email = findViewById(R.id.attendee_email);
 
         LinearLayout layout1 = findViewById(R.id.UpcomingEvent);
         Intent intent = getIntent();
 
-        user = (User) intent.getParcelableExtra("user");
+        User user = (User) getIntent().getSerializableExtra("user");
         layout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn vào layout
-                Toast.makeText(getApplicationContext(), "Layout clicked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AttendeeProfile.this, "Layout clicked!", Toast.LENGTH_SHORT).show();
 
                 // Ví dụ: Chuyển sang activity khác
                 Intent intent1 = new Intent(AttendeeProfile.this, EventActivity.class);
@@ -43,11 +43,11 @@ public class AttendeeProfile extends AppCompatActivity {
 
         LinearLayout layout2 = findViewById(R.id.logOUt);
 
-        layout1.setOnClickListener(new View.OnClickListener() {
+        layout2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Xử lý khi người dùng nhấn vào layout
-                Toast.makeText(getApplicationContext(), "Layout clicked!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AttendeeProfile.this, "Layout clicked!", Toast.LENGTH_SHORT).show();
 
                 // Ví dụ: Chuyển sang activity khác
                 Intent intent2 = new Intent(AttendeeProfile.this, LoginActivity.class);

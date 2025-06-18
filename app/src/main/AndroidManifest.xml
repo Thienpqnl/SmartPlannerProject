@@ -96,7 +96,10 @@
         <activity
             android:name=".BookingsActivity"
             android:exported="true" />
-
+        <activity
+            android:name=".AttendeeProfile"
+            android:exported="true" />
+        <activity android:name=".NotificationActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyANWhS2czqaQi7nqQLLT9tYjw0X_FTk6aA" />

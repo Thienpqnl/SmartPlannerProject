@@ -2,6 +2,7 @@ package com.thien.smart_planner_project.network;
 
 import com.squareup.okhttp.ResponseBody;
 
+import com.thien.smart_planner_project.model.SendNotificationRequest;
 import com.thien.smart_planner_project.model.dto.ApiResponse;
 
 import com.thien.smart_planner_project.model.Booking;
@@ -134,4 +135,6 @@ public interface ApiService {
     @POST("conservation/setIsRead")
     Call<Void> setIsRead(@Body MarkReadRequest markReadRequest);
 
+    @POST("api/send-notification")
+    Call<Void> sendNotification(@Body SendNotificationRequest request);
 }

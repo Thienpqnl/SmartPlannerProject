@@ -189,7 +189,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
 
-                android:src="@drawable/ic_X"
+                android:src="@drawable/ic_x"
                 android:background="@drawable/circle_white"
                 android:padding="10dp"
                 android:contentDescription="Facebook login" />

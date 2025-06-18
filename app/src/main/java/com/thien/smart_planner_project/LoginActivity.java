@@ -11,28 +11,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.okhttp.ResponseBody;
-import com.thien.smart_planner_project.model.MySingleton;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.NotificationSender;
 import com.thien.smart_planner_project.service.SharedPrefManager;
 import com.thien.smart_planner_project.service.SocketManager;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
-
-import io.socket.client.Socket;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -103,7 +96,13 @@ public class LoginActivity extends AppCompatActivity {
                                                                 sendTokenToServer(user.getUserId(), newToken);
                                                             }
                                                         });
-
+                                                NotificationSender.sendNotification(
+                                                        LoginActivity.this,
+                                                        user.getUserId(),
+                                                        "Chào mừng bạn!",
+                                                        "DA dang nhap.",
+                                                        "welcome"
+                                                );
                                                 if ("organizer".equalsIgnoreCase(role)) {
                                                     Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
                                                     intent.putExtra("user",user);

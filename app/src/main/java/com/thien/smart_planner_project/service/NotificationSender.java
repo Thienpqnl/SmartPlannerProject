@@ -1,39 +1,36 @@
 package com.thien.smart_planner_project.service;
 
 import android.content.Context;
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
-import org.json.JSONObject;
-import com.thien.smart_planner_project.model.MySingleton;
+import com.thien.smart_planner_project.network.ApiService;
+import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.model.SendNotificationRequest;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotificationSender {
 
-    private static final String SEND_NOTIFICATION_URL = "http://172.17.114.181:3000/api/send-notification";
-
     public static void sendNotification(Context context, String userId, String title, String body, String type) {
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("userId", userId);
-            jsonBody.put("title", title);
-            jsonBody.put("body", body);
-            jsonBody.put("type", type);
 
-            JsonObjectRequest request = new JsonObjectRequest(
-                    Request.Method.POST,
-                    SEND_NOTIFICATION_URL,
-                    jsonBody,
-                    response -> {
-                        // Có thể log hoặc bỏ qua nếu không cần phản hồi cụ thể
-                    },
-                    error -> {
-                        // Xử lý lỗi ở đây nếu cần
-                    }
-            );
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        SendNotificationRequest request = new SendNotificationRequest(userId, title, body, type);
 
-            MySingleton.getInstance(context).addToRequestQueue(request);
+        Call<Void> call = apiService.sendNotification(request);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Thông báo đã được gửi đến server
+                } else {
+                    // Có thể log lỗi từ server ở đây
+                }
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Log lỗi mạng hoặc server không phản hồi
+            }
+        });
     }
 }
