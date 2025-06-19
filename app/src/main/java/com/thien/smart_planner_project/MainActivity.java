@@ -344,16 +344,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-//    private void openImagePicker() {
-//        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
-//            return; // Thoát nếu chưa được cấp quyền
-//        }
-//
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        pickImageLauncher.launch(intent);
-//    }
 
     private void openImagePicker() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
