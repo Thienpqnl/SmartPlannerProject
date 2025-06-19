@@ -24,7 +24,7 @@ router.post("/", upload.single("image"), (req, res) => {
     if (!req.file) return res.status(400).send("No file uploaded.");
 
 
-    const fileUrl = `http://172.17.114.181:3000/uploads/${req.file.filename}`;
+    const fileUrl = `http://10.0.2.2:3000/uploads/${req.file.filename}`;
     res.json({ imageUrl: fileUrl }); // ❗️Thêm dòng này để trả URL về cho client
 });
 

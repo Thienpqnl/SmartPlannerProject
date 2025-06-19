@@ -55,4 +55,25 @@ public class QRFragment extends DialogFragment {
 
         return view;
     }
+
+    @Override
+    public void onDismiss(@NonNull android.content.DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (dismissListener != null) {
+            dismissListener.onQRDialogDismiss();
+        }
+    }
+
+
+
+
+    public interface OnQRDialogDismissListener {
+        void onQRDialogDismiss();
+    }
+
+    private OnQRDialogDismissListener dismissListener;
+
+    public void setOnQRDialogDismissListener(OnQRDialogDismissListener listener) {
+        this.dismissListener = listener;
+    }
 }

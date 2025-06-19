@@ -2,6 +2,8 @@ package com.thien.smart_planner_project;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -186,6 +188,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
            startActivity(new Intent(this,LoginActivity.class));
         }
+
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "event_reminder",
+                    "Thông báo sự kiện",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Nhắc nhở sự kiện sắp diễn ra");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
     }
     //set address
     @Override
@@ -331,16 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-//    private void openImagePicker() {
-//        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
-//            return; // Thoát nếu chưa được cấp quyền
-//        }
-//
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        pickImageLauncher.launch(intent);
-//    }
 
     private void openImagePicker() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
