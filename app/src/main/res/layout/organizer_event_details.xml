@@ -108,6 +108,14 @@
                 android:textSize="20sp"
                 android:backgroundTint="#32003A"/>
             <Button
+                android:id="@+id/sendNotifyEvent"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:text="Gui thong bao"
+                android:textSize="20sp"
+                android:backgroundTint="#32003A"/>
+            <Button
                 android:id="@+id/listAttendeeBtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -121,14 +129,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="Mời"
-                android:textSize="20sp"
-                android:backgroundTint="#0047ab"/>
-            <Button
-                android:id="@+id/friends"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:text="friends"
                 android:textSize="20sp"
                 android:backgroundTint="#0047ab"/>
             <Button

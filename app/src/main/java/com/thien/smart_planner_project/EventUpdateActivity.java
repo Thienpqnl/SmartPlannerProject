@@ -2,6 +2,7 @@ package com.thien.smart_planner_project;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -62,6 +63,7 @@ public class EventUpdateActivity extends AppCompatActivity {
         evType = findViewById(R.id.evType);
         detailDes = findViewById(R.id.detailDes);
         detailImg = findViewById(R.id.detailImg);
+
         updateEvent = findViewById(R.id.updateEvent);
         cancelEvent = findViewById(R.id.cancelEvent);
         listAttendeeBtn = findViewById(R.id.listAttendeeBtn);
@@ -71,14 +73,7 @@ public class EventUpdateActivity extends AppCompatActivity {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
             startActivityForResult(intent1, 100);
         });
-        friendBtn = findViewById(R.id.friends);
-        friendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(EventUpdateActivity.this, MainChatActivity.class);
-                startActivity(intent1);
-            }
-        });
+
         Event event = (Event) getIntent().getSerializableExtra("event");
 
         if (event != null) {
@@ -161,7 +156,7 @@ public class EventUpdateActivity extends AppCompatActivity {
                     Toast.makeText(EventUpdateActivity.this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Call<Void> call = apiService.sendEmailInvite(new EmailRequest("vtthanh32004@gmail.com"
+                Call<Void> call = apiService.sendEmailInvite1(new EmailRequest("vtthanh32004@gmail.com"
                                                             , email,"Lời mời tham dự",String.format(content,email,name,id)));
                 sendEmailInvite(call);
                 Toast.makeText(EventUpdateActivity.this, "Đã gửi lời mời tới: " + email, Toast.LENGTH_SHORT).show();
@@ -188,9 +183,9 @@ public class EventUpdateActivity extends AppCompatActivity {
                             Intent intent = new Intent(EventUpdateActivity.this, OrganizerViewActivity.class);
                             intent.putExtra("uid", response.body().getCreatorUid());
                             intent.putExtra("role","organizer");
-                            NotificationSender.sendNotification(
+                            NotificationSender.sendNotificationToAllEventAttendees(
                                     EventUpdateActivity.this,
-                                    uid,
+                                    updateEvent.getId() + "",
                                     "Đã thay đổi thông tin sự kiện",
                                     "Xem thông tin sự kiện: " + event1.getName(),
                                     "update"
@@ -231,6 +226,13 @@ public class EventUpdateActivity extends AppCompatActivity {
                             Intent intent = new Intent(EventUpdateActivity.this, OrganizerViewActivity.class);
                             intent.putExtra("uid", response.body().getCreatorUid());
                             intent.putExtra("role","organizer");
+                            NotificationSender.sendNotificationToAllEventAttendees(
+                                    EventUpdateActivity.this,
+                                    updateEvent.getId() + "",
+                                    "Su kien ma ban tham gia da bi huy",
+                                    "Xem thông tin",
+                                    "update"
+                            );
                             startActivity(intent);
                             finish();
                         } else {
@@ -250,7 +252,16 @@ public class EventUpdateActivity extends AppCompatActivity {
                 });
             }
         });
+        Button sendNotify = findViewById(R.id.sendNotifyEvent);
 
+        sendNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showSendNotificationDialog(v.getContext(), eventId);
+
+            }
+        });
     }
 
 
@@ -314,5 +325,42 @@ public class EventUpdateActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    private void showSendNotificationDialog(Context context, String eventId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Gửi thông báo");
+
+        // Tạo EditText để nhập nội dung thông báo
+        final EditText input = new EditText(context);
+        input.setHint("Nhập nội dung thông báo");
+        builder.setView(input);
+
+        // Nút Gửi
+        builder.setPositiveButton("Gửi", (dialog, which) -> {
+            String messageBody = input.getText().toString().trim();
+            if (messageBody.isEmpty()) {
+                Toast.makeText(context, "Vui lòng nhập nội dung thông báo", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Gọi phương thức gửi thông báo đến tất cả người tham gia
+            String title = "Thông báo từ sự kiện";
+            String type = "event_notification";
+
+            NotificationSender.sendNotificationToAllEventAttendees(
+                    context,
+                    eventId,
+                    title,
+                    messageBody,
+                    type
+            );
+        });
+
+        // Nút Hủy
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 }

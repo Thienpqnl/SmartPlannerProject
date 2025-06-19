@@ -35,9 +35,11 @@
             android:background="@drawable/edit_text_border" />
 
 
+
+
         <Button
             android:id="@+id/btnFilter"
-            android:layout_width="80dp"
+            android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
@@ -56,6 +58,8 @@
             android:layout_marginTop="5dp"
             android:layout_weight="1"
             />
+
+
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEvent"

@@ -104,6 +104,7 @@
         <activity android:name=".NotificationActivity" />
         <receiver android:name=".EventReminderReceiver"/>
         <receiver android:name=".NotificationCancelReceiver"/>
+        <activity android:name=".AttendeeNotificationActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyANWhS2czqaQi7nqQLLT9tYjw0X_FTk6aA" />

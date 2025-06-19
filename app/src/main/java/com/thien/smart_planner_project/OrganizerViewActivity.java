@@ -1,6 +1,7 @@
 package com.thien.smart_planner_project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,6 +79,11 @@ public class OrganizerViewActivity extends AppCompatActivity {
                     return true;
                 }
                 // Thêm các item khác nếu cần
+                else if (item.getItemId() == R.id.menu_logout) {
+                    // Xử lý đăng xuất
+                    handleLogout();
+                    return true;
+                }
                 return false;
             });
             popupMenu.show();
@@ -127,6 +133,20 @@ public class OrganizerViewActivity extends AppCompatActivity {
             }
         });
         catchNotification();
+    }
+
+    private void handleLogout() {
+        // Xóa dữ liệu người dùng đã lưu (ví dụ SharedPreferences)
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear(); // hoặc editor.remove("user_id");
+        editor.apply();
+
+        // Quay lại màn hình đăng nhập, xóa toàn bộ backstack
+        Intent intent = new Intent(OrganizerViewActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(

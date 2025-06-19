@@ -32,7 +32,6 @@ import com.thien.smart_planner_project.utils.InviteDialogUtil;
 
 import org.json.JSONObject;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,19 +177,24 @@ public class UserPreviewActivity extends AppCompatActivity {
             });
         });
         User user = SharedPrefManager.getInstance(UserPreviewActivity.this).getUser();
-        StatusResponse statusResponse = getStatusFriend(user.getUserId(),uid);
-        if(!(statusResponse.getStatusFrom().equals("accepted") && statusResponse.getStatusTo().equals("accepted"))){
+        StatusResponse statusResponse = new StatusResponse();
+        getStatusFriend(user.getUserId(),uid,statusResponse);
+        if(!("accepted".equals(statusResponse.getStatusFrom()) && "accepted".equals(statusResponse.getStatusTo()))){
             addFriend.setVisibility(View.INVISIBLE);
         }
     }
-    private StatusResponse getStatusFriend(String from, String to){
-        final StatusResponse[] res = new StatusResponse[1];
+    private void getStatusFriend(String from, String to, StatusResponse statusResponse){
         Call<StatusResponse> call = apiService.getStatus(new StatusFriend(from,to));
         call.enqueue(new Callback<StatusResponse>() {
             @Override
             public void onResponse(@NonNull Call<StatusResponse> call, @NonNull Response<StatusResponse> response) {
+                System.out.println(response.isSuccessful());
                 if(response.isSuccessful() && response.body() != null){
-                    res[0] = response.body();
+                    System.out.println(response.body().getStatusFrom());
+                    statusResponse.setFrom(response.body().getFrom());
+                    statusResponse.setTo(response.body().getTo());
+                    statusResponse.setStatusFrom(response.body().getStatusFrom());
+                    statusResponse.setStatusTo(response.body().getStatusTo());
                 }else{
                     String errorMsg = "Lỗi không xác định";
                     if (response.errorBody() != null) {
@@ -212,6 +216,5 @@ public class UserPreviewActivity extends AppCompatActivity {
                 Toast.makeText(UserPreviewActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-        return res[0];
     }
 }
