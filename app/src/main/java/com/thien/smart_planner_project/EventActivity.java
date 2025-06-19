@@ -24,7 +24,10 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -126,14 +129,12 @@ public class EventActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     eventList.clear();
                     for (Event ev : response.body()) {
-//                        Log.d("Events: ",response.body().size()+"");
-                        //Thiện_22130261 để isPresent là true nha
-//                        if (!ev.isStatus()) {
-//                            eventList.add(ev);
-//                        }
-                        if (ev.isStatus()) {
+
+                        if (ev.isStatus()) {// Nếu sự kiện chưa diễn ra
                             eventList.add(ev);
                         }
+
+
                     }
                     eventAdapter.notifyDataSetChanged();
                 } else {
@@ -147,6 +148,19 @@ public class EventActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //
@@ -173,50 +187,126 @@ public class EventActivity extends AppCompatActivity {
                               String eventType, String location, List<String> seatRanges) {
         List<Event> filteredList = new ArrayList<>();
 
+        Date fromDateObj = parseDate(fromDate);
+        Date toDateObj = parseDate(toDate);
+
+        Date fromTimeObj = parseTime(fromTime);
+        Date toTimeObj = parseTime(toTime);
+
         for (Event event : eventList) {
-            boolean match = true;
-
+            if(!event.isStatus())continue;
             // 1. Lọc theo ngày
-            if (!fromDate.isEmpty() && event.getDate().compareTo(fromDate) < 0) match = false;
-            if (!toDate.isEmpty() && event.getDate().compareTo(toDate) > 0) match = false;
+            Date eventDateObj = parseDate(event.getDate());
+            if (fromDateObj != null && eventDateObj != null && eventDateObj.before(fromDateObj)) {
+                continue;
+            }
+            if (toDateObj != null && eventDateObj != null && eventDateObj.after(toDateObj)) {
+                continue;
+            }
 
-            // 2. Lọc theo thời gian
-            if (!fromTime.isEmpty() && event.getTime().compareTo(fromTime) < 0) match = false;
-            if (!toTime.isEmpty() && event.getTime().compareTo(toTime) > 0) match = false;
+            // 2. Lọc theo giờ
+            Date eventTimeObj = parseTime(event.getTime());
+            if (fromTimeObj != null && eventTimeObj != null && eventTimeObj.before(fromTimeObj)) {
+                continue;
+            }
+            if (toTimeObj != null && eventTimeObj != null && eventTimeObj.after(toTimeObj)) {
+                continue;
+            }
 
             // 3. Lọc theo loại sự kiện
-            if (!eventType.isEmpty() && !event.getType().equalsIgnoreCase(eventType)) match = false;
+            if (eventType != null && !eventType.isEmpty() && !event.getType().equalsIgnoreCase(eventType)) {
+                continue;
+            }
 
             // 4. Lọc theo địa điểm
-            if (!location.isEmpty() && !event.getLocation().toLowerCase().contains(location.toLowerCase())) match = false;
+            if (location != null && !location.isEmpty()) {
+                String eventLocation = event.getLocation() == null ? "" : removeVietnameseTones(event.getLocation().toLowerCase());
+                String filterLocation = removeVietnameseTones(location.toLowerCase());
+                if (!eventLocation.contains(filterLocation)) {
+                    continue;
+                }
+            }
 
             // 5. Lọc theo số ghế
-            if (!seatRanges.isEmpty()) {
-                boolean seatMatch = false;
-                int seat = event.getSeats();
-
+            boolean seatValid = seatRanges == null || seatRanges.isEmpty();
+            int seat = event.getSeats();
+            if (seatRanges != null && !seatRanges.isEmpty()) {
                 for (String range : seatRanges) {
-                    if (range.equals("1-10") && seat >= 1 && seat <= 10) seatMatch = true;
-                    if (range.equals("11-50") && seat >= 11 && seat <= 50) seatMatch = true;
-                    if (range.equals("51-100") && seat >= 51 && seat <= 100) seatMatch = true;
-                    if (range.equals("101+") && seat > 100) seatMatch = true;
+                    switch (range) {
+                        case "1-10":
+                            if (seat >= 1 && seat <= 10) seatValid = true;
+                            break;
+                        case "11-50":
+                            if (seat >= 11 && seat <= 50) seatValid = true;
+                            break;
+                        case "51-100":
+                            if (seat >= 51 && seat <= 100) seatValid = true;
+                            break;
+                        case "101+":
+                            if (seat >= 101) seatValid = true;
+                            break;
+                    }
                 }
-
-                if (!seatMatch) match = false;
             }
+            if (!seatValid) continue;
 
-            if (match) {
-                filteredList.add(event);
-            }
+            // Nếu qua hết các điều kiện thì add vào filteredList
+            filteredList.add(event);
         }
 
-        // Cập nhật RecyclerView
+        // Cập nhật adapter để hiển thị kết quả lọc
         eventAdapter = new EventAdapter(filteredList);
         recyclerView.setAdapter(eventAdapter);
 
-        Toast.makeText(this, "Tìm thấy " + filteredList.size() + " sự kiện", Toast.LENGTH_SHORT).show();
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "Không có kết quả phù hợp", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
+    //chuyển đổi ngày giờ từ String thành date
+    public Date parseDateTime(String dateStr, String timeStr) {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(dateStr + " " + timeStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public Date parseDate(String dateStr) {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public Date parseTime(String timeStr) {
+        try {
+            return new SimpleDateFormat("HH:mm").parse(timeStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static String removeVietnameseTones(String str) {
+        str = str.replaceAll("[áàảãạăắằẳẵặâấầẩẫậ]", "a");
+        str = str.replaceAll("[ÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ]", "A");
+        str = str.replaceAll("[éèẻẽẹêếềểễệ]", "e");
+        str = str.replaceAll("[ÉÈẺẼẸÊẾỀỂỄỆ]", "E");
+        str = str.replaceAll("[íìỉĩị]", "i");
+        str = str.replaceAll("[ÍÌỈĨỊ]", "I");
+        str = str.replaceAll("[óòỏõọôốồổỗộơớờởỡợ]", "o");
+        str = str.replaceAll("[ÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢ]", "O");
+        str = str.replaceAll("[úùủũụưứừửữự]", "u");
+        str = str.replaceAll("[ÚÙỦŨỤƯỨỪỬỮỰ]", "U");
+        str = str.replaceAll("[ýỳỷỹỵ]", "y");
+        str = str.replaceAll("[ÝỲỶỸỴ]", "Y");
+        str = str.replaceAll("đ", "d");
+        str = str.replaceAll("Đ", "D");
+        // Optionally remove accent-like symbols
+        str = str.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return str;
+    }
 
 }
