@@ -8,4 +8,10 @@
         app:showAsAction="always"
         app:layout_anchorGravity="right"
         />
+
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Đăng xuất"
+        android:icon="@drawable/logout"
+        app:showAsAction="always" />
 </menu>
