@@ -77,6 +77,9 @@ public interface ApiService {
     @POST("attendees/sendEmailAboutDeteleBookTicket")
     Call<Void> sendEmailAboutDeteleBookTicket(@Body EmailRequest emailRequest);
 
+    @POST("attendees/sendEmailInvite1")
+    Call<Void> sendEmailInvite1(@Body EmailRequest emailRequest);
+
     @POST("attendees/sendEmailInvite")
     Call<Void> sendEmailInvite(@Body EmailRequest emailRequest);
 
@@ -129,7 +132,7 @@ public interface ApiService {
     @GET("conservation/listChatBox/{userId}")
     Call<List<ChatBoxDTO>> listChatBox(@Path("userId") String userId);
 
-    @POST("conservation/status/{userId}")
+    @POST("conservation/status")
     Call<StatusResponse> getStatus(@Body StatusFriend statusFriend);
 
     @POST("conservation/setIsRead")
