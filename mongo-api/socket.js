@@ -2,9 +2,9 @@ const { Server } = require('socket.io');
 
 // Lưu userId <-> socket.id để quản lý online
 const onlineUsers = new Map();
-
+let io = null;
 function initSocket(server) {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: "*", // Chú ý cấu hình kỹ hơn khi production!
       methods: ["GET", "POST"]
@@ -23,19 +23,6 @@ function initSocket(server) {
       }
     });
 
-    // Khi nhận sự kiện gửi tin nhắn từ client
-    socket.on('chat message', (data) => {
-      // data: { toUserId, message, fromName }
-      const toSocketId = onlineUsers.get(data.toUserId);
-      if (toSocketId) {
-        io.to(toSocketId).emit('chat message', {
-          fromUserId: socket.userId,    // ID người gửi
-          fromName: data.fromName,      // Tên người gửi (lấy từ client hoặc DB)
-          message: data.message
-        });
-      }
-    });
-
     // Gửi thông báo kết bạn (hoặc các loại notification khác)
     socket.on('send notification', (data) => {
       // data: { toUserId, type, content }
@@ -50,23 +37,6 @@ function initSocket(server) {
       }
     });
 
-    // Gửi notification cho nhiều user cùng lúc (nếu cần)
-    socket.on('broadcast notification', (data) => {
-      // data: { toUserIds: [], type, content }
-      if (Array.isArray(data.toUserIds)) {
-        data.toUserIds.forEach(uid => {
-          const toSocketId = onlineUsers.get(uid);
-          if (toSocketId) {
-            io.to(toSocketId).emit('receive notification', {
-              from: socket.userId,
-              type: data.type,
-              content: data.content
-            });
-          }
-        });
-      }
-    });
-
     // Khi user disconnect, xóa khỏi danh sách online
     socket.on('disconnect', () => {
       if (socket.userId) {
@@ -76,8 +46,12 @@ function initSocket(server) {
     });
   });
 
-  // Cho phép các file khác truy cập io và onlineUsers nếu cần
-  module.exports.io = io;
-  module.exports.onlineUsers = onlineUsers;
 }
-module.exports = { initSocket };
+function getIO(){
+    return io;
+}
+module.exports = {
+  initSocket,
+  getIO,
+  onlineUsers
+};

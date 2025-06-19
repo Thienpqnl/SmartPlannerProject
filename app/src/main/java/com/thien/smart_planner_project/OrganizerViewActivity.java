@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -33,6 +34,7 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,19 +59,38 @@ public class OrganizerViewActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab_add);
         FloatingActionButton fabCheckin = findViewById(R.id.fab_checkin);
         ListView lsView = findViewById(R.id.listViewEvents);
-        bottomAppBar.setNavigationOnClickListener(v -> {
-            // Mo danh sach
-        });
+
         User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
         if (user == null || !"organizer".equals(user.getRole())) {
             startActivity(new Intent(this, LoginActivity.class));
             return;
         }
+        // Xử lý khi bấm nút navigation (nút 3 gạch bên trái)
+        bottomAppBar.setNavigationOnClickListener(v -> {
+            // Hiện PopupMenu khi bấm navigation icon
+            PopupMenu popupMenu = new PopupMenu(OrganizerViewActivity.this, v);
+            popupMenu.getMenuInflater().inflate(R.menu.bottom_menu, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.menu_profile) {
+                    // Mở trang cá nhân
+                    Intent intent = new Intent(OrganizerViewActivity.this, UserDetailActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                // Thêm các item khác nếu cần
+                return false;
+            });
+            popupMenu.show();
+        });
+
+        // Xử lý các item của menu trên BottomAppBar (nếu có)
         bottomAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.menu_profile) {
-                // Mo trang profile
+                Intent intent = new Intent(OrganizerViewActivity.this, UserDetailActivity.class);
+                startActivity(intent);
                 return true;
             }
+            // Thêm xử lý các item khác ở đây
             return false;
         });
         fab.setOnClickListener(v -> {
@@ -104,6 +126,7 @@ public class OrganizerViewActivity extends AppCompatActivity {
                 Log.e("err", "loi khi goi api: " + t);
             }
         });
+        catchNotification();
     }
 
     private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(
@@ -142,5 +165,26 @@ public class OrganizerViewActivity extends AppCompatActivity {
                 Toast.makeText(OrganizerViewActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+    private void catchNotification(){
+        Socket socket = SocketManager.getInstance().getSocket();
+        if (!socket.connected()) socket.connect();
+
+        // Lắng nghe thông báo toàn app
+        socket.on("receive notification", args -> runOnUiThread(() -> {
+            try {
+                JSONObject data = (JSONObject) args[0];
+                String type = data.getString("type");
+                String content = data.getString("content");
+
+                // Tùy ý: hiện Toast, badge, Notification...
+                Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+
+                // Gợi ý: chuyển tiếp đến ViewModel / shared data nếu cần
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
     }
 }
