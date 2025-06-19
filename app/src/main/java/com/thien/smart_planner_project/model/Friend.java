@@ -18,8 +18,8 @@ public class Friend implements Serializable {
     public Friend(String userA, String userB, String statusA, String statusB, LocalDateTime createAt) {
         this.userA = userA;
         this.userB = userB;
-        this.statusA = statusB;
-        this.statusA = statusB;
+        this.statusA = statusA;
+        this.statusB = statusB;
         this.createAt = createAt;
     }
 
