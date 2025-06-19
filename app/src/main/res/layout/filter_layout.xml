@@ -38,12 +38,12 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
-        <TextView
+        <EditText
             android:id="@+id/dateFromFilter"
             android:layout_width="120dp"
             android:layout_height="50dp"
             android:background="@drawable/edit_text_border"
-            android:text="tu ngay "
+            android:hint="Từ ngày "
             android:textSize="20sp"
             android:textAlignment="center"
             android:paddingTop="8dp"
@@ -60,12 +60,12 @@
             android:textStyle="bold"
             />
 
-            <TextView
+            <EditText
                 android:id="@+id/dateToFilter"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
                 android:background="@drawable/edit_text_border"
-                android:text="den ngay "
+                android:hint="Ngày"
                 android:textSize="20sp"
                 android:textAlignment="center"
                 android:paddingTop="8dp"
@@ -88,19 +88,18 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
-            <TextView
+            <EditText
                 android:id="@+id/timeFrom"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
                 android:background="@drawable/edit_text_border"
-                android:text="tu gio "
+                android:hint="Từ giờ"
                 android:textSize="20sp"
                 android:textAlignment="center"
                 android:paddingTop="8dp"
                 android:textStyle="bold"/>
 
             <TextView
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Đến:"
@@ -109,12 +108,12 @@
                 android:textStyle="bold"
                 />
 
-            <TextView
+            <EditText
                 android:id="@+id/timeTo"
                 android:layout_width="120dp"
                 android:layout_height="50dp"
                 android:background="@drawable/edit_text_border"
-                android:text="den gio "
+                android:hint="Giờ"
                 android:textSize="20sp"
                 android:textAlignment="center"
                 android:paddingTop="8dp"
@@ -130,42 +129,42 @@
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginTop="20dp"/>
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            >
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <CheckBox
                 android:id="@+id/checkbox_1_10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 den 10"
-                />
+                android:text="1 đến 10" />
 
             <CheckBox
                 android:id="@+id/checkbox_11_50"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11 den 50" />
+                android:text="11 đến 50" />
 
             <CheckBox
                 android:id="@+id/checkbox_51_100"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="51 den 100" />
+                android:text="51 đến 100" />
 
             <CheckBox
                 android:id="@+id/checkbox_101_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tren 101" />
+                android:text="trên 100" />
         </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loại Su kiện:"
+            android:text="Loại sự kiện:"
             android:textStyle="bold"
             android:textSize="20sp"
        />
@@ -179,7 +178,7 @@
             <RadioButton android:id="@+id/radio1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện doanh nghiệp" />
             <RadioButton android:id="@+id/radio2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện xã hội" />
             <RadioButton android:id="@+id/radio3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện từ thiện" />
-            <RadioButton android:id="@+id/radio4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện thể thao va giải trí" />
+            <RadioButton android:id="@+id/radio4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện thể thao và giải trí" />
             <RadioButton android:id="@+id/radio5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sự kiện ăn uống đặc biệt" />
         </RadioGroup>
         <TextView
@@ -189,64 +188,69 @@
             android:textStyle="bold"
             android:textSize="20sp"
             />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/myLocate"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:background="@drawable/edit_text_border"
-                android:text="  Dia diem cua toi  "
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:paddingTop="8dp"
-                android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/chooseLocate"
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Search Bar for Autocomplete -->
+            <AutoCompleteTextView
+                android:id="@+id/locateView"
+                android:hint="Nhập địa chỉ hoặc tên địa điểm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textSize="20sp"/>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:background="@drawable/edit_text_border"
-                android:text=" chon dia diem "
-                android:textSize="20sp"
-                android:textAlignment="center"
-                android:paddingTop="8dp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/myLocate"
+                    android:layout_width="wrap_content"
+                    android:padding="12dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:text="Địa điểm của tôi"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/chooseLocate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_border"
+                    android:text="Chọn địa diểm "
+                    android:textSize="20sp"
+                    android:padding="12dp"
+                    android:layout_marginStart="20dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/locateView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_border"
-            android:text=" dia diem "
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:paddingTop="8dp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            />
         <Button
             android:id="@+id/getFilter"
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_marginLeft="130dp"
-            android:text="Thuc hien"
+            android:text="Thực hiện"
             android:textSize="20sp"
+            android:layout_marginBottom="50dp"
             android:backgroundTint="@color/black"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"/>
 
     </LinearLayout>
+
+
 </LinearLayout>
 </android.widget.ScrollView>

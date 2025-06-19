@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -157,11 +158,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
         );
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            imageView.setOnClickListener(v -> openImagePicker());
+//        }
 
 
         imageView.setOnClickListener(v -> openImagePicker());
-
-
         creButton.setOnClickListener(v -> saveEvent());
 
 
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
         if (user != null) {
             uid = user.getUserId();
+
         } else {
            startActivity(new Intent(this,LoginActivity.class));
         }
@@ -324,16 +328,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+
+//    private void openImagePicker() {
+//        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
+//            return; // Thoát nếu chưa được cấp quyền
+//        }
+//
+//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        pickImageLauncher.launch(intent);
+//    }
+
     private void openImagePicker() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13+ yêu cầu quyền mới
+
             if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
                 return;
             }
         } else {
-            // Android <= 12 dùng quyền cũ
+
             if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -344,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickImageLauncher.launch(intent);
     }
+
 
     public Timestamp convertToTimestamp(int day, int month, int year) {
         // Tạo đối tượng Calendar
@@ -384,6 +401,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         datePickerDialog.show();
     }
+
     private void showTimePicker() {
         // Lấy thời gian hiện tại
         final Calendar calendar = Calendar.getInstance();
@@ -412,7 +430,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         // No action needed when no selection is made
     }
-    private void catchNotification(){
+
+    private void catchNotification() {
         Socket socket = SocketManager.getInstance().getSocket();
         if (!socket.connected()) socket.connect();
 
@@ -432,5 +451,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 e.printStackTrace();
             }
         }));
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker(); // Nếu user vừa cấp quyền, mở picker luôn!
+        }
     }
 }
