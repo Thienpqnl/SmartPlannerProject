@@ -378,7 +378,8 @@ router.post('/setIsRead', async (req, res) => {
             return res.status(400).json({ message: "Thiếu friendId hoặc userId." });
         }
         // Đánh dấu tất cả tin nhắn trong đoạn chat friendId mà sender khác user hiện tại là đã đọc
-        const result = await Message.updateMany(
+        const result = await Message.upd
+        ateMany(
             {
                 friendId: friendId,
                 sender: { $ne: userId }, // sender khác userId, tức là của bạn bè gửi tới user này
@@ -386,6 +387,8 @@ router.post('/setIsRead', async (req, res) => {
             },
             { $set: { isRead: true } }
         );
+
+
 
         return res.status(200).json({
             message: 'Đã đánh dấu là đã đọc',

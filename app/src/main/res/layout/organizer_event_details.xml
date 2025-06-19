@@ -132,14 +132,6 @@
                 android:textSize="20sp"
                 android:backgroundTint="#0047ab"/>
             <Button
-                android:id="@+id/friends"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:text="friends"
-                android:textSize="20sp"
-                android:backgroundTint="#0047ab"/>
-            <Button
                 android:id="@+id/cancelEvent"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

@@ -204,7 +204,27 @@ router.post('/sendEmailAboutDeteleBookTicket', async (req, res) => {
 function buildMailContent(from, to, event) {
     return `Sinh chào bạn ${to}, bạn nhận được thư từ ${from} cho lời mời tham gia sự kiện ${event.name}.\nId đăng ký tham gia sự kiện: ${event._id || event.id}`;
 }
+router.post('/sendEmailInvite1', async (req, res) => {
+    const { from, to, subject, content } = req.body;
 
+    if (!from || !to || !subject || !content) {
+        return res.status(400).json({ message: 'Thiếu thông tin email.' });
+    }
+
+    const mailOptions = {
+        from,
+        to,
+        subject,
+        text: content
+    };
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ message: 'Gửi email thành công.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Lỗi gửi email.' });
+    }
+});
 router.post('/sendEmailInvite', async (req, res) => {
     const { from, to, subject, events } = req.body;
 

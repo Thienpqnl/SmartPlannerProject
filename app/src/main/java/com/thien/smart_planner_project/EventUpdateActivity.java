@@ -73,14 +73,7 @@ public class EventUpdateActivity extends AppCompatActivity {
             Intent intent1 = new Intent(EventUpdateActivity.this, GMap.class);
             startActivityForResult(intent1, 100);
         });
-        friendBtn = findViewById(R.id.friends);
-        friendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(EventUpdateActivity.this, MainChatActivity.class);
-                startActivity(intent1);
-            }
-        });
+
         Event event = (Event) getIntent().getSerializableExtra("event");
 
         if (event != null) {
@@ -163,7 +156,7 @@ public class EventUpdateActivity extends AppCompatActivity {
                     Toast.makeText(EventUpdateActivity.this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Call<Void> call = apiService.sendEmailInvite(new EmailRequest("vtthanh32004@gmail.com"
+                Call<Void> call = apiService.sendEmailInvite1(new EmailRequest("vtthanh32004@gmail.com"
                                                             , email,"Lời mời tham dự",String.format(content,email,name,id)));
                 sendEmailInvite(call);
                 Toast.makeText(EventUpdateActivity.this, "Đã gửi lời mời tới: " + email, Toast.LENGTH_SHORT).show();
