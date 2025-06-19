@@ -41,6 +41,9 @@ import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.network.UploadAPI;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,6 +55,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import io.socket.client.Socket;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         edtTime.setOnClickListener(v -> showTimePicker());
 
         creButton = findViewById(R.id.button);
+        catchNotification();
         // Khởi tạo Photo Picker API
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -406,5 +411,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // No action needed when no selection is made
+    }
+    private void catchNotification(){
+        Socket socket = SocketManager.getInstance().getSocket();
+        if (!socket.connected()) socket.connect();
+
+        // Lắng nghe thông báo toàn app
+        socket.on("receive notification", args -> runOnUiThread(() -> {
+            try {
+                JSONObject data = (JSONObject) args[0];
+                String type = data.getString("type");
+                String content = data.getString("content");
+
+                // Tùy ý: hiện Toast, badge, Notification...
+                Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+
+                // Gợi ý: chuyển tiếp đến ViewModel / shared data nếu cần
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
     }
 }

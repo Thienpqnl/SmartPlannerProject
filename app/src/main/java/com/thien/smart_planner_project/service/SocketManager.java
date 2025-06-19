@@ -90,21 +90,6 @@ public class SocketManager {
         });
     }
 
-    // Gửi tin nhắn
-    public void sendChatMessage(String fromName,String toUserId, String message) {
-        if (socket != null) {
-            JSONObject data = new JSONObject();
-            try {
-                data.put("fromName", fromName);
-                data.put("toUserId", toUserId);
-                data.put("message", message);
-                socket.emit("chat message", data);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // Gửi lời mời kết bạn
     public void sendFriendRequest(String fromName, String toUserId, String content) {
         if (socket != null) {

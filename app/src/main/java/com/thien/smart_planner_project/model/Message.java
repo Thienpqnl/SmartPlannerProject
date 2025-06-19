@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class Message implements Serializable {
@@ -76,8 +78,11 @@ public class Message implements Serializable {
     }
 
     public LocalDateTime getCreatedAtDateTime() {
-        if (createdAt == null) return null;
-        return LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME);
+        if (createdAt == null){
+            return LocalDateTime.now();
+        }
+        OffsetDateTime utcTime = OffsetDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME);
+        return utcTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     @Override

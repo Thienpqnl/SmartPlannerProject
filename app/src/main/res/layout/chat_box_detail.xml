@@ -36,7 +36,7 @@
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/back"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/profile" />
+                app:srcCompat="@drawable/user" />
 
             <TextView
                 android:id="@+id/name_send"
@@ -56,11 +56,13 @@
         android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
         android:paddingTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toTopOf="@id/footer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <!-- Footer (Input box + send button) -->
     <LinearLayout

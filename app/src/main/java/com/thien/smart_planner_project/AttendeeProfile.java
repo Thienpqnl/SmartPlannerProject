@@ -54,7 +54,11 @@ public class AttendeeProfile extends AppCompatActivity {
                 startActivity(intent2);
             }
         });
-
+        LinearLayout layoutFriends = findViewById(R.id.individual_friend);
+        layoutFriends.setOnClickListener(v ->{
+            Intent intent1 = new Intent(AttendeeProfile.this, MainChatActivity.class);
+            startActivity(intent1);
+        });
         assert user != null;
 
         name.setText(user.getName());
