@@ -2,6 +2,7 @@ package com.thien.smart_planner_project.network;
 
 import com.squareup.okhttp.ResponseBody;
 
+import com.thien.smart_planner_project.model.NotificationItem;
 import com.thien.smart_planner_project.model.SendNotificationRequest;
 import com.thien.smart_planner_project.model.dto.ApiResponse;
 
@@ -137,4 +138,10 @@ public interface ApiService {
 
     @POST("api/send-notification")
     Call<Void> sendNotification(@Body SendNotificationRequest request);
+
+    @GET("api/get-by-user/{userId}")
+    Call<List<NotificationItem>> getNotificationsByUser(@Path("userId") String userId);
+
+    @POST("api/save-notification")
+    Call<Void> saveNotification(@Body NotificationItem item);
 }
