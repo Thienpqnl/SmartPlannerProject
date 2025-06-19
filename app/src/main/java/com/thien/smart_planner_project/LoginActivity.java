@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth ;
     EditText loginPass, loginEmail;
     TextView signUpView;
+
     Button loginButton;
     @Override
     protected void onCreate(Bundle bundle) {
@@ -46,8 +47,11 @@ public class LoginActivity extends AppCompatActivity {
         loginPass = findViewById(R.id.loginPass);
         loginEmail = findViewById(R.id.loginEmail);
         loginButton = findViewById(R.id.loginButton);
+
         signUpView = findViewById(R.id.signUp);
         SocketManager.getInstance().init("ws://10.0.2.2:3000",LoginActivity.this);
+        View containerMain = findViewById(R.id.container_main);
+        View containerLoading = findViewById(R.id.container_loading);
         signUpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,113 +59,125 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = loginEmail.getText().toString().trim();
-                String password = loginPass.getText().toString().trim();
+        loginButton.setOnClickListener(v -> {
+            String email = loginEmail.getText().toString().trim();
+            String password = loginPass.getText().toString().trim();
 
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Vui long nhap day du email va mat khau", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ email và mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, task -> {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user = mAuth.getCurrentUser();
+            // Chuyển sang màn hình loading
+            containerMain.setVisibility(View.GONE);
+            containerLoading.setVisibility(View.VISIBLE);
 
-                                if (user != null && user.isEmailVerified()) {
-                                    Toast.makeText(LoginActivity.this, "Dang nhap thanh cong", Toast.LENGTH_SHORT).show();
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(LoginActivity.this, task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            containerMain.setVisibility(View.VISIBLE);
+                            containerLoading.setVisibility(View.GONE);
+                            if (user != null && user.isEmailVerified()) {
+                                String uid = user.getUid();
 
-                                    String uid = user.getUid();
+                                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                                Call<User> call = apiService.getUserById(uid);
+                                call.enqueue(new Callback<User>() {
+                                    @Override
+                                    public void onResponse(Call<User> call, Response<User> response) {
+                                        if (response.isSuccessful() && response.body() != null) {
+                                            String role = response.body().getRole();
+                                            User user = response.body();
+                                            SocketManager.getInstance().registerUser(user.getUserId());
+                                            instance.saveUser(user);
 
-                                    // Goi API truy van role cua user
-                                    ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                                    Call<User> call = apiService.getUserById(uid);
-                                    call.enqueue(new Callback<User>() {
-                                        @Override
-                                        public void onResponse(Call<User> call, Response<User> response) {
-                                            if (response.isSuccessful() && response.body() != null) {
-                                                String role = response.body().getRole();
-                                                User user = response.body();
-                                                SocketManager.getInstance().registerUser(user.getUserId());
-                                                instance.saveUser(user);
-                                                FirebaseMessaging.getInstance().getToken()
-                                                        .addOnCompleteListener(task -> {
-                                                            if (task.isSuccessful() && task.getResult() != null) {
-                                                                String newToken = task.getResult();
+                                            FirebaseMessaging.getInstance().getToken()
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful() && task.getResult() != null) {
+                                                            String newToken = task.getResult();
+                                                            sendTokenToServer(user.getUserId(), newToken);
+                                                        }
+                                                    });
 
-                                                                // Gửi lên server: userId + token
-                                                                sendTokenToServer(user.getUserId(), newToken);
-                                                            }
-                                                        });
-                                                NotificationSender.sendNotification(
-                                                        LoginActivity.this,
-                                                        user.getUserId(),
-                                                        "Chào mừng bạn!",
-                                                        "DA dang nhap.",
-                                                        "welcome"
-                                                );
-                                                if ("organizer".equalsIgnoreCase(role)) {
-                                                    Intent intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
-                                                    intent.putExtra("user",user);
-                                                    startActivity(intent);
-                                                } else {
-                                                    Intent intent2 = new Intent(LoginActivity.this, AttendeeProfile.class);
-                                                    intent2.putExtra("user", user);
-                                                    startActivity(intent2);
-                                                    //dùng session
-                                                    SessionManager sessionManager=new SessionManager(LoginActivity.this);
-                                                    sessionManager.createLoginSession(user.getUserId(), user.getName());
-                                                }
+                                            NotificationSender.sendNotification(
+                                                    LoginActivity.this,
+                                                    user.getUserId(),
+                                                    "Chào mừng bạn!",
+                                                    "Đã đăng nhập.",
+                                                    "welcome"
+                                            );
 
-                                                finish();
-                                            } else {
-                                                Toast.makeText(LoginActivity.this, "Khong lay duoc thong tin nguoi dung tu server", Toast.LENGTH_SHORT).show();
-                                            }
+                                            // Dừng LoadingActivity và chuyển tiếp
+                                            finishAllAndNavigate(user, role);
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Không lấy được thông tin người dùng từ server", Toast.LENGTH_SHORT).show();
+                                            backToLogin();
                                         }
+                                    }
 
-                                        private void sendTokenToServer(String userId, String newToken) {
-                                            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                                            Map<String, String> payload = new HashMap<>();
-                                            payload.put("userId", userId);
-                                            payload.put("fcmToken", newToken);
-
-                                            Call<ResponseBody> call = apiService.saveToken(payload);
-                                            call.enqueue(new Callback<ResponseBody>() {
-                                                @Override
-                                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                                    if (response.isSuccessful()) {
-                                                        Log.d("FCM", "Token đã được cập nhật");
-                                                    } else {
-                                                        Log.e("FCM", "Lỗi khi cập nhật token: " + response.message());
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                                    Log.e("FCM", "Lỗi mạng khi gửi token", t);
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<User> call, Throwable t) {
-                                            Toast.makeText(LoginActivity.this, "Loi ket noi toi server: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Vui long xac thuc email truoc khi dang nhap", Toast.LENGTH_LONG).show();
-                                }
+                                    @Override
+                                    public void onFailure(Call<User> call, Throwable t) {
+                                        Toast.makeText(LoginActivity.this, "Lỗi kết nối tới server: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                                        backToLogin();
+                                    }
+                                });
 
                             } else {
-                                Exception e = task.getException();
-                                Toast.makeText(LoginActivity.this, "Dang nhap that bai: " + (e != null ? e.getMessage() : ""), Toast.LENGTH_LONG).show();
-                            }});
-            }
+                                Toast.makeText(LoginActivity.this, "Vui lòng xác thực email trước khi đăng nhập", Toast.LENGTH_LONG).show();
+                                backToLogin();
+                            }
+
+                        } else {
+                            Exception e = task.getException();
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + (e != null ? e.getMessage() : ""), Toast.LENGTH_LONG).show();
+                            backToLogin();
+                        }
+                    });
         });
 
+    }
+    private void finishAllAndNavigate(User user, String role) {
+        // Kết thúc tất cả activity cũ
+        Intent intent;
+        if ("organizer".equalsIgnoreCase(role)) {
+            intent = new Intent(LoginActivity.this, OrganizerViewActivity.class);
+        } else {
+            intent = new Intent(LoginActivity.this, AttendeeProfile.class);
+            SessionManager sessionManager = new SessionManager(LoginActivity.this);
+            sessionManager.createLoginSession(user.getUserId(), user.getName());
+        }
+        intent.putExtra("user", user);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    private void backToLogin() {
+        Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void sendTokenToServer(String userId, String newToken) {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Map<String, String> payload = new HashMap<>();
+        payload.put("userId", userId);
+        payload.put("fcmToken", newToken);
+
+        Call<ResponseBody> call = apiService.saveToken(payload);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.d("FCM", "Token đã được cập nhật");
+                } else {
+                    Log.e("FCM", "Lỗi khi cập nhật token: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("FCM", "Lỗi mạng khi gửi token", t);
+            }
+        });
     }
 }

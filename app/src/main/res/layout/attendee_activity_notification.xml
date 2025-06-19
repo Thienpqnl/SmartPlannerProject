@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarEventDetail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/orange"
+        app:title="Attendee Profile"
+        app:titleMarginStart="70dp"
+        app:titleTextColor="@color/black"
+
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:tint="#000000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thông báo"
+        android:textSize="24sp"
+        android:layout_margin="16dp"
+        android:textStyle="bold"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"/>
+</LinearLayout>

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const admin = require('../config/firebaseAdmin');
 const UserNotify = require('../models/UserNotify');
+const Notification = require('../models/Notification');
 router.post('/api/send-notification', async (req, res) => {
     const { userId, title, body, type } = req.body;
 
@@ -77,5 +78,35 @@ router.post('/api/save-token', async (req, res) => {
         res.status(500).json({ error: 'Không thể lưu token' });
     }
 });
+router.get('/api/get-by-user/:userId', async (req, res) => {
+    const { userId } = req.params;
 
+    try {
+        const notifications = await Notification.find({ userId });
+        res.json(notifications);
+    } catch (error) {
+        console.error('Lỗi khi lấy thông báo:', error);
+        res.status(500).json({ error: 'Không thể lấy danh sách thông báo' });
+    }
+});
+router.post('/api/save-notification', async (req, res) => {
+    const { userId, title, body, type, timestamp } = req.body;
+    console.log("Dữ liệu nhận được:", req.body);
+    try {
+        const newNotif = new Notification({
+            userId,
+            title,
+            body,
+            type,
+            timestamp: timestamp ? new Date(parseInt(timestamp)) : new Date()
+        });
+
+        await newNotif.save();
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Lỗi lưu thông báo:', error);
+        res.status(500).json({ error: 'Không thể lưu thông báo' });
+    }
+});
 module.exports = router;

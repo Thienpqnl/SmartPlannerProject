@@ -368,6 +368,7 @@
                         <ImageView
                             android:layout_width="28dp"
                             android:layout_height="28dp"
+                            android:layout_gravity="center_horizontal"
                             android:src="@drawable/ic_add_event"
                             android:layout_marginEnd="12dp" />
 
@@ -376,6 +377,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
                             android:text="Các sự kiện đã tạo"
                             android:textSize="20sp"
                             android:textStyle="bold"
@@ -387,6 +389,7 @@
                             android:layout_height="36dp"
                             android:text="Xem tất cả"
                             android:textSize="12sp"
+                            android:layout_gravity="center_horizontal"
                             android:textColor="@color/orange"
                             app:strokeColor="@color/orange"
                             app:strokeWidth="1dp"
@@ -399,18 +402,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/orange"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginHorizontal="20dp" />
 
                     <!-- Events List -->
                     <ListView
                         android:id="@+id/listViewEvents"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="250dp"
                         android:padding="20dp"
                         android:paddingTop="12dp"
                         android:divider="@color/text_secondary"
                         android:dividerHeight="1dp"
                         android:nestedScrollingEnabled="true"
+                        android:layout_gravity="center_horizontal"
                         android:scrollbars="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

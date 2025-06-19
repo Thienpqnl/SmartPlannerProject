@@ -3,6 +3,7 @@ package com.thien.smart_planner_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,10 @@ public class AttendeeProfile extends AppCompatActivity {
         TextView email = findViewById(R.id.attendee_email);
 
         LinearLayout layout1 = findViewById(R.id.UpcomingEvent);
+        LinearLayout logOutLayout = findViewById(R.id.logOUt);
+
+
+
         Intent intent = getIntent();
 
         User user = (User) getIntent().getSerializableExtra("user");
@@ -66,6 +71,30 @@ public class AttendeeProfile extends AppCompatActivity {
 
         email.setText(user.getEmail());
 
+
+
+        logOutLayout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(AttendeeProfile.this, "Logged out", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(AttendeeProfile.this, LoginActivity.class));
+            }
+        });
+
+
+        ImageView btnAttNotification = findViewById(R.id.btnAttNotification);
+
+        btnAttNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(AttendeeProfile.this, AttendeeNotificationActivity.class);
+                intent1.putExtra("userId", user.getUserId());
+                startActivity(intent1);
+            }
+        });
 
     }
 
