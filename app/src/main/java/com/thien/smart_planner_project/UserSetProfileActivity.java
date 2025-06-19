@@ -11,12 +11,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.squareup.okhttp.ResponseBody;
 import com.thien.smart_planner_project.Controller.GMap;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
+import com.thien.smart_planner_project.service.NotificationSender;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,13 +87,37 @@ public class UserSetProfileActivity extends AppCompatActivity {
     private void saveUser() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         //String email,  String name, String location ,String role, long longitude, long latitude
-        Call<User> call = apiService.createUser(new User(uid, regisEmail,regisName, fullAddress, role, longitude, latitude));
+        User user = new User(uid, regisEmail,regisName, fullAddress, role, longitude, latitude);
+        Call<User> call = apiService.createUser(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(UserSetProfileActivity.this, "Tạo sự kiện thành công!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(UserSetProfileActivity.this, EventActivity.class));
+
+                    Toast.makeText(UserSetProfileActivity.this, "Tạo nguươời dung thành conng", Toast.LENGTH_SHORT).show();
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    String newToken = task.getResult();
+                                    // Gửi lên server: userId + token
+                                    sendTokenToServer(user.getUserId(), newToken);
+                                }
+                            });
+                    if (role.equals("attendee")) {
+                        Intent newIntent = new Intent(UserSetProfileActivity.this, AttendeeProfile.class);
+                        newIntent.putExtra("user", user);
+                        NotificationSender.sendNotification(
+                                UserSetProfileActivity.this,
+                                user.getUserId(),
+                                "Chào mừng bạn!",
+                                "Cảm ơn bạn đã đăng ký ứng dụng của chúng tôi.",
+                                "welcome"
+                        );
+                        startActivity(newIntent);
+                    }
+                    else {
+                        startActivity(new Intent(UserSetProfileActivity.this, OrganizerViewActivity.class));
+                    }
                     finish();
                 } else {
                     try {
@@ -100,6 +129,31 @@ public class UserSetProfileActivity extends AppCompatActivity {
                     Toast.makeText(UserSetProfileActivity.this, "Lỗi từ server!", Toast.LENGTH_SHORT).show();
                 }
             }
+
+            private void sendTokenToServer(String userId, String newToken) {
+                ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                Map<String, String> payload = new HashMap<>();
+                payload.put("userId", userId);
+                payload.put("fcmToken", newToken);
+
+                Call<ResponseBody> call = apiService.saveToken(payload);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Log.d("FCM", "Token đã được cập nhật");
+                        } else {
+                            Log.e("FCM", "Lỗi khi cập nhật token: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e("FCM", "Lỗi mạng khi gửi token", t);
+                    }
+                });
+            }
+
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(UserSetProfileActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();

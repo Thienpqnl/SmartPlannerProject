@@ -1,8 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+const http = require('http');
 require("dotenv").config();
 
 const app = express();
@@ -10,12 +9,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// Đọc biến môi trường
-const MONGODB_URI = process.env.MONGODB_URI;
-const JWT_SECRET = process.env.JWT_SECRET;
-
 // Kết nối MongoDB
-mongoose.connect(MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("✅ MongoDB connected"))
     .catch(err => console.error("❌ MongoDB connection error:", err));
 
@@ -32,15 +27,25 @@ const eventRoutes = require('./routes/event');
 const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
 const attendeeRoutes = require('./routes/attendee');
-const organizerRoutes = require('./routes/organizer');  
+const organizerRoutes = require('./routes/organizer');
+const conservationRoutes = require('./routes/conservation');
+const notificationRoute = require('./routes/notificationRoute');
 
+app.use('/', notificationRoute);
 app.use("/organizers", organizerRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/events", eventRoutes);
 app.use("/api/users", userRoutes);
 app.use("/attendees", attendeeRoutes)
-// Khởi động server
-app.listen(3000, '0.0.0.0', () => {
-    console.log("🚀 Server running on port 3000");
+app.use("/conservation", conservationRoutes)
+
+// Tạo HTTP server & Socket.IO
+const server = http.createServer(app);
+const { initSocket } = require('./socket');
+initSocket(server); // truyền server sang file socket.js
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server & Socket.IO running on port ${PORT}`);
 });

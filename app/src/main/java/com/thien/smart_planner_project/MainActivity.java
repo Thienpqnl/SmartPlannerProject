@@ -40,16 +40,22 @@ import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.network.UploadAPI;
+import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
+import io.socket.client.Socket;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         edtTime.setOnClickListener(v -> showTimePicker());
 
         creButton = findViewById(R.id.button);
+        catchNotification();
         // Khởi tạo Photo Picker API
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -130,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Uri selectedImageUri = result.getData().getData();
                         imageView.setImageURI(selectedImageUri); // Hiển thị ảnh đã chọn
                         imageView.setTag(selectedImageUri.toString());
-
 
                         try {
                             uploadImage(MainActivity.this,selectedImageUri, new UploadCallback() {
@@ -152,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
         );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            imageView.setOnClickListener(v -> openImagePicker());
-        }
+
+        imageView.setOnClickListener(v -> openImagePicker());
+
 
         creButton.setOnClickListener(v -> saveEvent());
 
@@ -170,12 +176,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.putExtra("imageURL", imageView.getTag() != null ? imageView.getTag().toString() : "");
             startActivityForResult(intent, 100);
         });
-
-        Intent intent = getIntent();
-        uid = intent.getStringExtra("uid");
-
-
-
+        User user = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        if (user != null) {
+            uid = user.getUserId();
+        } else {
+           startActivity(new Intent(this,LoginActivity.class));
+        }
     }
     //set address
     @Override
@@ -291,11 +297,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 uploadedImageUrl.isEmpty() ||
                 selectedItem == null
                 || uid == null) {
+            System.out.println(name + date + time + location + description + uploadedImageUrl + selectedItem + uid);
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, uid));
+        Call<Event> call = apiService.createEvent(new Event(name, date, location,  time, selectedItem,description, uploadedImageUrl, seats, longitude, latitude, uid, new ArrayList<>()));
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
@@ -317,12 +324,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void openImagePicker() {
-        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
-            return; // Thoát nếu chưa được cấp quyền
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+ yêu cầu quyền mới
+            if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 1);
+                return;
+            }
+        } else {
+            // Android <= 12 dùng quyền cũ
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                return;
+            }
         }
 
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -395,5 +411,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // No action needed when no selection is made
+    }
+    private void catchNotification(){
+        Socket socket = SocketManager.getInstance().getSocket();
+        if (!socket.connected()) socket.connect();
+
+        // Lắng nghe thông báo toàn app
+        socket.on("receive notification", args -> runOnUiThread(() -> {
+            try {
+                JSONObject data = (JSONObject) args[0];
+                String type = data.getString("type");
+                String content = data.getString("content");
+
+                // Tùy ý: hiện Toast, badge, Notification...
+                Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+
+                // Gợi ý: chuyển tiếp đến ViewModel / shared data nếu cần
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
     }
 }

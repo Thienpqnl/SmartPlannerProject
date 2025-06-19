@@ -44,7 +44,9 @@ android {
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.firebase:firebase-messaging:23.2.1")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation ("com.android.volley:volley:1.2.1")
     implementation ("org.mongodb:mongodb-driver-sync:5.3.0")
     implementation ("org.mongodb:mongodb-driver-core:4.9.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
@@ -56,6 +58,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.android.material:material:1.13.0-alpha01")
+    implementation ("androidx.cardview:cardview:1.0.0-alpha1")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -69,4 +73,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+    implementation("io.socket:socket.io-client:2.1.0") {
+        exclude(group = "org.json", module = "json")
+    }
 }

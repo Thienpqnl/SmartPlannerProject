@@ -2,14 +2,17 @@ package com.thien.smart_planner_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class RoleSelectorActivity extends AppCompatActivity {
+import com.google.android.material.card.MaterialCardView;
 
+public class RoleSelectorActivity extends AppCompatActivity {
+    String role = "";
     @Override
     protected void onCreate(Bundle bundle) {
 
@@ -24,24 +27,31 @@ public class RoleSelectorActivity extends AppCompatActivity {
         String regisName = intent.getStringExtra("regisName");
         String regisPass = intent.getStringExtra("regisPass");
         String uid = intent.getStringExtra("uid");
-        RadioGroup roleGroup = findViewById(R.id.roleGroup);
-        Button confirmButton = findViewById(R.id.confirmRoleButton);
 
-        roleGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            confirmButton.setEnabled(true);
-        });
+        MaterialCardView cardTochuc = findViewById(R.id.cardViewOrganizer);
 
-        confirmButton.setOnClickListener(v -> {
-            int selectedId = roleGroup.getCheckedRadioButtonId();
-            String role = "";
+        MaterialCardView cardThamGia = findViewById(R.id.cardViewAttendee);
 
-            if (selectedId == R.id.radioAttendee) {
-                role = "attendee";
-            } else if (selectedId == R.id.radioOrganizer) {
+        cardTochuc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 role = "organizer";
             }
+        });
 
-            // TODO: Goi API de cap nhat role va chuyen sang MainActivity
+        cardThamGia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                role = "attendee";
+            }
+        });
+
+        Button confirmButton = findViewById(R.id.confirmRoleButton);
+
+
+        confirmButton.setOnClickListener(v -> {
+
+
             Toast.makeText(this, "Role da chon: " + role, Toast.LENGTH_SHORT).show();
 
             Intent intent1 = new Intent(RoleSelectorActivity.this, UserSetProfileActivity.class);

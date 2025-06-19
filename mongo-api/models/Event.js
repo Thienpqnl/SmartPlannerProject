@@ -20,6 +20,10 @@ const eventSchema = new mongoose.Schema({
         type: Number,
         default: Date.now,
     },
+    restrictedUserIds: {
+        type: [String], // Mảng chứa id user bị hạn chế
+        default: [],
+    },
 });
 
 module.exports = mongoose.model('Event', eventSchema);

@@ -1,110 +1,421 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout
-
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/background_light">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        >
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/user_icon"
-            android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/organizerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nguoi to chuc"
-            android:textSize="25sp"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"/>
+        <!-- Header Background with Gradient -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:background="@drawable/profile_header_gradient">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/user_detail_back"
+                android:layout_margin="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/vector_back_icon"
+                />
+
+            <!-- Profile Section -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="60dp"
+                android:gravity="center">
+
+                <!-- Profile Image with Shadow -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="8dp"
+                    app:strokeWidth="3dp"
+                    app:strokeColor="@android:color/white">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/user_icon"
+                        android:scaleType="centerCrop"
+                        app:tint="@color/primary_color"
+                        app:shapeAppearanceOverlay="@style/CircleImageView" />
+                </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:orientation="vertical">
+
+                <!-- Name -->
+                <TextView
+                    android:id="@+id/organizerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nguoi to chuc"
+                    android:textSize="28sp"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/robotomedium"
+                    android:elevation="2dp" />
+
+                <!-- Email Badge -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_email"
+                            app:tint="@color/primary_color"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/textViewEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="email@example.com"
+                            android:textSize="16sp"
+                            android:textColor="@color/primary_color"
+                            android:fontFamily="@font/robotomedium" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <!-- Content Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textViewEmailLabel"
-                android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+            <!-- Floating Stats Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email:"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginHorizontal="24dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textViewEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="..."/>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    >
 
-            <!-- Dia chi -->
-            <TextView
-                android:id="@+id/textViewAddressLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dia chi:"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:layout_marginTop="12dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@color/orange"
 
-            <TextView
-                android:id="@+id/textViewAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="..."/>
+                        android:padding="20dp">
 
-            <!-- Role -->
-            <TextView
-                android:id="@+id/textViewRoleLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vai tro:"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:layout_marginTop="12dp"/>
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_ticket"
+                            app:tint="@color/white" />
 
-            <TextView
-                android:id="@+id/textViewRole"
-                android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/eventCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sự kiện"
+                            android:textSize="14sp"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="2dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+
+                        android:padding="20dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_person"
+                            />
+
+                        <TextView
+                            android:id="@+id/participantCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="245"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Người tham gia"
+                            android:textSize="14sp"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+            <!-- Personal Info Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="..."/>
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/email_corner"
+
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thông tin cá nhân"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="16dp"
+                        android:drawablePadding="12dp"
+                        android:gravity="center_vertical"
+                   />
+
+                    <!-- Address Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_location"
+
+                            android:layout_marginEnd="16dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/textViewAddressLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Địa chỉ"
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textViewAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="123 Đường ABC, Quận 1, TP.HCM"
+                                android:textSize="16sp"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Role Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_seat"
+                            android:layout_marginEnd="16dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/textViewRoleLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Vai trò"
+                                android:textSize="14sp"
+                                android:textColor="@color/text_secondary"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/textViewRole"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Người to chuc"
+                                android:textSize="16sp"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+                <LinearLayout
+                    android:id="@+id/user_detail_friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/email_corner"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Danh sách bạn bè"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:drawablePadding="12dp"
+                        android:gravity="center_vertical"
+                        />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <!-- Events Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/email_corner">
+
+                    <!-- Events Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="20dp"
+                        android:paddingBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_add_event"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/textViewEventListLabel"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Các sự kiện đã tạo"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnViewAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="Xem tất cả"
+                            android:textSize="12sp"
+                            android:textColor="@color/orange"
+                            app:strokeColor="@color/orange"
+                            app:strokeWidth="1dp"
+                            app:cornerRadius="18dp"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/orange"
+                        android:layout_marginHorizontal="20dp" />
+
+                    <!-- Events List -->
+                    <ListView
+                        android:id="@+id/listViewEvents"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:paddingTop="12dp"
+                        android:divider="@color/text_secondary"
+                        android:dividerHeight="1dp"
+                        android:nestedScrollingEnabled="true"
+                        android:scrollbars="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    <TextView
-        android:id="@+id/textViewEventListLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cac su kien da tao:"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"/>
-
-    <ListView
-        android:id="@+id/listViewEvents"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:nestedScrollingEnabled="true" />
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>
+
+ 

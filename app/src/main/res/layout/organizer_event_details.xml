@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -17,18 +16,12 @@
             android:background="@drawable/edit_text_border"
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
-
             android:scaleType="centerCrop"/>
-
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-
             android:paddingLeft="20dp">
-
-
             <TextView
                 android:id="@+id/detailName"
                 android:layout_width="wrap_content"
@@ -111,31 +104,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Cap nhat"
+                android:text="Cập nhật"
                 android:textSize="20sp"
                 android:backgroundTint="#32003A"/>
             <Button
-                android:id="@+id/detailJoin"
+                android:id="@+id/listAttendeeBtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Nguoi tham gia"
+                android:text="Người tham dự &amp; đặt vé"
                 android:textSize="20sp"
                 android:backgroundTint="#E243A02D"/>
             <Button
-                android:id="@+id/listRegistedBtn"
+                android:id="@+id/inviteAttendee"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="Nguoi dat ve"
+                android:text="Mời"
                 android:textSize="20sp"
-                android:backgroundTint="#E243A02D"/>
+                android:backgroundTint="#0047ab"/>
+            <Button
+                android:id="@+id/friends"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:text="friends"
+                android:textSize="20sp"
+                android:backgroundTint="#0047ab"/>
             <Button
                 android:id="@+id/cancelEvent"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="huy su kien"
+                android:text="Huỷ sự kiện"
                 android:textSize="20sp"
                 android:backgroundTint="#F20A0A"/>
         </LinearLayout>
