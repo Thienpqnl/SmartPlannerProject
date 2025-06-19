@@ -15,6 +15,7 @@ import com.thien.smart_planner_project.model.User;
 public class AttendeeProfile extends AppCompatActivity {
 
     User user;
+
     @Override
     protected void onCreate(Bundle bundle) {
 
@@ -60,7 +61,7 @@ public class AttendeeProfile extends AppCompatActivity {
             }
         });
         LinearLayout layoutFriends = findViewById(R.id.individual_friend);
-        layoutFriends.setOnClickListener(v ->{
+        layoutFriends.setOnClickListener(v -> {
             Intent intent1 = new Intent(AttendeeProfile.this, MainChatActivity.class);
             startActivity(intent1);
         });
@@ -69,6 +70,7 @@ public class AttendeeProfile extends AppCompatActivity {
         name.setText(user.getName());
 
         email.setText(user.getEmail());
+
 
 
         logOutLayout.setOnClickListener(new View.OnClickListener() {
@@ -93,8 +95,8 @@ public class AttendeeProfile extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
-    }
 
+    }
 
 
 }

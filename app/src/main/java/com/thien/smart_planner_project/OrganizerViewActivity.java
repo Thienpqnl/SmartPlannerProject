@@ -149,7 +149,6 @@ public class OrganizerViewActivity extends AppCompatActivity {
         finish();
     }
 
-
     private final ActivityResultLauncher<ScanOptions> qrScanner = registerForActivityResult(
             new ScanContract(),
             result -> {
