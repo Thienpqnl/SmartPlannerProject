@@ -1,8 +1,11 @@
 package com.thien.smart_planner_project;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -158,9 +161,25 @@ public class EventDetailActivity extends AppCompatActivity {
                             "Dat ve thanh cong.",
                             "welcome"
                     );
+                    scheduleEventReminder(eventId, name, date, time, -1 * 24 * 60 * 60 * 1000, eventId.hashCode() + 2, "reminder_1day");
+                    // Đặt nhắc nhở trước 1 ngày
+                    scheduleEventReminder(eventId, name, date, time, -3 * 24 * 60 * 60 * 1000, eventId.hashCode() + 1, "reminder_day");
+                    // Đặt nhắc nhở đúng giờ sự kiện
+                    scheduleEventReminder(eventId, name, date, time, 0, eventId.hashCode(), "reminder_ontime");
+
+                    Toast.makeText(EventDetailActivity.this, "Đã đặt vé và nhắc nhở sự kiện!", Toast.LENGTH_SHORT).show();
+
                     String qrUrl = result.getUrlQR();
                     QRFragment qrFragment = QRFragment.newInstance(qrUrl);
+                    qrFragment.setOnQRDialogDismissListener(new QRFragment.OnQRDialogDismissListener() {
+                        @Override
+                        public void onQRDialogDismiss() {
+                            finish();
+                        }
+                    });
                     qrFragment.show(getSupportFragmentManager(), "QRFragment");
+
+
                 }
                 @Override
                 public void onError(String errorMessage) {
@@ -248,5 +267,132 @@ public class EventDetailActivity extends AppCompatActivity {
             return false;
         }
     }
+
+
+
+    private void scheduleEventReminder(String eventId, String eventName, String eventDate, String eventTime) {
+        // eventDate: "dd/M/yyyy", eventTime: "HH:mm" (ví dụ "20/06/2025 14:00")
+        String dateTimeStr = eventDate + " " + eventTime;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy HH:mm", Locale.getDefault());
+        try {
+            Date eventDateTime = sdf.parse(dateTimeStr);
+            if (eventDateTime == null) return;
+
+            // Thời điểm gửi thông báo nhắc (ví dụ: trước 30 phút)
+            long notifyTime = eventDateTime.getTime() - 30 * 60 * 1000;
+            if (notifyTime < System.currentTimeMillis()) return; // Đã quá giờ thì bỏ qua
+
+            Intent intent = new Intent(this, EventReminderReceiver.class);
+            intent.putExtra("event_name", eventName);
+            intent.putExtra("event_id", eventId);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    eventId.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            // Kiểm tra quyền SCHEDULE_EXACT_ALARM trên Android 12+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    Toast.makeText(this, "Bạn cần cấp quyền báo thức chính xác (Exact Alarm) trong Cài đặt ứng dụng để nhận nhắc nhở.", Toast.LENGTH_LONG).show();
+                    // Gợi ý mở màn hình cấp quyền
+                    Intent settingsIntent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    startActivity(settingsIntent);
+                    return;
+                }
+            }
+
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            notifyTime,
+                            pendingIntent
+                    );
+                } else {
+                    alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            notifyTime,
+                            pendingIntent
+                    );
+                }
+                Toast.makeText(this, "Đã đặt nhắc nhở cho sự kiện!", Toast.LENGTH_SHORT).show();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Không thể đặt nhắc nhở do thiếu quyền Exact Alarm!", Toast.LENGTH_LONG).show();
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Đặt báo thức nhắc nhở sự kiện.
+     * @param eventId Mã sự kiện
+     * @param eventName Tên sự kiện
+     * @param eventDate Ngày diễn ra "dd/M/yyyy"
+     * @param eventTime Giờ diễn ra "HH:mm"
+     * @param offsetMillis Khoảng thời gian báo trước (VD: -1 ngày = -86400000 ms, đúng giờ = 0)
+     * @param requestCode Mã PendingIntent (mỗi loại nhắc nhở 1 mã riêng)
+     * @param reminderType String để phân biệt loại nhắc nhở
+     */
+    private void scheduleEventReminder(String eventId, String eventName, String eventDate, String eventTime,
+                                       long offsetMillis, int requestCode, String reminderType) {
+        String dateTimeStr = eventDate + " " + eventTime;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy HH:mm", Locale.getDefault());
+        try {
+            Date eventDateTime = sdf.parse(dateTimeStr);
+            if (eventDateTime == null) return;
+
+            long notifyTime = eventDateTime.getTime() + offsetMillis;
+            if (notifyTime < System.currentTimeMillis()) return; // Nếu thời điểm đã qua thì thôi
+
+            Intent intent = new Intent(this, EventReminderReceiver.class);
+            intent.putExtra("event_name", eventName);
+            intent.putExtra("event_id", eventId);
+            intent.putExtra("reminder_type", reminderType);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if (!alarmManager.canScheduleExactAlarms()) {
+                    Intent settingsIntent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    startActivity(settingsIntent);
+                    return;
+                }
+            }
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            notifyTime,
+                            pendingIntent
+                    );
+                } else {
+                    alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            notifyTime,
+                            pendingIntent
+                    );
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

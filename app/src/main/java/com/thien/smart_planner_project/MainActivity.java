@@ -2,6 +2,8 @@ package com.thien.smart_planner_project;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -185,6 +187,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         } else {
            startActivity(new Intent(this,LoginActivity.class));
+        }
+
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "event_reminder",
+                    "Thông báo sự kiện",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Nhắc nhở sự kiện sắp diễn ra");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
         }
     }
     //set address
