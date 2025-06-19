@@ -41,7 +41,7 @@ public class EventActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EventAdapter eventAdapter;
 
-    private Button filterBtn;
+    private Button filterBtn, btnSearchID;
 
     private EditText searchEdt;
     private User userLogin;
@@ -60,6 +60,7 @@ public class EventActivity extends AppCompatActivity {
 
         filterBtn = findViewById(R.id.btnFilter);
         searchEdt = findViewById(R.id.searchEdt);
+        btnSearchID = findViewById(R.id.btnsearchID);
         recyclerView = findViewById(R.id.recyclerViewEvent);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventAdapter = new EventAdapter(eventList);
@@ -106,6 +107,42 @@ public class EventActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
+
+
+        btnSearchID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = searchEdt.getText().toString().trim();
+                if (id.isEmpty()) {
+                    Toast.makeText(EventActivity.this, "Vui lòng nhập ID sự kiện!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                ApiService apiService1 = RetrofitClient.getClient().create(ApiService.class);
+                apiService1.getEventByIdEvent(id).enqueue(new Callback<Event>() {
+                    @Override
+                    public void onResponse(Call<Event> call, Response<Event> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Event event = response.body();
+                            openEventDetail(event); // Gọi hàm mở chi tiết
+                        } else {
+                            Toast.makeText(EventActivity.this, "Không tìm thấy sự kiện!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Event> call, Throwable t) {
+                        Toast.makeText(EventActivity.this, "Lỗi kết nối server!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
+
+
         filterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,19 +193,6 @@ public class EventActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //
@@ -315,6 +339,21 @@ public class EventActivity extends AppCompatActivity {
         // Optionally remove accent-like symbols
         str = str.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return str;
+    }
+
+
+    private void openEventDetail(Event event) {
+        Intent intent = new Intent(this, EventDetailActivity.class);
+        intent.putExtra("id", event.getId());
+        intent.putExtra("name", event.getName());
+        intent.putExtra("time", event.getTime());
+        intent.putExtra("location", event.getLocation());
+        intent.putExtra("seat", event.getSeats());
+        intent.putExtra("des", event.getDescription());
+        intent.putExtra("date", event.getDate());
+        intent.putExtra("image", event.getImageUrl());
+        intent.putExtra("uid", event.getId());
+        startActivity(intent);
     }
 
 }
