@@ -15,10 +15,13 @@ import android.widget.Toast;
 
 import com.thien.smart_planner_project.Adapter.InviteFriendAdapter;
 import com.thien.smart_planner_project.R;
+import com.thien.smart_planner_project.model.Message;
 import com.thien.smart_planner_project.model.User;
+import com.thien.smart_planner_project.model.dto.ChatBoxDTO;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
 
 import org.json.JSONObject;
 
@@ -79,7 +82,37 @@ public class InviteFriendFragment extends Fragment {
                 }
             });
         }
+        SocketManager.getInstance().getSocket().on("receive invite", args -> {
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    String to = data.getString("to");
+                    User u = SharedPrefManager.getInstance(getContext()).getUser();
+                    if(u.getUserId().equals(to)){
+                        Call<List<User>> call = apiService.listReceivedFriend(u.getUserId());
+                        call.enqueue(new Callback<>() {
+                            @SuppressLint("NotifyDataSetChanged")
+                            @Override
+                            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    inviteFriend.clear();
+                                    inviteFriend.addAll(response.body());
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
+                                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
         return view;
     }
 }

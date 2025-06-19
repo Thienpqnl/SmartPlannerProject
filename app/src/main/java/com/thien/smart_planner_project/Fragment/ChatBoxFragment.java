@@ -15,11 +15,13 @@ import android.widget.Toast;
 
 import com.thien.smart_planner_project.Adapter.ChatBoxAdapter;
 import com.thien.smart_planner_project.R;
+import com.thien.smart_planner_project.model.Message;
 import com.thien.smart_planner_project.model.dto.ChatBoxDTO;
 import com.thien.smart_planner_project.model.User;
 import com.thien.smart_planner_project.network.ApiService;
 import com.thien.smart_planner_project.network.RetrofitClient;
 import com.thien.smart_planner_project.service.SharedPrefManager;
+import com.thien.smart_planner_project.service.SocketManager;
 
 import org.json.JSONObject;
 
@@ -85,7 +87,42 @@ public class ChatBoxFragment extends Fragment {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
+        SocketManager.getInstance().getSocket().on("chat message", args -> {
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    String fid = data.getString("friendId");
+                    String fromUserId = data.getString("fromUserId");
+                    String content = data.getString("message");
+                    String status = data.getString("status");
+                    String createdAt = java.time.LocalDateTime.now().toString(); // hoặc lấy từ data nếu backend gửi về
+                    // Cập nhật UI nếu message đến từ 1 bạn bè trong list
+                    for (int i = 0; i < listChat.size(); i++) {
+                        ChatBoxDTO chatBox = listChat.get(i);
+                        if (chatBox.getFriendId().equals(fid)) {
+                            // Cập nhật lastMessage
+                            Message lastMsg = chatBox.getLastMessage();
+                            lastMsg.setFriendId(fid);
+                            lastMsg.setContent(content);
+                            lastMsg.setSender(fromUserId);
+                            lastMsg.setStatus(status);
+                            lastMsg.setcreatedAt(createdAt);
+                            // Move lên đầu danh sách (nếu muốn inbox mới nhất lên đầu)
+                            if (i != 0) {
+                                listChat.remove(i);
+                                listChat.add(0, chatBox);
+                                adapter.notifyItemMoved(i, 0);
+                            }
+                            adapter.notifyItemChanged(0);
+                            return;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
         return view;
     }
 }

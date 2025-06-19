@@ -39,6 +39,7 @@ public class ChatBoxAdapter extends RecyclerView.Adapter<ChatBoxAdapter.ChatView
                     Intent intent = new Intent(v.getContext(), ChatBoxDetailActivity.class);
                     intent.putExtra("friendId",chatBoxDTOS.get(position).getFriendId());
                     intent.putExtra("uid",chatBoxDTOS.get(position).getUser().getUserId());
+                    intent.putExtra("name",chatBoxDTOS.get(position).getUser().getName());
                     v.getContext().startActivity(intent);
                 }
             });
@@ -73,8 +74,10 @@ public class ChatBoxAdapter extends RecyclerView.Adapter<ChatBoxAdapter.ChatView
         holder.time.setText(timeAgo);
 
         User user = SharedPrefManager.getInstance(holder.itemView.getContext()).getUser();
-        if(!user.getUserId().equals(chatBoxDTO.getLastMessage().getSender())){
+        if(!user.getUserId().equals(chatBoxDTO.getLastMessage().getSender()) && !chatBoxDTO.getLastMessage().isRead()){
             holder.content.setTypeface(null, Typeface.BOLD);
+        }else {
+            holder.content.setTypeface(null, Typeface.NORMAL);
         }
     }
 

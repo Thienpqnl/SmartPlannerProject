@@ -45,6 +45,7 @@ public class ListFriendAdapter extends RecyclerView.Adapter<ListFriendAdapter.li
 
                     intent.putExtra("friendId",listFriend.get(position).getFriendId());
                     intent.putExtra("uid",listFriend.get(position).getUser().getUserId());
+                    intent.putExtra("name",listFriend.get(position).getUser().getName());
                     v.getContext().startActivity(intent);
                 }
             });

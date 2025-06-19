@@ -40,6 +40,7 @@ public class Event implements Serializable {
         this.latitude = latitude;
         this.creatorUid = creatorUid;
         this.restrictedUserIds = restrictedUserIds;
+        this.isPresent= true;
     }
 
     public boolean isStatus() {

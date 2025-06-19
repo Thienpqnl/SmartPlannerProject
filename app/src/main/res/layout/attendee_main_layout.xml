@@ -27,8 +27,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="16dp"
             android:src="@drawable/ic_notification"
-            app:tint="@color/black"
-            />
+            app:tint="@color/black" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- ScrollView để có thể scroll khi nội dung dài -->
@@ -41,7 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Nội dung ban đầu -->
+            <!-- RelativeLayout màu cam -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -54,6 +53,7 @@
                 android:layout_marginTop="-10dp"
                 android:background="@drawable/top_fade_shadow"/>
 
+            <!-- CardView chứa avatar người dùng -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,6 +116,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Past event -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
@@ -150,6 +151,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Upcoming event -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
@@ -182,6 +184,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Personal Info -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
@@ -210,12 +213,47 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:textColor="@color/black"
                         android:text=">"
+                        android:textColor="@color/black"
                         android:textSize="25sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Friends -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="16dp"
+                app:cardCornerRadius="10dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="8dp">
+                <LinearLayout
+                    android:id="@+id/individual_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="friends"
+                        android:padding="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:text=">"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Log Out -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"

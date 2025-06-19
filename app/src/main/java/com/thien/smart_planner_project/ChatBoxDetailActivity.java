@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,10 @@ import com.thien.smart_planner_project.service.SharedPrefManager;
 import com.thien.smart_planner_project.service.SocketManager;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +85,8 @@ public class ChatBoxDetailActivity extends AppCompatActivity {
 
         EditText messageInput = findViewById(R.id.message_input);
         ImageView sendAction = findViewById(R.id.send_button);
-
+        TextView name = findViewById(R.id.name_send);
+        name.setText(intent.getStringExtra("name"));
         // Ban đầu disable nút gửi nếu chưa có text
         sendAction.setEnabled(false);
         sendAction.setAlpha(0.5f);
@@ -112,13 +117,13 @@ public class ChatBoxDetailActivity extends AppCompatActivity {
 
             Call<ApiResponse> call = apiService.sendMessage(mes);
             call.enqueue(new Callback<ApiResponse>() {
+                @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         messageInput.setText("");
-                        // Sau khi gửi thành công, load lại danh sách tin nhắn từ server
-                        loadMessages(apiService);
-                        SocketManager.getInstance().sendChatMessage(user.getName(),uid,"Gửi lời mời kết bạn");
+                        messages.add(mes);
+                        adapter.notifyDataSetChanged();
                     } else {
                         String errorMsg = "Lỗi không xác định";
                         if (response.errorBody() != null) {
@@ -136,6 +141,39 @@ public class ChatBoxDetailActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
                     Toast.makeText(v.getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     t.printStackTrace();
+                }
+            });
+        });
+        // Đăng ký listener nhận message realtime
+        SocketManager.getInstance().getSocket().on("chat message", args -> {
+            runOnUiThread(() -> {
+                try {
+                    JSONObject data = (JSONObject) args[0];
+                    String fid = data.getString("friendId");
+                    String fromUserId = data.getString("fromUserId");
+                    String msgContent = data.getString("message");
+                    String status = data.getString("status");
+                    // Nếu tin này là của bạn bè hiện tại mới add vào, tránh add tin phòng khác
+                    if (friendId.equals(fid)) {
+                        Message msg = new Message();
+                        msg.setSender(fromUserId);
+                        msg.setFriendId(fid);
+                        msg.setContent(msgContent);
+                        msg.setStatus(status);
+                        msg.setcreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+                        // Thêm tin mới vào cuối danh sách
+                        messages.add(msg);
+                        adapter.notifyItemInserted(messages.size() - 1);
+
+                        // Kiểm tra xem người dùng đang ở gần cuối không
+                        LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                        int lastVisible = lm.findLastVisibleItemPosition();
+                        if (lastVisible >= messages.size() - 3) {
+                            recyclerView.scrollToPosition(messages.size() - 1);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
         });
@@ -213,5 +251,10 @@ public class ChatBoxDetailActivity extends AppCompatActivity {
                 Toast.makeText(ChatBoxDetailActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SocketManager.getInstance().getSocket().off("chat message");
     }
 }

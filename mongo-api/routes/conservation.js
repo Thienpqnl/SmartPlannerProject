@@ -3,10 +3,11 @@ const router = express.Router();
 const Friend = require('../models/Friend');
 const Message = require('../models/Message');
 const User = require('../models/User');
-
+const { getIO, onlineUsers } = require('../socket');
 // Gửi lời mời kết bạn
 router.post('/addFriend', async (req, res) => {
     try {
+        const io = getIO();
         const { from, to } = req.body;
         if (!from || !to) {
             return res.status(400).json({ message: 'Thiếu thông tin.' });
@@ -29,6 +30,17 @@ router.post('/addFriend', async (req, res) => {
             statusB: 'pending'  // Người nhận
         });
         await newFriend.save();
+        const toSocketId = onlineUsers.get(to);
+            if (toSocketId) {
+              io.to(toSocketId).emit('receive invite', {
+                to: to
+              });
+               io.to(toSocketId).emit('receive notification', {
+                          type: 'addFriend',
+                          content: 'Bạn có lời mời kết bạn mới'
+                        });
+            }
+
         return res.status(200).json({ message: 'Đã gửi lời mời bạn thành công' });
     } catch (err) {
         console.error(err);
@@ -154,6 +166,8 @@ router.post('/blockFriend', async (req, res) => {
 
 // Gửi tin nhắn
 router.post('/sendMessage', async (req, res) => {
+    const io = getIO();
+    console.log('IO INSTANCE:', io);
     try {
         const { friendId, sender, content } = req.body;
         if (!friendId || !sender || !content) {
@@ -179,6 +193,28 @@ router.post('/sendMessage', async (req, res) => {
             createdAt: new Date()
         });
         await newMessage.save();
+
+        let toUserId;
+        if (friend.userA === sender) {
+          toUserId = friend.userB;
+        } else {
+          toUserId = friend.userA;
+        }
+        // gửi message qua socket
+        const toSocketId = onlineUsers.get(toUserId);
+            if (toSocketId) {
+              io.to(toSocketId).emit('chat message', {
+                friendId: friendId,
+                fromUserId: sender,
+                status: 'sent',
+                message: content
+            });
+            io.to(toSocketId).emit('receive notification', {
+                                      type: 'message',
+                                      content: 'Bạn có tin nhắn mới'
+                                    });
+        }
+
         return res.status(200).json({ message: 'Gửi tin nhắn thành công' });
     } catch (err) {
         console.error(err);

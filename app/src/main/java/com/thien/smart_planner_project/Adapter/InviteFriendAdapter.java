@@ -47,16 +47,6 @@ public class InviteFriendAdapter extends RecyclerView.Adapter<InviteFriendAdapte
             reject = itemView.findViewById(R.id.reject_add_friend);
             avatar = itemView.findViewById(R.id.friend_image_invite);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAbsoluteAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        Intent intent = new Intent(v.getContext(), ChatBoxDetailActivity.class);
-                        v.getContext().startActivity(intent);
-                    }
-                }
-            });
         }
     }
 
